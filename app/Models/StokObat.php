@@ -23,4 +23,9 @@ class StokObat extends Model
     {
         return $this->belongsTo(Distributor::class);
     }
+
+    public function obat()
+    {
+        return $this->belongsTo(Obat::class);
+    }
 }

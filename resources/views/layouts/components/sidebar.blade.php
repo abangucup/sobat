@@ -5,6 +5,8 @@
                     <i class="fa fa-solid fa-house"></i> Dashboard
                 </a>
             </li>
+            @if (auth()->user()->role == 'gudang')
+
             <li><a href="{{ route('distributor.index') }}">
                     <i class="fa-solid fa-boxes-packing"></i> Distributor
                 </a>
@@ -21,28 +23,66 @@
                     <i class="fa-solid fa-truck-medical"></i> Pemesanan Obat
                 </a>
                 <ul aria-expanded="false" class="mm-collapse">
-                    <li><a href="{{ route('pemesanan-obat.create') }}">Buat Pesanan</a></li>
-                    <li><a href="file-manager.html">Daftar Pemesanan</a></li>
-                    <li><a href="file-manager.html">Pesanan Diproses</a></li>
-                    <li><a href="file-manager.html">Pesanan Selesai</a></li>
+                    <li><a href="{{ route('pemesanan.create') }}"
+                            class="{{ Request::is('pemesanan/create') ? 'bgl-primary rounded' : '' }}">Buat
+                            Pesanan</a>
+                    </li>
+                    <li><a href="{{ route('pemesanan.index') }}"
+                            class="{{ Request::is('pemesanan') ? 'bgl-primary rounded' : '' }}">Daftar
+                            Pemesanan</a></li>
+                    <li><a href="{{ route('pemesanan.proses') }}"
+                            class="{{ Request::is('pemesanan/status-proses') ? 'bgl-primary rounded' : '' }}">Pesanan
+                            Diproses</a></li>
+                    <li><a href="{{ route('pemesanan.selesai') }}"
+                            class="{{ Request::is('pemesanan/status-selesai') ? 'bgl-primary rounded' : '' }}">Pesanan
+                            Selesai</a></li>
                 </ul>
             </li>
             <li><a class="has-arrow " href="javascript:void(0);" aria-expanded="false">
                     <i class="fa-solid fa-book-medical"></i> Permintaan Obat
                 </a>
                 <ul aria-expanded="false" class="mm-collapse">
-                    <li><a href="file-manager.html">Menunggu Persetujuan</a></li>
-                    <li><a href="file-manager.html">Disetujui</a></li>
+                    <li><a href="{{ route('permintaan.tunda') }}"
+                            class="{{ Request::is('permintaan/status-tunda') ? 'bgl-primary rounded' : '' }}">Menunggu
+                            Persetujuan</a></li>
+                    <li><a href="{{ route('permintaan.setuju') }}"
+                            class="{{ Request::is('permintaan/status-setuju') ? 'bgl-primary rounded' : '' }}">Disetujui</a>
+                    </li>
                 </ul>
             </li>
-            <li><a href="#">
+            <li><a href="{{ route('keuangan.rekapan') }}">
                     <i class="fa-solid fa-file-invoice-dollar"></i> Rekapan Keuangan
                 </a>
             </li>
-            <li><a href="{{ route('user.index') }}">
+            <li>
+                <a href="{{ route('user.index') }}">
                     <i class="fa-solid fa-users"></i> Data User
                 </a>
             </li>
+
+            @elseif (auth()->user()->role == 'distributor')
+            <li><a href="{{ route('obat.index') }}">
+                    <i class="fa-solid fa-pills"></i> Obat
+                </a>
+            </li>
+            <li><a href="{{ route('pemesanan.index') }}">
+                    <i class="fa-solid fa-truck-medical"></i> Daftar Pesanan
+                </a>
+            </li>
+            <li><a href="{{ route('expired.index') }}">
+                    <i class="fa-solid fa-pills"></i> Data Pengembalian
+                </a>
+            </li>
+            <li><a href="{{ route('keuangan.rekapan') }}">
+                    <i class="fa-solid fa-file-invoice-dollar"></i> Rekapan Keuangan
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('user.index') }}">
+                    <i class="fa-solid fa-users"></i> Data User
+                </a>
+            </li>
+            @endif
         </ul>
     </div>
 </div>

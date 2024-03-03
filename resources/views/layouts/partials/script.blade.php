@@ -35,6 +35,28 @@
 <script src="{{ asset('assets/js/custom.min.js') }}"></script>
 <script src="{{ asset('assets/js/demo-2.js') }}"></script>
 <script src="{{ asset('assets/js/styleSwitcher.js') }}"></script>
+
+{{-- PICKER DATE, COLOR, CLOCK --}}
+{{-- Material Picker --}}
+<script src="{{ asset('assets/vendor/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js')}}">
+</script>
+<script src="{{ asset('assets/js/plugins-init/material-date-picker-init.js') }}"></script>
+<!-- pickdate -->
+<script src="{{ asset('assets/vendor/pickadate/picker.js') }}"></script>
+<script src="{{ asset('assets/vendor/pickadate/picker.time.js') }}"></script>
+<script src="{{ asset('assets/vendor/pickadate/picker.date.js') }}"></script>
+
+<!-- Daterangepicker -->
+<script src="{{ asset('assets/js/plugins-init/bs-daterange-picker-init.js') }}"></script>
+<!-- Clockpicker init -->
+<script src="{{ asset('assets/js/plugins-init/clock-picker-init.js') }}"></script>
+<!-- asColorPicker init -->
+<script src="{{ asset('assets/js/plugins-init/jquery-asColorPicker.init.js') }}"></script>
+<!-- Material color picker init -->
+<script src="{{ asset('assets/js/plugins-init/material-date-picker-init.js') }}"></script>
+<!-- Pickdate -->
+<script src="{{ asset('assets/js/plugins-init/pickadate-init.js') }}"></script>
+
 <script>
     $(function () {
             $('#datetimepicker').datetimepicker({
@@ -65,6 +87,29 @@
     });
 </script>
 
-{{-- @push('script') --}}
+{{-- Format Harga --}}
+<script>
+    // INPUT HARGA BERUPA ANGKA
+    document.addEventListener('input', function (e) {
+        if (e.target && e.target.id === 'harga') {
+            const input = e.target;
+            const value = input.value.replace(/[^0-9]/g, ''); // Hanya menerima digit
+            input.value = formatCurrency(value);
+        }
+    });
 
-{{-- @endpush --}}
+    // MATA UANG
+    function formatCurrency(value) {
+        if (value.length === 0) return '';
+        
+        const number = parseInt(value);
+        const formatted = new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0,
+        }).format(number);
+
+        return formatted.replace('IDR', '');
+
+    }
+</script>

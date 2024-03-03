@@ -22,14 +22,9 @@ class Distributor extends Model
         return $this->hasMany(AkunDistributor::class);
     }
 
-    public function stok()
+    public function stokObats()
     {
         return $this->hasMany(StokObat::class);
-    }
-
-    public function obat()
-    {
-        return $this->hasMany(Obat::class, StokObat::class);
     }
 
     public function getRouteKeyName()

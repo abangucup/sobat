@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Obat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -13,7 +14,10 @@ class DashboardController extends Controller
         $role = Auth::user()->role;
 
         if ($role == 'distributor') {
-            return view('dashboard.distributor');
+            $totalObat = Obat::whereHas('stokObats', function ($query) {
+                $query->where('lokasi', 'distributor');
+            })->count();
+            return view('dashboard.distributor', compact('totalObat'));
         } elseif ($role == 'gudang') {
             return view('dashboard.gudang');
         } elseif ($role == 'pelayanan') {

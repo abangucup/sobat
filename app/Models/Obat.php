@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Obat extends Model
 {
     use HasFactory;
+    use \Znck\Eloquent\Traits\BelongsToThrough;
+
 
     protected $fillable = [
         'kode_obat',
@@ -20,11 +22,16 @@ class Obat extends Model
         'satuan_kapasitas',
     ];
 
-    public function stokObat()
+    public function stokObats()
     {
         return $this->hasMany(StokObat::class);
     }
 
+    public function detailPesanans()
+    {
+        return $this->hasMany(DetailPesanan::class);
+    }
+    
     public function getRouteKeyName()
     {
         return 'slug';
