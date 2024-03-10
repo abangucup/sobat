@@ -54,14 +54,14 @@ class UserSeeder extends Seeder
                 'email' => 'windyppk@gmail.com',
             ],
             [
-                'biodata_id' => 1,
+                'biodata_id' => 6,
                 'username' => 'direktur',
                 'password' => Hash::make('password'),
                 'role' => 'direktur',
                 'email' => 'windydirektur@gmail.com',
             ],
             [
-                'biodata_id' => 1,
+                'biodata_id' => 7,
                 'username' => 'poli',
                 'password' => Hash::make('password'),
                 'role' => 'poli',

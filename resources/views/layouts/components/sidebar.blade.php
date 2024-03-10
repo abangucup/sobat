@@ -5,8 +5,10 @@
                     <i class="fa fa-solid fa-house"></i> Dashboard
                 </a>
             </li>
-            @if (auth()->user()->role == 'gudang')
 
+            {{-- MENU UNTUK GUDANG --}}
+            @if (auth()->user()->role == 'gudang')
+{{-- ================================================================================================================================================================= --}}
             <li><a href="{{ route('distributor.index') }}">
                     <i class="fa-solid fa-boxes-packing"></i> Distributor
                 </a>
@@ -27,11 +29,13 @@
                             class="{{ Request::is('pemesanan/create') ? 'bgl-primary rounded' : '' }}">Buat
                             Pesanan</a>
                     </li>
-                    <li><a href="{{ route('pemesanan.index') }}"
-                            class="{{ Request::is('pemesanan') ? 'bgl-primary rounded' : '' }}">Daftar
-                            Pemesanan</a></li>
+                    <li class="mm-{{ Request::is('pemesanan/*') ? 'active' : '' }}">
+                        <a href="{{ route('pemesanan.index') }}"
+                            class="{{ Request::is('pemesanan') || Request::is('pemesanan/detail-pesanan/*')  ? 'bgl-primary rounded' : '' }}">Daftar
+                            Pemesanan</a>
+                    </li>
                     <li><a href="{{ route('pemesanan.proses') }}"
-                            class="{{ Request::is('pemesanan/status-proses') ? 'bgl-primary rounded' : '' }}">Pesanan
+                            class="{{ Request::is('pemesanan/status-proses') || Request::is('pemesanan/status-proses/*') ? 'bgl-primary rounded' : '' }}">Pesanan
                             Diproses</a></li>
                     <li><a href="{{ route('pemesanan.selesai') }}"
                             class="{{ Request::is('pemesanan/status-selesai') ? 'bgl-primary rounded' : '' }}">Pesanan
@@ -59,13 +63,17 @@
                     <i class="fa-solid fa-users"></i> Data User
                 </a>
             </li>
+{{-- ================================================================================================================================================================= --}}
 
+
+            {{-- MENU UNTUK DISTRIBUTOR --}}
             @elseif (auth()->user()->role == 'distributor')
+{{-- ================================================================================================================================================================= --}}
             <li><a href="{{ route('obat.index') }}">
                     <i class="fa-solid fa-pills"></i> Obat
                 </a>
             </li>
-            <li><a href="{{ route('pemesanan.index') }}">
+            <li><a href="{{ route('pemesanan.daftar-pesanan') }}">
                     <i class="fa-solid fa-truck-medical"></i> Daftar Pesanan
                 </a>
             </li>
@@ -82,6 +90,27 @@
                     <i class="fa-solid fa-users"></i> Data User
                 </a>
             </li>
+{{-- ================================================================================================================================================================= --}}
+
+
+            {{-- MENU UNTUK PPK --}}
+            @elseif (auth()->user()->role == 'ppk')
+{{-- ================================================================================================================================================================= --}}
+            <li><a href="{{ route('pemesanan.proses') }}">
+                    <i class="fa-solid fa-pills"></i> Verifikasi Pesanan
+                </a>
+            </li>
+{{-- ================================================================================================================================================================= --}}
+
+            {{-- MENU UNTUK DIREKTUR --}}
+            @elseif (auth()->user()->role == 'direktur')
+{{-- ================================================================================================================================================================= --}}
+            <li><a href="{{ route('pemesanan.proses') }}" class="{{ Request::is('pemesanan/*') ? 'bgl-primary rounded' : '' }}">
+                    <i class="fa-solid fa-pills"></i> Verifikasi Pesanan
+                </a>
+            </li>
+{{-- ================================================================================================================================================================= --}}
+
             @endif
         </ul>
     </div>

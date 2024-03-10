@@ -11,16 +11,16 @@
     <div class="card">
         <div class="card-header">
             <h4>Form Pemesanan</h4>
-            <button class="text-end btn btn-primary"><i class="fa-solid fa-paper-plane me-2"></i>Kirim Konsep</button>
+            <button class="text-end btn btn-primary"><i class="fa-solid fa-paper-plane me-2"></i>Simpan Konsep</button>
         </div>
         <div class="card-body mb-4">
             <div class="row">
                 <div class="col-md-5">
-                    <div>
+                    <div class="mt-3">
                         <label class="form-label">Pilih Obat
                             <span class="required">*</span>
                         </label>
-                        <select name="obat" class="form-control select2" required>
+                        <select name="obat[]" class="form-control select2" required>
                             @foreach ($stokObats->where('lokasi', 'distributor') as $stok)
                             @php
                             $obat = $stok->obat;
@@ -36,19 +36,12 @@
                         <label class="form-label">Banyak
                             <span class="required">*</span>
                         </label>
-                        <input type="number" class="form-control" name="banyak" placeholder="100" required>
+                        <input type="number" class="form-control" name="banyak[]" placeholder="100" required>
                     </div>
                     <div id="formObatStok"></div>
-                    <button type="button" id="tombolTambahForm" class="btn btn-secondary">Tambahkan Obat</button>
+                    <button type="button" id="tombolTambahForm" class="btn btn-secondary btn-xs">Tambahkan Form</button>
                 </div>
                 <div class="col-md-7">
-                    {{-- <div>
-                        <label class="form-label">Surat Pendukung
-                            <span class="required">*</span>
-                        </label>
-                        <input class="form-control" type="file" id="dokumenInput" name="surat_pemesanan"
-                            accept=".pdf, .jpg, .j  peg, .png" required>
-                    </div> --}}
                     <div class="mt-3">
                         <label class="form-label">Keterangan</label>
                         <textarea name="keterangan" rows="3" class="form-control"
@@ -82,21 +75,30 @@
         
         $('#tombolTambahForm').click(function() {
             $('#formObatStok').append(`
-                <div>
-                    <label class="form-label">Pilih Obat
-                        <span class="required">*</span>
-                    </label>
-                    <select name="obat" class="form-select select2" required>
-                        @foreach ($stokObats as $stok)
-                        <option value="{{ $stok->obat->id }}">{{ $stok->obat->nama_obat }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="mt-3 mb-3">
-                    <label class="form-label">Banyak
-                        <span class="required">*</span>
-                    </label>
-                    <input type="number" class="form-control" name="banyak" placeholder="100" required>
+                <div class="formObatItem">
+                    <div>
+                        <label class="form-label">Pilih Obat
+                            <span class="required">*</span>
+                        </label>
+                        <select name="obat[]" class="form-control select2" required>
+                            @foreach ($stokObats->where('lokasi', 'distributor') as $stok)
+                            @php
+                            $obat = $stok->obat;
+                            $harga_jual = 'Rp '.number_format($stok->harga_jual, 0, ',', '.');
+                            @endphp
+                            <option value="{{ $obat->id }}">{{ $obat->nama_obat }} - {{ $obat->satuan }} @ {{
+                                $obat->kapasitas }} {{ $obat->satuan_kapasitas }} | Stok {{
+                                $stok->stok }} | Harga {{ $harga_jual }} </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mt-3 mb-3">
+                        <label class="form-label">Banyak
+                            <span class="required">*</span>
+                        </label>
+                        <input type="number" class="form-control" name="banyak[]" placeholder="100" required>
+                    </div>
+                    <button type="button" class="mb-3 btn btn-danger btn-xs tombolHapusForm">Hapus Form</button>
                 </div>
             `);
 
@@ -104,6 +106,11 @@
             $(".select2").select2({
                 theme: "bootstrap-5",
             });
+        });
+
+        // Menambahkan event handler untuk tombol hapus
+        $('#formObatStok').on('click', '.tombolHapusForm', function() {
+            $(this).closest('.formObatItem').remove();
         });
     });
 

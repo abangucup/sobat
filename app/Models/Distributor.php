@@ -22,6 +22,14 @@ class Distributor extends Model
         return $this->hasMany(AkunDistributor::class);
     }
 
+    public function users()
+    {
+        // id pertama = pada model user
+        // id kedua = pada model akunDistributor
+        // return $this->hasManyThrough(User::class, AkunDistributor::class, 'distributor_id', 'id', 'id', 'user_id')
+        return $this->hasManyThrough(User::class, AkunDistributor::class);
+    }
+
     public function stokObats()
     {
         return $this->hasMany(StokObat::class);
@@ -30,5 +38,10 @@ class Distributor extends Model
     public function getRouteKeyName()
     {
         return 'slug';
+    }
+
+    public function surats()
+    {
+        return $this->hasMany(Surat::class);
     }
 }

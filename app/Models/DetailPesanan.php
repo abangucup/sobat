@@ -8,12 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class DetailPesanan extends Model
 {
     use HasFactory;
+    use \Znck\Eloquent\Traits\BelongsToThrough;
 
     protected $fillable = [
         'obat_id',
         'pemesanan_id',
         'jumlah',
         'harga_pesanan',
+        'status_pengiriman'
     ];
 
     public function obat()
@@ -24,5 +26,10 @@ class DetailPesanan extends Model
     public function pemesanan()
     {
         return $this->belongsTo(Pemesanan::class);
+    }
+
+    public function verif()
+    {
+        return $this->hasOne(VerifPesanan::class);
     }
 }

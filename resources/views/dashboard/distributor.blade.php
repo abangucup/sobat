@@ -86,35 +86,44 @@
 </div>
 
 <div class="row">
-    <div class="col-sm-12 col-lg-6">
+    <div class="col-sm-12 col-lg-7">
         <div class="card bgl-primary">
             <div class="card-header">
-                <h4 class="card-title">PERMINTAAN TERBARU</h4>
+                <h4 class="card-title">PEMESANAN TERBARU</h4>
+                <div class="text-end">
+                    <a href="{{ route('pemesanan.daftar-pesanan') }}" class="btn btn-xs btn-primary">Cek Pesanan</a>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-responsive-sm">
+                    <table class="table table-bordered table-responsive-sm text-center">
                         <thead>
                             <tr>
+                                <th>No</th>
                                 <th>Nama Obat</th>
-                                <th>Bidang</th>
                                 <th>Jumlah Obat</th>
-                                <th>Tanggal Permintaan</th>
+                                <th>Satuan</th>
+                                <th>Tanggal Pemesanan</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ($pesanans as $pesanan)
                             <tr>
-                                <td>Paracetamol</td>
-                                <td>Pelayanan</td>
-                                <td>20 Tablet</td>
-                                <td>13 Februari 2024</td>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $pesanan->obat->nama_obat }}</td>
+                                <td>{{ $pesanan->jumlah }}</td>
+                                <td>{{ $pesanan->obat->satuan . ' @ ' . $pesanan->obat->kapasitas . ' ' .
+                                    $pesanan->obat->satuan_kapasitas}}</td>
+                                <td>{{ \Carbon\Carbon::parse($pesanan->pemesanan->created_at)->isoFormat('LL') }}</td>
                             </tr>
+                            @endforeach
                         </tbody>
                         <tfoot>
                             <tr>
+                                <th>No</th>
                                 <th>Nama Obat</th>
-                                <th>Bidang</th>
                                 <th>Jumlah Obat</th>
+                                <th>Satuan</th>
                                 <th>Tanggal Permintaan</th>
                             </tr>
                         </tfoot>
@@ -123,10 +132,10 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-12 col-lg-6">
+    <div class="col-sm-12 col-lg-5">
         <div class="card bgl-primary">
             <div class="card-header">
-                <h4 class="card-title">PERMINTAAN TERBARU</h4>
+                <h4 class="card-title">PENGEMBALIAN OBAT TERBARU</h4>
             </div>
             <div class="card-body">
                 <div class="table-responsive">

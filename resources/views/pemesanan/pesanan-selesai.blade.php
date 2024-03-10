@@ -9,51 +9,55 @@
 <div class="card">
     <div class="card-body shadow-sm pb-0">
         <div class="table-responsive">
-            <table class="table table-bordered table-responsive-sm">
-                <thead>
+            <table class="table table-bordered data-table text-center" width="100%">
+                <thead class="align-middle">
                     <tr>
-                        <th>No</th>
-                        <th>Distributor</th>
-                        <th>Obat</th>
-                        <th>Satuan</th>
-                        <th>Harga</th>
-                        <th>File</th>
-                        <th>Aksi</th>
+                        <th rowspan="2">No</th>
+                        <th rowspan="2">Pemesan</th>
+                        <th rowspan="2">Tanggal Pemesanan</th>
+                        <th colspan="2">Status Verif</th>
+                        <th rowspan="2">Status Pengiriman</th>
+                        <th rowspan="2">Status Pesanan</th>
+                        <th rowspan="2">Aksi</th>
+                    </tr>
+                    <tr>
+                        <th>PPK</th>
+                        <th>DIREKTUR</th>
                     </tr>
                 </thead>
                 <tbody>
+                    @foreach ($pemesanans as $pemesanan)
                     <tr>
-                        <td rowspan="2">1</td>
-                        <td rowspan="2">PT KIMIA FARMA</td>
-                        <td>Parecetamol</td>
-                        <td>Pcs</td>
-                        <td>10000</td>
-                        <td rowspan="2"><a href="">Lihat File</a></td>
-                        <td rowspan="2">
-                            <div class="d-flex">
-                                <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Detail"
-                                    class="btn btn-primary shadow btn-xs sharp me-1"><i
-                                        class="fa-solid fa-info"></i></a>
-                            </div>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ optional($pemesanan->user->biodata)->nama_lengkap }}</td>
+                        <td>{{ \Carbon\Carbon::parse($pemesanan->created_at)->isoFormat('LL') }}</td>
+                        <td>
+                            <span
+                                class="badge badge-pill badge-{{ ($pemesanan->status_verif_ppk == 'pending') ? 'danger' : 'success' }}">
+                                {{ Str::ucfirst($pemesanan->status_verif_ppk) }}<span>
+                        </td>
+                        <td>
+                            <span
+                                class="badge badge-pill badge-{{ ($pemesanan->status_verif_direktur == 'pending') ? 'danger' : 'success' }}">
+                                {{ Str::ucfirst($pemesanan->status_verif_direktur) }}</span>
+                        </td>
+                        <td>
+                            <span
+                                class="badge badge-pill badge-{{ ($pemesanan->status_pengiriman == 'pending' || $pemesanan->status_pengiriman == 'ditolak') ? 'danger' : (($pemesanan->status_pengiriman == 'dilihat') ? 'primary' : 'success') }}">
+                                {{ Str::ucfirst($pemesanan->status_pengiriman) }}</span>
+                        </td>
+                        <td>
+                            <span
+                                class="badge badge-pill badge-{{ $pemesanan->status_pemesanan == 'pending'  ? 'danger' : ($pemesanan->status_pemesanan == 'proses' ? 'warning' : 'success') }}">
+                                {{ Str::ucfirst($pemesanan->status_pemesanan) }}</span>
+                        <td>
+                            <a href="{{ route('pemesanan.show', $pemesanan->id) }}"><span
+                                    class="badge badge-pill badge-primary"><i
+                                        class="fa-solid fa-circle-info me-2"></i>Detail</span></a>
                         </td>
                     </tr>
-                    <tr>
-                        <td>Ampicilin</td>
-                        <td>Botol</td>
-                        <td>20000</td>
-                    </tr>
+                    @endforeach
                 </tbody>
-                <tfoot>
-                    <tr>
-                        <th>No</th>
-                        <th>Nama Perusahaan</th>
-                        <th>Pemilik Perusahaan</th>
-                        <th>Telepon Perusahaan</th>
-                        <th>Lokasi Perusahaan</th>
-                        <th>File</th>
-                        <th>Aksi</th>
-                    </tr>
-                </tfoot>
             </table>
         </div>
     </div>

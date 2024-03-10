@@ -77,6 +77,16 @@
                             </div>
                         </div>
                     </div>
+                    <div class="text-center mb-2">
+                        <a href="https://plagiarismcheckerx.com/" target="_blank"
+                            title="PlagiarismCheckerx Protection Badge">
+                            <img src="https://plagiarismcheckerx.com/assets/images/badges/pcx-protected-12.png"
+                                alt="Protection Badge"></a>
+                        <a href="https://plagiarismcheckerx.com/" target="_blank"
+                            title="PlagiarismCheckerx Protection Badge">
+                            <img src="https://plagiarismcheckerx.com/assets/images/badges/pcx-protected-11.png"
+                                alt="Protection Badge"></a>
+                    </div>
                 </div>
             </div>
         </div>

@@ -38,4 +38,14 @@ class User extends Authenticatable
     {
         return $this->hasOne(AkunDistributor::class);
     }
+
+    public function distributor()
+    {
+        return $this->hasOneThrough(Distributor::class, AkunDistributor::class, 'user_id', 'id', 'id', 'distributor_id');
+    }
+
+    public function verif()
+    {
+        return $this->hasMany(VerifPesanan::class);
+    }
 }

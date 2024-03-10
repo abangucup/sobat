@@ -16,28 +16,32 @@ class ObatController extends Controller
     public function index()
     {
         $user = Auth::user();
-
-        if ($user->role == 'gudang') {
-            $obats = Obat::whereHas('stokObats', function ($query) {
-                $query->where('lokasi', 'gudang');
-            })->latest()->get();
-        } elseif ($user->role == 'distributor') {
-            $distributor_id = $user->akunDistributor->first()->distributor_id;
-
-            $obats = Obat::with('stokObats')->whereHas('stokObats', function ($query) use ($distributor_id) {
-                $query->where('lokasi', 'distributor')
-                    ->where('distributor_id', $distributor_id);
-            })->latest()->get();
-        } elseif ($user->role == 'pelayanan') {
-            $obats = Obat::whereHas('stokObats', function ($query) {
-                $query->where('lokasi', 'pelayanan');
-            })->with('stokObats')->latest()->get();
-        } elseif ($user->role == 'depo') {
-            $obats = Obat::whereHas('stokObats', function ($query) {
-                $query->where('lokasi', 'depo');
-            })->with('stokObats')->latest()->get();
-        } else {
-            Alert::error('Error', 'obat tidak ada');
+        switch ($user->role) {
+            case 'distributor':
+                $distributor_id = $user->akunDistributor->distributor_id;
+                $obats = Obat::with('stokObats')->whereHas('stokObats', function ($query) use ($distributor_id) {
+                    $query->where('lokasi', 'distributor')
+                        ->where('distributor_id', $distributor_id);
+                })->latest()->get();
+                break;
+            case 'gudang':
+                $obats = Obat::with('stokObats')->whereHas('stokObats', function ($query) {
+                    $query->where('lokasi', 'gudang');
+                })->latest()->get();
+                break;
+            case 'pelayanan':
+                $obats = Obat::whereHas('stokObats', function ($query) {
+                    $query->where('lokasi', 'pelayanan');
+                })->with('stokObats')->latest()->get();
+                break;
+            case 'depo':
+                $obats = Obat::whereHas('stokObats', function ($query) {
+                    $query->where('lokasi', 'depo');
+                })->with('stokObats')->latest()->get();
+                break;
+            default:
+                Alert::error('Error', 'Obat tidak ada');
+                return redirect()->back();
         }
 
         return view('obat.index', compact('obats'));
@@ -71,8 +75,8 @@ class ObatController extends Controller
         $obat->no_batch = $request->no_batch;
         $obat->satuan = $request->satuan;
         $obat->tanggal_kedaluwarsa = $request->tanggal_kedaluwarsa;
-        $obat->kapasitas = $request->kapasitas ?? '';
-        $obat->satuan_kapasitas = $request->satuan_kapasitas ?? '';
+        $obat->kapasitas = $request->kapasitas ?? null;
+        $obat->satuan_kapasitas = $request->satuan_kapasitas ?? null;
         $obat->save();
 
         $stokObat = new StokObat();

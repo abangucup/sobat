@@ -13,13 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('detail_pesanans', function (Blueprint $table) {
+        Schema::create('surats', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('obat_id')->constrained()->onDelete('restrict');
+            $table->string('nomor_surat');
             $table->foreignId('pemesanan_id')->constrained()->onDelete('cascade');
-            $table->unsignedInteger('jumlah');
-            $table->float('harga_pesanan', 10, 2);
-            $table->enum('status_pengiriman', ['sampai','dikirim', 'dibatalkan', 'ditunda'])->default('ditunda');
+            $table->foreignId('distributor_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('detail_pesanans');
+        Schema::dropIfExists('surats');
     }
 };

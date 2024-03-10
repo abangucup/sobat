@@ -20,8 +20,8 @@ return new class extends Migration
             $table->integer('stok');
             $table->float('harga_beli');
             $table->date('tanggal_beli');
-            $table->float('harga_jual');
-            $table->enum('lokasi', ['distributor', 'gudang', 'pelayanan', 'depo']);
+            $table->float('harga_jual')->nullable();
+            $table->enum('lokasi', ['distributor', 'gudang', 'pelayanan', 'depo'])->default('distributir');
             $table->timestamps();
         });
     }

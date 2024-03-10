@@ -14,6 +14,7 @@
                 class="fa-regular fa-square-plus"></i> Tambah Obat</button>
     </div>
     @include('obat.modal_tambah')
+
     @endif
 
     <div class="card-body shadow-sm pb-0">
@@ -43,13 +44,13 @@
                         <td>{{ $obat->no_batch }}</td>
                         <td>{{ \Carbon\Carbon::parse($obat->tanggal_kedaluwarsa)->isoFormat('LL') }}</td>
                         <td>{{ $obat->satuan. ' @ '.$obat->kapasitas.' '. $obat->satuan_kapasitas }}</td>
-                        <td>{{ 'Rp. ' . number_format($obat->stokObats->first()->harga_beli, 0, ',',
+                        {{-- <td>{{ 'Rp. ' . number_format($obat->stokObats->first()->harga_beli, 0, ',',
                             '.') }}
-                        </td>
-                        <td>{{ $obat->stokObats->first()->stok }}</td>
-                        <td>{{ 'Rp. ' . number_format($obat->stokObats->first()->harga_jual, 0, ',',
+                        </td> --}}
+                        <td>{{ $obat->stokObats }}</td>
+                        {{-- <td>{{ 'Rp. ' . number_format($obat->stokObats->first()->harga_jual, 0, ',',
                             '.') }}
-                        </td>
+                        </td> --}}
 
                         {{-- @foreach ($obat->stokObats as $stokObat)
                         <td>{{ 'Rp. ' . number_format($stokObat->harga_beli, 0, ',', '.') }}</td>
@@ -114,7 +115,8 @@
                                                         <span class="required">*</span>
                                                     </label>
                                                     <select name="satuan" class="form-select">
-                                                        <option value="{{ $obat->satuan }}" selected>{{ $obat->satuan }}</option>
+                                                        <option value="{{ $obat->satuan }}" selected>{{ $obat->satuan }}
+                                                        </option>
                                                         <option value="" disabled>-- Pilih Satuan --</option>
                                                         <option value="Kotak (box)">Kotak (box)</option>
                                                         <option value="Botol Besar (bottle)">Botol Besar (bottle)
@@ -179,7 +181,8 @@
                                                 <div class="mb-3">
                                                     <label class="form-label">Satuan Kapasitas</label>
                                                     <select name="satuan_kapasitas" class="form-select">
-                                                        <option value="{{ $obat->satuan_kapasitas }}" selected>{{ $obat->satuan_kapasitas }}
+                                                        <option value="{{ $obat->satuan_kapasitas }}" selected>{{
+                                                            $obat->satuan_kapasitas }}
                                                         </option>
                                                         <option value="" disabled>-- Pilih Satuan Untuk Kapasitas --
                                                         </option>

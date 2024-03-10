@@ -9,45 +9,63 @@
 <div class="card">
     <div class="card-body shadow-sm pb-0">
         <div class="table-responsive">
-            <table class="table table-bordered table-responsive-sm">
+            <table class="display  data-table">
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Obat</th>
-                        <th>Satuan</th>
-                        <th>Harga</th>
-                        <th>File</th>
-                        <th>Tanggal Pemesanan</th>
+                        <th>Nama Pemesan</th>
+                        <th>Tanggal Pembuatan</th>
+                        <th>Konsep Surat</th>
+                        <th>Status Surat</th>
+                        <th>Progress Surat</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
+                    @foreach ($pemesanans as $pemesanan)
                     <tr>
-                        <td rowspan="2">1</td>
-                        <td>Parecetamol</td>
-                        <td>Pcs</td>
-                        <td>10000</td>
-                        <td rowspan="2"><a href="">Lihat File</a></td>
-                        <td rowspan="2">13 Januari 2024</td>
-                        <td rowspan="2"><a href="#">Verifikasi Pengantaran</a>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $pemesanan->user->biodata->nama_lengkap }}</td>
+                        <td>{{ \Carbon\Carbon::parse($pemesanan->created_at)->isoFormat('LL') }}</td>
+                        <td>
+                            <a href="{{ route('pemesanan.show', $pemesanan->id) }}"
+                                class="badge badge-pill badge-primary"><i class="fa-solid fa-info me-2"></i>Lihat
+                                Konsep</a>
+                        </td>
+                        <td>
+                            <span
+                                class="badge badge-pill badge-{{ $pemesanan->status_kirim_naskah == 'pending' ? 'danger' : 'success' }}">
+                                {{ Str::ucfirst($pemesanan->status_kirim_naskah) }}</span>
+                        </td>
+                        <td>
+                            @if ($pemesanan->status_kirim_naskah == 'pending')
+                            <span class="badge badge-pill badge-danger">Pending</span>
+                            @else
+                            <a href="{{ route('pemesanan.proses') }}">Lihat Progress</a>
+                            @endif
+                        </td>
+                        <td>
+                            <div class="d-flex">
+                                <form action="{{ route('pemesanan.destroy', $pemesanan->id ) }}" method="post">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"
+                                        class="btn btn-danger shadow btn-xs sharp">
+                                        <i class="fa fa-trash"></i></button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
-                    <tr>
-                        <td>Ampicilin</td>
-                        <td>Botol</td>
-                        <td>20000</td>
-
-                    </tr>
+                    @endforeach
                 </tbody>
                 <tfoot>
                     <tr>
                         <th>No</th>
-                        {{-- <th>Nama Perusahaan</th> --}}
-                        <th>Pemilik Perusahaan</th>
-                        <th>Telepon Perusahaan</th>
-                        <th>Lokasi Perusahaan</th>
-                        <th>File</th>
-                        <th>Tanggal Pemesanan</th>
+                        <th>Nama Pemesan</th>
+                        <th>Tanggal Pembuatan</th>
+                        <th>Konsep Surat</th>
+                        <th>Status Surat</th>
+                        <th>Progress Surat</th>
                         <th>Aksi</th>
                     </tr>
                 </tfoot>

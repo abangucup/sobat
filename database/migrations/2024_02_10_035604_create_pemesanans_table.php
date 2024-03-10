@@ -17,9 +17,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('restrict');
             $table->enum('status_kirim_naskah', ['terkirim', 'pending'])->default('pending');
-            $table->enum('status_verif_ppk', ['diverifikasi', 'pending'])->default('pending');
-            $table->enum('status_verif_direktur', ['diverifikasi', 'pending'])->default('pending');
-            $table->enum('status_pengiriman', ['dikirim', 'dilihat', 'pending'])->default('pending');
+            $table->enum('status_verif_ppk', ['diverifikasi', 'pending', 'ditolak'])->default('pending');
+            $table->enum('status_verif_direktur', ['diverifikasi', 'pending', 'ditolak'])->default('pending');
+            $table->enum('status_pemesanan', ['selesai', 'proses', 'pending'])->default('pending');
             $table->text('keterangan')->nullable();
             $table->timestamps();
         });

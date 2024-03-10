@@ -9,54 +9,84 @@
 <div class="card">
     <div class="card-body shadow-sm pb-0">
         <div class="table-responsive">
-            <table class="table table-bordered table-responsive-sm">
-                <thead>
+            <table class="table table-bordered data-table text-center" width="100%">
+                <thead class="align-middle">
                     <tr>
                         <th rowspan="2">No</th>
-                        <th rowspan="2">Distributor</th>
-                        <th rowspan="2">Obat</th>
-                        <th rowspan="2">Jumlah</th>
-                        <th rowspan="2">Harga</th>
-                        <th colspan="3" class="text-center">Status Verif</th>
-                        <th rowspan="2">Status Selesai</th>
+                        <th rowspan="2">Pemesan</th>
+                        <th rowspan="2">Tanggal Pemesanan</th>
+                        <th colspan="2">Status Verif</th>
+                        <th rowspan="2">Status Pesanan</th>
+                        <th rowspan="2">Aksi</th>
                     </tr>
                     <tr>
                         <th>PPK</th>
                         <th>DIREKTUR</th>
-                        <th>DISTRIBUTOR</th>
                     </tr>
                 </thead>
                 <tbody>
+                    @foreach ($pemesanans as $pemesanan)
                     <tr>
-                        <td rowspan="2">1</td>
-                        <td rowspan="2">PT KIMIA FARMA</td>
-                        <td>Parecetamol</td>
-                        <td>Pcs</td>
-                        <td>10000</td>
-                        <td rowspan="2"><a href="" class="bgl-warning px-4 rounded">Belum</a></td>
-                        <td rowspan="2"><a href="" class="bgl-warning px-4 rounded">Belum</a></td>
-                        <td rowspan="2"><a href="" class="bgl-warning px-4 rounded">Belum</a></td>
-                        <td rowspan="2"><a href="" class="bgl-warning px-4 rounded">Belum</a></td>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ optional($pemesanan->user->biodata)->nama_lengkap }}</td>
+                        <td>{{ \Carbon\Carbon::parse($pemesanan->created_at)->isoFormat('LL') }}</td>
+                        <td>
+                            @if ($user->role == 'ppk' && $pemesanan->status_verif_ppk == 'pending')
+                            <form action="{{ route('verif.ppk', $pemesanan->id) }}" method="post">
+                                @csrf
+                                <button type="submit" class="btn btn-primary btn-xs" name="status_verif_ppk"
+                                    value="diverifikasi">Setujui</button>
+                                <button type="submit" class="btn btn-danger btn-xs" name="status_verif_ppk"
+                                    value="ditolak">Tolak</button>
+                            </form>
+                            @else
+                            <span
+                                class="badge badge-pill badge-{{ $pemesanan->status_verif_ppk == 'diverifikasi' ? 'success' : 'danger' }}">
+                                @if ($pemesanan->status_verif_ppk == 'diverifikasi')
+                                <i class="fa-solid fa-check me-2"></i>
+                                @else
+                                <i class="fa-solid fa-xmark me-2"></i>
+                                @endif
+                                {{ Str::ucfirst($pemesanan->status_verif_ppk) }}
+                                <span>
+                                    @endif
+
+                        </td>
+                        <td>
+                            @if ($user->role == 'direktur' && $pemesanan->status_verif_direktur == 'pending' &&
+                            $pemesanan->status_verif_ppk == 'diverifikasi')
+                            <form action="{{ route('verif.direktur', $pemesanan->id) }}" method="post">
+                                @csrf
+                                <button type="submit" class="btn btn-primary btn-xs" name="status_verif_direktur"
+                                    value="diverifikasi">Setujui</button>
+                                <button type="submit" class="btn btn-danger btn-xs" name="status_verif_direktur"
+                                    value="ditolak">Tolak</button>
+                            </form>
+                            @else
+                            <span
+                                class="badge badge-pill badge-{{ ($pemesanan->status_verif_direktur == 'diverifikasi') ? 'success' : 'danger' }}">
+                                @if ($pemesanan->status_verif_direktur == 'diverifikasi')
+                                <i class="fa-solid fa-check me-2"></i>
+                                @else
+                                <i class="fa-solid fa-xmark me-2"></i>
+                                @endif
+                                {{ Str::ucfirst($pemesanan->status_verif_direktur) }}
+                            </span>
+                            @endif
+                        </td>
+                        <td>
+                            <span
+                                class="badge badge-pill badge-{{ $pemesanan->status_pemesanan == 'pending'  ? 'danger' : ($pemesanan->status_pemesanan == 'proses' ? 'warning' : 'success') }}">
+                                {{ Str::ucfirst($pemesanan->status_pemesanan) }}</span>
+                        <td>
+                            <a href="{{ route('pemesanan-proses.detail', $pemesanan->id) }}"><span
+                                    class="badge badge-pill badge-primary"><i
+                                        class="fa-solid fa-circle-info me-2"></i>Cek Pesanan</span></a>
+                        </td>
                     </tr>
-                    <tr>
-                        <td>Ampicilin</td>
-                        <td>Botol</td>
-                        <td>20000</td>
-                    </tr>
+
+                    @endforeach
                 </tbody>
-                <tfoot>
-                    <tr>
-                        <th>No</th>
-                        <th>Distributor</th>
-                        <th>Obat</th>
-                        <th>Jumlah</th>
-                        <th>Harga</th>
-                        <th>PPK</th>
-                        <th>DIREKTUR</th>
-                        <th>DISTRIBUTOR</th>
-                        <th>Status Selesai</th>
-                    </tr>
-                </tfoot>
             </table>
         </div>
     </div>

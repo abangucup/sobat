@@ -50,7 +50,7 @@ return new class extends Migration
                 'Tube',
                 'Strip',
                 'Sachet',
-            ]);
+            ])->nullable();
             $table->timestamps();
         });
     }

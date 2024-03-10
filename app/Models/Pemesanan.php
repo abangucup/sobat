@@ -14,7 +14,7 @@ class Pemesanan extends Model
         'status_kirim_naskah',
         'status_verif_ppk',
         'status_verif_direktur',
-        'status_pengiriman',
+        'status_pemesanan',
         'keterangan',
     ];
 
@@ -28,8 +28,13 @@ class Pemesanan extends Model
         return $this->hasMany(DetailPesanan::class);
     }
 
-    // public function obats()
-    // {
-    //     return $this->hasManyThrough(Obat::class, DetailPesanan::class);
-    // }
+    public function obats()
+    {
+        return $this->hasManyThrough(Obat::class, DetailPesanan::class, 'pemesanan_id', 'id', 'id', 'obat_id');
+    }
+
+    public function surats()
+    {
+        return $this->hasMany(Surat::class);
+    }
 }
