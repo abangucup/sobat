@@ -27,6 +27,39 @@ class Obat extends Model
         return $this->hasMany(StokObat::class);
     }
 
+    // public function scopeStokGudang($query)
+    // {
+    //     // return $query->whereHas('stokObats', function ($query) {
+    //     //     $query->where('lokasi', 'gudang')->first();
+    //     // });
+    //     // return $query->with(['stokObats', function($query) {
+    //     //     $query->where('lokasi', 'gudang');
+    //     // }]);
+    //     // return 
+    // }
+
+    // public function scopeStokDistributor($query, $distributor_id)
+    // {
+    //     return $query->whereHas('stokObats', function ($query) use ($distributor_id) {
+    //         $query->where('lokasi', 'distributor')
+    //             ->where('distributor_id', $distributor_id);
+    //     });
+    // }
+
+    // public function scopeStokPelayanan($query)
+    // {
+    //     return $query->whereHas('stokObats', function ($query) {
+    //         $query->where('lokasi', 'pelayanan');
+    //     });
+    // }
+
+    // public function scopeStokDepo($query)
+    // {
+    //     return $query->whereHas('stokObats', function ($query) {
+    //         $query->where('lokasi', 'depo');
+    //     });
+    // }
+
     public function detailPesanans()
     {
         return $this->hasMany(DetailPesanan::class);

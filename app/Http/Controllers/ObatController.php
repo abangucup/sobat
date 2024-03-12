@@ -19,32 +19,23 @@ class ObatController extends Controller
         switch ($user->role) {
             case 'distributor':
                 $distributor_id = $user->akunDistributor->distributor_id;
-                $obats = Obat::with('stokObats')->whereHas('stokObats', function ($query) use ($distributor_id) {
-                    $query->where('lokasi', 'distributor')
-                        ->where('distributor_id', $distributor_id);
-                })->latest()->get();
+                $obats = StokObat::with('obat', 'distributor')->where('lokasi', 'distributor')->where('distributor_id', $distributor_id)->latest()->get();
                 break;
             case 'gudang':
-                $obats = Obat::with('stokObats')->whereHas('stokObats', function ($query) {
-                    $query->where('lokasi', 'gudang');
-                })->latest()->get();
+                $obats = StokObat::with('obat', 'distributor')->where('lokasi', 'gudang')->latest()->get();
                 break;
             case 'pelayanan':
-                $obats = Obat::whereHas('stokObats', function ($query) {
-                    $query->where('lokasi', 'pelayanan');
-                })->with('stokObats')->latest()->get();
+                $obats = StokObat::with('obat', 'distributor')->where('lokasi', 'pelayanan')->latest()->get();
                 break;
             case 'depo':
-                $obats = Obat::whereHas('stokObats', function ($query) {
-                    $query->where('lokasi', 'depo');
-                })->with('stokObats')->latest()->get();
+                $obats = StokObat::with('obat', 'distributor')->where('lokasi', 'depo')->latest()->get();
                 break;
             default:
                 Alert::error('Error', 'Obat tidak ada');
                 return redirect()->back();
         }
 
-        return view('obat.index', compact('obats'));
+        return view('obat.index', compact('obats', 'user'));
     }
 
     public function store(Request $request)
@@ -120,30 +111,50 @@ class ObatController extends Controller
         }
 
         $obat = Obat::where('slug', $slug)->first();
+
         if (!$obat) {
             return redirect()->back()->withToastError('Data obat tidak ditemukan');
         } else {
             // rubada data obat
-            $obat->update([
-                'nama_obat' => $request->nama_obat,
-                'slug' => Str::slug($request->nama_obat),
-                'no_batch' => $request->no_batch,
-                'satuan' => $request->satuan,
-                'tanggal_kedaluwarsa' => $request->tanggal_kedaluwarsa,
-                'kapasitas' => $request->kapasitas ?? '',
-                'satuan_kapasitas' => $request->satuan_kapasitas ?? '',
-            ]);
+            if ($obat->stokObats->where('lokasi', '!=', 'distributor')->first() == null) {
+                # code...
+                $obat->update([
+                    'nama_obat' => $request->nama_obat,
+                    'slug' => Str::slug($request->nama_obat),
+                    'no_batch' => $request->no_batch,
+                    'satuan' => $request->satuan,
+                    'tanggal_kedaluwarsa' => $request->tanggal_kedaluwarsa,
+                    'kapasitas' => $request->kapasitas ?? null,
+                    'satuan_kapasitas' => $request->satuan_kapasitas ?? null,
+                ]);
 
-            // rubah data stok obat
-            $obat->stokObats->first()->update([
-                'stok' => $request->stok,
-                'harga_beli' => preg_replace('/[^\d]/', '', $request->harga_beli),
-                'tanggal_beli' => $request->tanggal_beli,
-                'harga_jual' => preg_replace('/[^\d]/', '', $request->harga_jual),
-            ]);
+                // rubah data stok obat
+                $obat->stokObats->first()->update([
+                    'stok' => $request->stok,
+                    'harga_beli' => preg_replace('/[^\d]/', '', $request->harga_beli),
+                    'tanggal_beli' => $request->tanggal_beli,
+                    'harga_jual' => preg_replace('/[^\d]/', '', $request->harga_jual),
+                ]);
+            } else {
+                return redirect()->back()->withToastError('Data obat tidak dapat dirubah lagi');
+            }
         }
 
         return redirect()->back()->withToastSuccess('Berhasil merubah data obat');
+    }
+
+    public function ubahHarga(Request $request, $id)
+    {
+        $validasi = Validator::make($request->all(), [
+            'harga_jual' => 'required',
+        ]);
+
+        $dataObat = StokObat::where('id', $id)->first();
+        $dataObat->update([
+            'harga_jual' => preg_replace('/[^\d]/', '', $request->harga_jual),
+        ]);
+
+        return redirect()->back()->withToastSuccess('Harga jual telah dirubah');
     }
 
     public function destroy($slug)

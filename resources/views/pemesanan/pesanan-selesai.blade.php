@@ -42,16 +42,14 @@
                                 {{ Str::ucfirst($pemesanan->status_verif_direktur) }}</span>
                         </td>
                         <td>
-                            <span
-                                class="badge badge-pill badge-{{ ($pemesanan->status_pengiriman == 'pending' || $pemesanan->status_pengiriman == 'ditolak') ? 'danger' : (($pemesanan->status_pengiriman == 'dilihat') ? 'primary' : 'success') }}">
-                                {{ Str::ucfirst($pemesanan->status_pengiriman) }}</span>
+                            <span class="badge badge-pill badge-success">Selesai</span>
                         </td>
                         <td>
                             <span
                                 class="badge badge-pill badge-{{ $pemesanan->status_pemesanan == 'pending'  ? 'danger' : ($pemesanan->status_pemesanan == 'proses' ? 'warning' : 'success') }}">
                                 {{ Str::ucfirst($pemesanan->status_pemesanan) }}</span>
                         <td>
-                            <a href="{{ route('pemesanan.show', $pemesanan->id) }}"><span
+                            <a href="{{ route('pemesanan-selesai.detail', $pemesanan->id) }}"><span
                                     class="badge badge-pill badge-primary"><i
                                         class="fa-solid fa-circle-info me-2"></i>Detail</span></a>
                         </td>

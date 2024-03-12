@@ -31,7 +31,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('dashboard', DashboardController::class)->name('dashboard');
 
-    Route::resource('obat', ObatController::class)->only(['index']);
+    Route::resource('obat', ObatController::class)->only(['index', 'show']);
+    Route::put('obat/stok-obat/{id}', [ObatController::class, 'ubahHarga'])->name('obat.ubahHarga');
     Route::resource('user', UserController::class);
     Route::resource('akun-distributor', AkunDistributor::class);
     Route::resource('expired', ExpiredController::class);
@@ -39,9 +40,10 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('pemesanan', PemesananController::class)->only(['index', 'edit', 'update']);
     Route::get('pemesanan/status-proses', [PemesananController::class, 'pemesananOnProses'])->name('pemesanan.proses');
     Route::get('pemesanan/status-selesai', [PemesananController::class, 'pemesananSelesai'])->name('pemesanan.selesai');
-    
+
     // Merupakan detail pemesanan tapi menggunakan detail pesanan controller
-    Route::get('pemesanan/status-proses/{pemesanan_id}', [DetailPesananController::class, 'detail'])->name('pemesanan-proses.detail');
+    Route::get('pemesanan/status-proses/{pemesanan_id}', [DetailPesananController::class, 'detailPesananProses'])->name('pemesanan-proses.detail');
+    Route::get('pemesanan/status-selesai/{pemesanan_id}', [DetailPesananController::class, 'detailPesananSelesai'])->name('pemesanan-selesai.detail');
 
     Route::resource('permintaan', PermintaanController::class)->except(['show']);
     Route::get('permintaan/status-tunda', [PermintaanController::class, 'permintaanOnProses'])->name('permintaan.tunda');
@@ -66,7 +68,7 @@ Route::middleware(['auth'])->group(function () {
 
     // LEVEL DISTRIBUTOR
     Route::group(['middleware' => 'role:distributor'], function () {
-        Route::resource('obat', ObatController::class)->only(['store', 'update', 'destroy', 'edit', 'show']);
+        Route::resource('obat', ObatController::class)->only(['store', 'update', 'destroy', 'edit']);
         Route::get('pemesanan/daftar-pesanan', [PemesananController::class, 'pesananDistributor'])->name('pemesanan.daftar-pesanan');
         Route::post('pemesanan/status-proses/verif-pengiriman/{detail_pesanan_id}', [DetailPesananController::class, 'verifPengiriman'])->name('verif.pengiriman');
     });

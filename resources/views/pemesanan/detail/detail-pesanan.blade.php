@@ -68,7 +68,7 @@
                     <tbody>
                         @foreach ($detailPesanans as $detailPesanan )
                         <tr>
-                            <td>{{ $detailPesanan->id }}</td>
+                            <td>{{ $loop->iteration }}</td>
                             <td>{{ $detailPesanan->obat->nama_obat }}</td>
                             <td>{{ $detailPesanan->jumlah }}</td>
                             <td>{{ $detailPesanan->obat->satuan . ' @ ' . $detailPesanan->obat->kapasitas . ' ' .
@@ -81,13 +81,99 @@
                             </td>
                             <td>{{ 'Rp ' . number_format($detailPesanan->harga_pesanan, 0, ',', '.') }}</td>
                             <td>
-                                @if ($detailPesanan->verif()->exists())
-                                <button class="btn btn-xs btn-success">Lihat Verifikasi</button>
-                                @elseif ($detailPesanan->status_pengiriman == 'dikirim' && auth()->user()->role ==
-                                'gudang')
+                                @if ( auth()->user()->role == 'gudang' && !$detailPesanan->verif &&
+                                $detailPesanan->status_pengiriman == 'dikirim')
                                 <button class="btn btn-primary btn-xs" data-bs-toggle="modal"
-                                    data-bs-target="#verif-{{ Str::slug($detailPesanan->id) }}">Verif
-                                    Selesai</button>
+                                    data-bs-target="#verif-{{ Str::slug($detailPesanan->id) }}">Verif Selesai</button>
+
+                                {{-- MODAL VERIFIKASI PESANAN SELESAI --}}
+                                <div class="modal fade text-start" id="verif-{{ Str::slug($detailPesanan->id) }}"
+                                    tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <form action="{{ route('verif.pesanan', $detailPesanan->id) }}"
+                                                method="post">
+                                                @csrf
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Verifikasi Pesanan
+                                                        Selesai
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="form-group">
+                                                        <label>Kondisi Pesanan
+                                                            <span class="text-danger">*</span>
+                                                        </label>
+                                                        <select name="kondisi_pesanan"
+                                                            class="form-select default-select" required>
+                                                            <option value="" selected disabled>-- Pilih Kondisi Pesanan
+                                                                --
+                                                            </option>
+                                                            <option value="sesuai">Sesuai</option>
+                                                            <option value="tidak_sesuai">Tidak Sesuai</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group mt-3">
+                                                        <label>Tambahkan Catatan</label>
+                                                        <textarea class="form-control" name="catatan" rows="3"
+                                                            placeholder="Jumlah sudah sesuai yang diantarkan"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-outline-danger" data-bs-dismiss="modal"
+                                                        type="button">Close</button>
+                                                    <button class="btn btn-outline-primary"
+                                                        type="submit">Simpan</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{-- END MODAL VERIFIKASI PESANAN SELESAI --}}
+
+                                @elseif ($detailPesanan->verif)
+                                <button class="btn btn-xs btn-success" data-bs-toggle="modal"
+                                    data-bs-target="#lihatVerif-{{ $detailPesanan->verif->id }}">Lihat
+                                    Verifikasi</button>
+
+                                {{-- MODAL LIHAT HASIL VERIF --}}
+                                <div class="modal fade text-start"
+                                    id="lihatVerif-{{ Str::slug($detailPesanan->verif->id) }}" tabindex="-1"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Hasil Verif
+                                                </h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <label>Kondisi Pesanan
+                                                        <span class="text-danger">*</span>
+                                                    </label>
+                                                    <select class="form-select default-select">
+                                                        <option value="{{ $detailPesanan->verif->kondisi_pesanan }}"
+                                                            selected disabled>{{
+                                                            Str::ucfirst($detailPesanan->verif->kondisi_pesanan) }}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group mt-3">
+                                                    <label>Tambahkan Catatan</label>
+                                                    <textarea class="form-control" rows="3"
+                                                        placeholder="Jumlah sudah sesuai yang diantarkan"
+                                                        disabled>{{ $detailPesanan->verif->catatan ?? '' }}</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{-- END MODAL LIHAT HASIL VERIF --}}
+
                                 @else
                                 <button class="btn btn-xs btn-light" disabled>Pesanan Belum Sampai</button>
                                 @endif
@@ -95,48 +181,6 @@
                             </td>
                         </tr>
 
-                        {{-- MODAL VERIFIKASI PESANAN SELESAI --}}
-                        <div class="modal fade" id="verif-{{ Str::slug($detailPesanan->id) }}" tabindex="-1"
-                            aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <form action="{{ route('verif.pesanan', $detailPesanan->id) }}" method="post">
-                                        @csrf
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Verifikasi Pesanan Selesai
-                                            </h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="form-group">
-                                                <label>Kondisi Pesanan
-                                                    <span class="text-danger">*</span>
-                                                </label>
-                                                <select name="kondisi_pesanan" class="form-select default-select"
-                                                    required>
-                                                    <option value="" selected disabled>-- Pilih Kondisi Pesanan --
-                                                    </option>
-                                                    <option value="sesuai">Sesuai</option>
-                                                    <option value="tidak_sesuai">Tidak Sesuai</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group mt-3">
-                                                <label>Tambahkan Catatan</label>
-                                                <textarea class="form-control" name="catatan" rows="3"
-                                                    placeholder="Jumlah sudah sesuai yang diantarkan"></textarea>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button class="btn btn-outline-danger" data-bs-dismiss="modal"
-                                                type="button">Close</button>
-                                            <button class="btn btn-outline-primary" type="submit">Simpan</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        {{-- END MODAL VERIFIKASI PESANAN SELESAI --}}
                         @endforeach
                     </tbody>
                 </table>

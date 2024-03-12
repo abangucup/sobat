@@ -47,6 +47,33 @@
         </div>
     </div>
 
+    <div class="card  shadow-sm">
+        <div class="card-header border-0 pb-0">
+            <h2 class="card-title">Distributor - {{ $obat->distributor->nama_perusahaan }}</h2>
+        </div>
+        <div class="card-body pb-0">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex px-0 justify-content-between">
+                    <strong>Nama Perusahaan</strong>
+                    <span class="mb-0">{{ $obat->distributor->nama_perusahaan }}</span>
+                </li>
+                <li class="list-group-item d-flex px-0 justify-content-between">
+                    <strong>Telepon Perusahaan</strong>
+                    <span class="mb-0">{{ $obat->distributor->telepon_perusahaan }}</span>
+                </li>
+                <li class="list-group-item d-flex px-0 justify-content-between">
+                    <strong>Pemilik Perusahaan</strong>
+                    <span class="mb-0">{{ $obat->distributor->pemilik_perusahaan }}</span>
+                </li>
+                <li class="list-group-item d-flex px-0 justify-content-between">
+                    <strong>Lokasi Perusahaan</strong>
+                    <span class="mb-0">{{ $obat->distributor->lokasi_perusahaan }}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
     <div class="card shadow-sm">
         <div class="card-header">
             <h4>Lokasi Penyimpanan Obat</h4>

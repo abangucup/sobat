@@ -17,11 +17,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('distributor_id')->constrained()->onDelete('cascade');
             $table->foreignId('obat_id')->constrained()->onDelete('cascade');
-            $table->integer('stok');
+            $table->unsignedInteger('stok');
             $table->float('harga_beli');
             $table->date('tanggal_beli');
             $table->float('harga_jual')->nullable();
-            $table->enum('lokasi', ['distributor', 'gudang', 'pelayanan', 'depo'])->default('distributir');
+            $table->enum('lokasi', ['distributor', 'gudang', 'pelayanan', 'depo'])->default('distributor');
             $table->timestamps();
         });
     }

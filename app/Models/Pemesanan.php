@@ -37,4 +37,22 @@ class Pemesanan extends Model
     {
         return $this->hasMany(Surat::class);
     }
+
+    public function updateStatusPemesanan()
+    {
+        $semuaTerverifikasi = true;
+
+        foreach ($this->detailPesanans as $pesanan) {
+            if (!$pesanan->verif) {
+                $semuaTerverifikasi = false;
+                break;
+            }
+        }
+
+        if ($semuaTerverifikasi) {
+            $this->update([
+                'status_pemesanan' => 'selesai'
+            ]);
+        }
+    }
 }

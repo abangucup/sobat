@@ -48,8 +48,8 @@
                                 <i class="fa-solid fa-xmark me-2"></i>
                                 @endif
                                 {{ Str::ucfirst($pemesanan->status_verif_ppk) }}
+                                @endif
                                 <span>
-                                    @endif
 
                         </td>
                         <td>
@@ -79,9 +79,17 @@
                                 class="badge badge-pill badge-{{ $pemesanan->status_pemesanan == 'pending'  ? 'danger' : ($pemesanan->status_pemesanan == 'proses' ? 'warning' : 'success') }}">
                                 {{ Str::ucfirst($pemesanan->status_pemesanan) }}</span>
                         <td>
+                            @if (($user->role == 'ppk' || $user->role == 'direktur') && $pemesanan->status_pemesanan ==
+                            'selesai')
+                            <a href="{{ route('pemesanan-selesai.detail', $pemesanan->id) }}"><span
+                                    class="badge badge-pill badge-primary"><i
+                                        class="fa-solid fa-circle-info me-2"></i>Detail</span></a>
+                            @else
                             <a href="{{ route('pemesanan-proses.detail', $pemesanan->id) }}"><span
                                     class="badge badge-pill badge-primary"><i
                                         class="fa-solid fa-circle-info me-2"></i>Cek Pesanan</span></a>
+                            @endif
+
                         </td>
                     </tr>
 

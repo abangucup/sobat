@@ -14,7 +14,7 @@ use Illuminate\Support\Str;
 
 class DetailPesananController extends Controller
 {
-    public function detail($id)
+    public function detailPesananProses($id)
     {
         $user = Auth::user();
         $pemesanan = Pemesanan::with(
@@ -25,6 +25,23 @@ class DetailPesananController extends Controller
             ]
         )->findOrFail($id);
 
+        if ($pemesanan && $pemesanan->status_pemesanan == 'proses') {
+            return view('pemesanan.detail.detail-pesanan', compact('pemesanan', 'user'));
+        } else {
+            return redirect()->route('pemesanan.proses')->withToastError('Pesanan tersebut telah selesai');
+        }
+    }
+
+    public function detailPesananSelesai($id)
+    {
+        $user = Auth::user();
+        $pemesanan = Pemesanan::with(
+            [
+                'obats.distributor',
+                'obats.detailPesanans',
+                'obats.stokObats'
+            ]
+        )->where('status_pemesanan', 'selesai')->findOrFail($id);
 
         return view('pemesanan.detail.detail-pesanan', compact('pemesanan', 'user'));
     }
@@ -91,15 +108,28 @@ class DetailPesananController extends Controller
         $verifPesanan->save();
 
         // PROSES PENAMBAHAN OBAT YANG TELAH DIBELI KE TABEL SEBAGAI DATA OBAT DARI GUDANG
-        $stokObat = new StokObat();
-        $stokObat->distributor_id = $detailPesanan->obat->distributor->id;
-        $stokObat->obat_id = $detailPesanan->obat_id;
-        $stokObat->stok = $detailPesanan->jumlah;
-        $stokObat->harga_beli = $detailPesanan->obat->stokObats->where('lokasi', 'distributor')->pluck('harga_jual')->first();
-        $stokObat->tanggal_beli = $detailPesanan->pemesanan->created_at;
-        $stokObat->harga_jual = null;
-        $stokObat->lokasi = 'gudang';
-        $stokObat->save();
+        $stokObat = StokObat::where('distributor_id', $detailPesanan->obat->distributor->id)
+            ->where('obat_id', $detailPesanan->obat_id)
+            ->where('lokasi', 'gudang')
+            ->first();
+        if (!$stokObat) {
+            $stokObat = new StokObat();
+            $stokObat->distributor_id = $detailPesanan->obat->distributor->id;
+            $stokObat->obat_id = $detailPesanan->obat_id;
+            $stokObat->stok = $detailPesanan->jumlah;
+            $stokObat->harga_beli = $detailPesanan->obat->stokObats->where('lokasi', 'distributor')->pluck('harga_jual')->first();
+            $stokObat->tanggal_beli = $detailPesanan->pemesanan->created_at;
+            $stokObat->harga_jual = null;
+            $stokObat->lokasi = 'gudang';
+            $stokObat->save();
+        } else {
+            $stokObat->update([
+                'stok' => $stokObat->stok + $detailPesanan->jumlah,
+            ]);
+        }
+
+        $pemesanan = Pemesanan::findOrFail($detailPesanan->pemesanan_id);
+        $pemesanan->updateStatusPemesanan();
 
         return redirect()->back()->withToastSuccess('Pesanan telah diverifikasi');
     }

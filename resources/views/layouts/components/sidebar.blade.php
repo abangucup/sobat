@@ -38,7 +38,7 @@
                             class="{{ Request::is('pemesanan/status-proses') || Request::is('pemesanan/status-proses/*') ? 'bgl-primary rounded' : '' }}">Pesanan
                             Diproses</a></li>
                     <li><a href="{{ route('pemesanan.selesai') }}"
-                            class="{{ Request::is('pemesanan/status-selesai') ? 'bgl-primary rounded' : '' }}">Pesanan
+                            class="{{ Request::is('pemesanan/status-selesai') || Request::is('pemesanan/status-selesai/*') ? 'bgl-primary rounded' : '' }}">Pesanan
                             Selesai</a></li>
                 </ul>
             </li>

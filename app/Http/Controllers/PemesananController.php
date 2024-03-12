@@ -15,17 +15,20 @@ class PemesananController extends Controller
     // FUNGSI MENAMPILKAN PEMESANAN KHUSUS LEVEL DISTRIBUTOR
     public function pesananDistributor()
     {
-        $pesanans = DetailPesanan::with('obat', 'pemesanan', 'pemesanan.user', 'pemesanan.surats')
-            ->where('status_pengiriman', 'ditunda')
-            ->whereHas('obat', function ($query) {
-                $query->whereHas('distributor', function ($query) {
-                    $query->where('slug', Auth::user()->distributor->slug);
-                });
+        $pesanans = DetailPesanan::with([
+            'obat.distributor',
+            'pemesanan.user',
+            'pemesanan.surats',
+            'verif'
+        ])
+            ->whereHas('obat.distributor', function ($query) {
+                $query->where('slug', Auth::user()->distributor->slug);
             })
             ->whereHas('pemesanan', function ($query) {
                 $query->where('status_verif_direktur', 'diverifikasi');
             })
-            ->latest()->get();
+            ->latest()
+            ->get();
 
         return view('pemesanan.distributor.daftar-pesanan', compact('pesanans'));
     }
@@ -41,9 +44,14 @@ class PemesananController extends Controller
     public function pemesananOnProses()
     {
         $user = Auth::user();
-        $pemesanans = Pemesanan::where('status_kirim_naskah', 'terkirim')
-            ->where('status_pemesanan', 'proses')
-            ->latest()->get();
+        if ($user->role == 'ppk' || $user->role == 'direktur') {
+            $pemesanans = Pemesanan::where('status_kirim_naskah', 'terkirim')
+                ->latest()->get();
+        } else {
+            $pemesanans = Pemesanan::where('status_kirim_naskah', 'terkirim')
+                ->where('status_pemesanan', 'proses')
+                ->latest()->get();
+        }
 
         return view('pemesanan.pesanan-diproses', compact('pemesanans', 'user'));
     }
@@ -58,7 +66,10 @@ class PemesananController extends Controller
 
     public function create()
     {
-        $stokObats = StokObat::with('obat')->where('lokasi', 'distributor')->latest()->get();
+        $stokObats = StokObat::with('obat')
+            ->where('lokasi', 'distributor')
+            ->where('stok', '>', 0)
+            ->latest()->get();
         return view('pemesanan.buat-pesanan', compact('stokObats'));
     }
 
@@ -81,7 +92,7 @@ class PemesananController extends Controller
                 ->where('lokasi', 'distributor')
                 ->first();
 
-            if ($request->banyak[$i] > $obat->stok) {
+            if ($obat && $request->banyak[$i] > $obat->stok) {
                 $validasiStok = false;
                 break;
             }
@@ -100,28 +111,43 @@ class PemesananController extends Controller
                     ->where('lokasi', 'distributor')
                     ->first();
 
-                $detailPesanan = DetailPesanan::where('pemesanan_id', $pemesanan->id)
-                    ->where('obat_id', $obat->id)
-                    ->first();
+                if ($request->banyak[$i] <= $obat->stok) {
 
-                if ($detailPesanan) {
-                    $jumlahPesanan = $detailPesanan->jumlah + $request->banyak[$i];
-                    $detailPesanan->update([
-                        'jumlah' => $jumlahPesanan,
-                        'harga_pesanan' => ($obat->harga_jual * $jumlahPesanan),
+                    $detailPesanan = DetailPesanan::where('pemesanan_id', $pemesanan->id)
+                        ->where('obat_id', $obat->id)
+                        ->first();
+
+                    if ($detailPesanan) {
+                        $jumlahPesanan = $detailPesanan->jumlah + $request->banyak[$i];
+                        $detailPesanan->update([
+                            'jumlah' => $jumlahPesanan,
+                            'harga_pesanan' => ($obat->harga_jual * $jumlahPesanan),
+                        ]);
+                    } else {
+                        $detailPesanan = new DetailPesanan();
+                        $detailPesanan->pemesanan_id = $pemesanan->id;
+                        $detailPesanan->obat_id = $request->obat[$i];
+                        $detailPesanan->jumlah = $request->banyak[$i];
+                        $detailPesanan->harga_pesanan = ($obat->harga_jual * $request->banyak[$i]);
+                        $detailPesanan->save();
+                    }
+
+                    $obat->update([
+                        'stok' => $obat->stok - $request->banyak[$i],
                     ]);
                 } else {
-                    $detailPesanan = new DetailPesanan();
-                    $detailPesanan->pemesanan_id = $pemesanan->id;
-                    $detailPesanan->obat_id = $request->obat[$i];
-                    $detailPesanan->jumlah = $request->banyak[$i];
-                    $detailPesanan->harga_pesanan = ($obat->harga_jual * $request->banyak[$i]);
-                    $detailPesanan->save();
+                    foreach ($pemesanan->detailPesanans as $detailPesanan) {
+                        $obat = Obat::findOrFail($detailPesanan->obat_id);
+                        $stokObat = $obat->stokObats->where('lokasi', 'distributor')->first();
+                        $stokObat->update([
+                            'stok' => $stokObat->stok + $detailPesanan->jumlah,
+                        ]);
+                    }
+                    $pemesanan->delete();
+                    return redirect()->back()
+                        ->withInput()
+                        ->withToastError('Banyak permintaan obat melebihi stok yang ada');
                 }
-
-                $obat->update([
-                    'stok' => $obat->stok - $request->banyak[$i],
-                ]);
             }
         } else {
             return redirect()->back()
