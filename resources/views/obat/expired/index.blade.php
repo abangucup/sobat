@@ -20,61 +20,68 @@
                         <th>Exp Date</th>
                         {{-- Box @ 100 Tablet --}}
                         <th>Satuan</th>
-                        <th>Harga</th>
+                        <th>Harga Beli</th>
                         <th>Stok</th>
+                        <th>Bidang</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($obatExpireds as $obat)
+                    @foreach ($obatExpireds as $dataObat)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $obat->kode_obat }}</td>
-                        <td>{{ $obat->nama_obat }}</td>
-                        <td>{{ $obat->no_batch }}</td>
-                        <td>{{ \Carbon\Carbon::parse($obat->tanggal_kedaluwarsa)->isoFormat('LL') }}</td>
-                        <td>{{ $obat->satuan. ' @ '.$obat->kapasitas.' '. $obat->satuan_kapasitas }}</td>
-                        <td>{{ $obat->stokObat->harga_beli }}</td>
-                        <td>{{ $obat->stokObat->stok }}</td>
+                        <td>{{ $dataObat->obat->kode_obat }}</td>
+                        <td>{{ $dataObat->obat->nama_obat }}</td>
+                        <td>{{ $dataObat->obat->no_batch }}</td>
+                        <td>{{ \Carbon\Carbon::parse($dataObat->obat->tanggal_kedaluwarsa)->isoFormat('LL') }}</td>
+                        <td>{{ $dataObat->obat->satuan. ' @ '.$dataObat->obat->kapasitas.' '.
+                            $dataObat->obat->satuan_kapasitas }}</td>
+                        <td>{{ 'Rp. ' . number_format($dataObat->harga_beli, 0, ',', '.') }}</td>
+                        <td>{{ $dataObat->stok }}</td>
+                        <td>{{ Str::ucfirst($dataObat->lokasi) }}</td>
                         <td>
-                            <div class="d-flex">
-                                <a href="{{ route('distributor.show', $distributor->slug) }}" data-bs-toggle="tooltip"
-                                    data-bs-placement="top" title="Detail"
-                                    class="btn btn-primary shadow btn-xs sharp me-1"><i
-                                        class="fa-solid fa-info"></i></a>
-                                <a href="table-datatable-basic.html#" data-bs-toggle="tooltip" data-bs-placement="top"
-                                    title="Edit" class="btn btn-warning shadow btn-xs sharp me-1"><i
-                                        class="fa-solid fa-pen-to-square"></i></a>
-                                <form action="{{ route('obat.destroy', $obat->slug) }}" method="post">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"
-                                        class="btn btn-danger shadow btn-xs sharp">
-                                        <i class="fa fa-trash"></i></button>
-                                </form>
-                            </div>
+                            @if ($dataObat->expired)
+                            <button class="btn btn-xs btn-outline-success shadow-l" data-bs-toggle="modal"
+                                data-bs-target="#pengembalian-{{ $dataObat->id }}">Lihat Status</button>
+                            @else
+                            <button class="btn btn-xs btn-outline-primary shadow-l" data-bs-toggle="modal"
+                                data-bs-target="#pengembalian-{{ $dataObat->id }}">Ajukan Pengembalian</button>
+                            @endif
+
                         </td>
                     </tr>
-                    @empty
-                    <tr>
-                        <td colspan="9" class="text-center">Data Kosong</td>
-                    </tr>
-                    @endforelse
+
+                    {{-- MODAL PENGEMBALIAN --}}
+                    <div class="modal fade tampil-modal" id="pengembalian-{{ $dataObat->id }}" tabindex="-1"
+                        role="dialog" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h3 class="modal-title">Ajukan Pengembalian</h3>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal">
+                                    </button>
+                                </div>
+                                <form action="{{ route('expired.pengajuan', $dataObat->id) }}" method="post">
+                                    @csrf
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label class="form-label">Tambahkan Catatan</label>
+                                            <textarea name="catatan" class="form-control" rows="4"
+                                                placeholder="Tambahkan catatan jika perlu"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger light"
+                                            data-bs-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-primary">Ajukan</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- END MODAL --}}
+                    @endforeach
                 </tbody>
-                <tfoot>
-                    <tr>
-                        <th>No</th>
-                        <th>Kode</th>
-                        <th>Nama</th>
-                        <th>No. Batch</th>
-                        <th>Exp Date</th>
-                        {{-- Box @ 100 Tablet --}}
-                        <th>Satuan</th>
-                        <th>Harga</th>
-                        <th>Stok</th>
-                        <th>Aksi</th>
-                    </tr>
-                </tfoot>
             </table>
         </div>
     </div>

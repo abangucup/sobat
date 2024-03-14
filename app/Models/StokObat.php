@@ -28,4 +28,14 @@ class StokObat extends Model
     {
         return $this->belongsTo(Obat::class);
     }
+
+    public function permintaan()
+    {
+        return $this->hasOne(Permintaan::class);
+    }
+
+    public function expired()
+    {
+        return $this->hasOne(Expired::class);
+    }
 }

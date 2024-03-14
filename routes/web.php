@@ -68,6 +68,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('permintaan/status/tunda', [PermintaanController::class, 'permintaanOnProses'])->name('permintaan.tunda');
         Route::get('permintaan/status/setuju', [PermintaanController::class, 'permintaanDisetujui'])->name('permintaan.setuju');
         Route::post('permintaan/status/verif/{id}', [PermintaanController::class, 'verifPermintaan'])->name('permintaan.verif');
+
+        Route::resource('expired', ExpiredController::class);
+        Route::post('expired/pengajuan/{id}', [ExpiredController::class, 'pengajuan'])->name('expired.pengajuan');
     });
 
     // LEVEL DISTRIBUTOR

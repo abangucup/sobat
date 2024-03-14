@@ -56,10 +56,6 @@
                     </li>
                 </ul>
             </li>
-            {{-- <li><a href="{{ route('permintaan.index') }}">
-                    <i class="fa-solid fa-book-medical"></i> Permintaan
-                </a>
-            </li> --}}
             <li><a href="{{ route('keuangan.rekapan') }}">
                     <i class="fa-solid fa-file-contract"></i> Laporan Pakai Obat
                 </a>
@@ -72,7 +68,6 @@
             {{--
             =================================================================================================================================================================
             --}}
-
 
             {{-- MENU UNTUK DISTRIBUTOR --}}
             @elseif (auth()->user()->role == 'distributor')
