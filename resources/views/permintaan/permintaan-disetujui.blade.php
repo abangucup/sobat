@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Pemesanan Obat')
+@section('title', 'Permintaan Obat')
 
 @section('header', 'Permintaan Disetujui')
 
@@ -9,40 +9,60 @@
 <div class="card">
     <div class="card-body shadow-sm pb-0">
         <div class="table-responsive">
-            <table class="table table-bordered table-responsive-sm">
+            <table class="table table-striped data-table text-center">
                 <thead>
                     <tr>
-                        <th>No</th>
-                        <th>Bagian</th>
-                        <th>Obat</th>
-                        <th>Jumlah</th>
-                        <th>Harga</th>
-                        <th>Total</th>
-                        <th>Status</th>
+                        <th>NO</th>
+                        <th>REAGEN/BHP/OBAT</th>
+                        <th>PENGAJU</th>
+                        <th>BANYAK</th>
+                        <th>STATUS PERMINTAAN</th>
+                        <th>AKSI</th>
                     </tr>
                 </thead>
                 <tbody>
+
+                    @foreach ($permintaans as $permintaan)
                     <tr>
-                        <td>1</td>
-                        <td>Pelayanan</td>
-                        <td>Ampicilin</td>
-                        <td>20</td>
-                        <td>Rp. 20.000</td>
-                        <td>Rp. 400.000</td>
-                        <td><a href="" class="btn btn-success">Disetujui</a></td>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $permintaan->stokObat->obat->nama_obat }}</td>
+                        <td>{{ $permintaan->userPengaju->biodata->nama_lengkap }}</td>
+                        <td>{{ $permintaan->banyak }}</td>
+                        @if ($permintaan->status_permintaan == 'tunda')
+                        <td>
+                            <form action="{{ route('permintaan.verif', $permintaan->id) }}" method="post">
+                                @csrf
+                                <button class="btn btn-xs btn-danger" type="submit" name="status_permintaan"
+                                    value="ditolak">Tolak</button>
+                                <button class="btn btn-xs btn-warning" type="submit" name="status_permintaan"
+                                    value="disetujui">Setujui</button>
+                            </form>
+                        </td>
+                        @else
+                        <td>
+                            <span
+                                class="badge badge-{{ $permintaan->status_permintaan !== 'disetujui' ? 'success' : 'warning' }}">
+                                {{ Str::ucfirst($permintaan->status_permintaan)}}
+                            </span>
+                        </td>
+                        @endif
+                        <td>
+                            @if ($permintaan->status_permintaan == 'disetujui')
+                            <form action="{{ route('permintaan.verif', $permintaan->id) }}" method="post">
+                                @csrf
+                                <button class="btn btn-xs btn-warning" type="submit" name="status_permintaan"
+                                    value="selesai">Verif Selesai</button>
+                            </form>
+                            @else
+                                <a href="{{ route('permintaan.show', $permintaan->id) }}" title="Detail"
+                                    class="btn btn-primary shadow btn-xs me-1">Detail</a>
+                            @endif
+
+                        </td>
                     </tr>
+
+                    @endforeach
                 </tbody>
-                <tfoot>
-                    <tr>
-                        <th>No</th>
-                        <th>Bagian</th>
-                        <th>Obat</th>
-                        <th>Jumlah</th>
-                        <th>Harga</th>
-                        <th>Total</th>
-                        <th>Status</th>
-                    </tr>
-                </tfoot>
             </table>
         </div>
     </div>

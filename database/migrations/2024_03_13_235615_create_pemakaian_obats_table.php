@@ -13,9 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('penomorans', function (Blueprint $table) {
+        Schema::create('pemakaian_obats', function (Blueprint $table) {
             $table->id();
-            $table->text('nomor_surat');
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('penomorans');
+        Schema::dropIfExists('pemakaian_obats');
     }
 };

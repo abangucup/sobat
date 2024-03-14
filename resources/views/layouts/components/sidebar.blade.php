@@ -8,7 +8,9 @@
 
             {{-- MENU UNTUK GUDANG --}}
             @if (auth()->user()->role == 'gudang')
-{{-- ================================================================================================================================================================= --}}
+            {{--
+            =================================================================================================================================================================
+            --}}
             <li><a href="{{ route('distributor.index') }}">
                     <i class="fa-solid fa-boxes-packing"></i> Distributor
                 </a>
@@ -47,15 +49,19 @@
                 </a>
                 <ul aria-expanded="false" class="mm-collapse">
                     <li><a href="{{ route('permintaan.tunda') }}"
-                            class="{{ Request::is('permintaan/status-tunda') ? 'bgl-primary rounded' : '' }}">Menunggu
+                            class="{{ Request::is('permintaan/status/tunda') ? 'bgl-primary rounded' : '' }}">Menunggu
                             Persetujuan</a></li>
                     <li><a href="{{ route('permintaan.setuju') }}"
-                            class="{{ Request::is('permintaan/status-setuju') ? 'bgl-primary rounded' : '' }}">Disetujui</a>
+                            class="{{ Request::is('permintaan/status/setuju') ? 'bgl-primary rounded' : '' }}">Disetujui</a>
                     </li>
                 </ul>
             </li>
+            {{-- <li><a href="{{ route('permintaan.index') }}">
+                    <i class="fa-solid fa-book-medical"></i> Permintaan
+                </a>
+            </li> --}}
             <li><a href="{{ route('keuangan.rekapan') }}">
-                    <i class="fa-solid fa-file-invoice-dollar"></i> Rekapan Keuangan
+                    <i class="fa-solid fa-file-contract"></i> Laporan Pakai Obat
                 </a>
             </li>
             <li>
@@ -63,12 +69,16 @@
                     <i class="fa-solid fa-users"></i> Data User
                 </a>
             </li>
-{{-- ================================================================================================================================================================= --}}
+            {{--
+            =================================================================================================================================================================
+            --}}
 
 
             {{-- MENU UNTUK DISTRIBUTOR --}}
             @elseif (auth()->user()->role == 'distributor')
-{{-- ================================================================================================================================================================= --}}
+            {{--
+            =================================================================================================================================================================
+            --}}
             <li><a href="{{ route('obat.index') }}">
                     <i class="fa-solid fa-pills"></i> Obat
                 </a>
@@ -90,26 +100,120 @@
                     <i class="fa-solid fa-users"></i> Data User
                 </a>
             </li>
-{{-- ================================================================================================================================================================= --}}
+            {{--
+            =================================================================================================================================================================
+            --}}
 
 
             {{-- MENU UNTUK PPK --}}
             @elseif (auth()->user()->role == 'ppk')
-{{-- ================================================================================================================================================================= --}}
+            {{--
+            =================================================================================================================================================================
+            --}}
             <li><a href="{{ route('pemesanan.proses') }}">
                     <i class="fa-solid fa-pills"></i> Verifikasi Pesanan
                 </a>
             </li>
-{{-- ================================================================================================================================================================= --}}
+            <li><a href="{{ route('keuangan.rekapan') }}">
+                    <i class="fa-solid fa-file-invoice-dollar"></i> Rekapan Keuangan
+                </a>
+            </li>
+            {{--
+            =================================================================================================================================================================
+            --}}
 
             {{-- MENU UNTUK DIREKTUR --}}
             @elseif (auth()->user()->role == 'direktur')
-{{-- ================================================================================================================================================================= --}}
-            <li><a href="{{ route('pemesanan.proses') }}" class="{{ Request::is('pemesanan/*') ? 'bgl-primary rounded' : '' }}">
+            {{--
+            =================================================================================================================================================================
+            --}}
+            <li><a href="{{ route('pemesanan.proses') }}"
+                    class="{{ Request::is('pemesanan/*') ? 'bgl-primary rounded' : '' }}">
                     <i class="fa-solid fa-pills"></i> Verifikasi Pesanan
                 </a>
             </li>
-{{-- ================================================================================================================================================================= --}}
+            <li><a href="{{ route('keuangan.rekapan') }}">
+                    <i class="fa-solid fa-file-contract"></i> Laporan Kelola Obat
+                </a>
+            </li>
+            {{--
+            =================================================================================================================================================================
+            --}}
+
+            {{-- MENU UNTUK DEPO --}}
+            @elseif (auth()->user()->role == 'depo')
+            {{--
+            =================================================================================================================================================================
+            --}}
+            <li><a href="{{ route('obat.index') }}">
+                    <i class="fa-solid fa-pills"></i> Obat
+                </a>
+            </li>
+            <li><a href="{{ route('permintaan.index') }}">
+                    <i class="fa-solid fa-arrow-right-arrow-left"></i> Permintaan
+                </a>
+            </li>
+            <li><a href="{{ route('permintaan.index') }}">
+                    <i class="fa-solid fa-file-pen"></i> Pemakian
+                </a>
+            </li>
+            <li><a href="{{ route('keuangan.rekapan') }}">
+                    <i class="fa-solid fa-file-contract"></i> Laporan Obat Terpakai
+                </a>
+            </li>
+            {{--
+            =================================================================================================================================================================
+            --}}
+
+            {{-- MENU UNTUK DEPO --}}
+            @elseif (auth()->user()->role == 'pelayanan')
+            {{--
+            =================================================================================================================================================================
+            --}}
+            <li><a href="{{ route('obat.index') }}">
+                    <i class="fa-solid fa-pills"></i> Obat
+                </a>
+            </li>
+            <li><a href="{{ route('permintaan.index') }}">
+                    <i class="fa-solid fa-arrow-right-arrow-left"></i> Permintaan
+                </a>
+            </li>
+            <li><a href="{{ route('permintaan.index') }}">
+                    <i class="fa-solid fa-file-pen"></i> Pemakian
+                </a>
+            </li>
+            <li><a href="{{ route('keuangan.rekapan') }}">
+                    <i class="fa-solid fa-file-contract"></i> Laporan Obat Terpakai
+                </a>
+            </li>
+            {{--
+            =================================================================================================================================================================
+            --}}
+
+            {{-- MENU UNTUK DEPO --}}
+            @elseif (auth()->user()->role == 'poli')
+            {{--
+            =================================================================================================================================================================
+            --}}
+            <li><a href="{{ route('obat.index') }}">
+                    <i class="fa-solid fa-pills"></i> Obat
+                </a>
+            </li>
+            <li><a href="{{ route('permintaan.index') }}">
+                    <i class="fa-solid fa-arrow-right-arrow-left"></i> Permintaan
+                </a>
+            </li>
+            <li><a href="{{ route('permintaan.index') }}">
+                    <i class="fa-solid fa-file-pen"></i> Pemakian
+                </a>
+            </li>
+            <li><a href="{{ route('keuangan.rekapan') }}">
+                    <i class="fa-solid fa-file-contract"></i> Laporan Obat Terpakai
+                </a>
+            </li>
+            {{--
+            =================================================================================================================================================================
+            --}}
 
             @endif
         </ul>

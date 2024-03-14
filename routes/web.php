@@ -45,9 +45,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('pemesanan/status-proses/{pemesanan_id}', [DetailPesananController::class, 'detailPesananProses'])->name('pemesanan-proses.detail');
     Route::get('pemesanan/status-selesai/{pemesanan_id}', [DetailPesananController::class, 'detailPesananSelesai'])->name('pemesanan-selesai.detail');
 
-    Route::resource('permintaan', PermintaanController::class)->except(['show']);
-    Route::get('permintaan/status-tunda', [PermintaanController::class, 'permintaanOnProses'])->name('permintaan.tunda');
-    Route::get('permintaan/status-setuju', [PermintaanController::class, 'permintaanDisetujui'])->name('permintaan.setuju');
+    // UNTUK PERMINTAAN OBAT OLEH DEPO DAN PELAYANAN
+    Route::resource('permintaan', PermintaanController::class)->except('show');
 
     Route::get('preview/{pemesanan_id}/{distributor}', [SuratController::class, 'konsep'])->name('surat.konsep');
     Route::post('preview/{pemesanan_id}/kirim', [SuratController::class, 'kirim'])->name('surat.kirim');
@@ -64,6 +63,11 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('pemesanan', PemesananController::class)->only(['create', 'store', 'destroy']);
         Route::get('pemesanan/detail-pesanan/{id}', [PemesananController::class, 'show'])->name('pemesanan.show');
         Route::post('pemesanan/status-proses/verif-pesanan/{detail_pesanan_id}', [DetailPesananController::class, 'verifPesanan'])->name('verif.pesanan');
+
+        Route::resource('permintaan', PermintaanController::class)->only(['show']);
+        Route::get('permintaan/status/tunda', [PermintaanController::class, 'permintaanOnProses'])->name('permintaan.tunda');
+        Route::get('permintaan/status/setuju', [PermintaanController::class, 'permintaanDisetujui'])->name('permintaan.setuju');
+        Route::post('permintaan/status/verif/{id}', [PermintaanController::class, 'verifPermintaan'])->name('permintaan.verif');
     });
 
     // LEVEL DISTRIBUTOR

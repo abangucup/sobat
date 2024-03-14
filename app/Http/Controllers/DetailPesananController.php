@@ -107,7 +107,7 @@ class DetailPesananController extends Controller
         $verifPesanan->catatan = $request->catatan ?? null;
         $verifPesanan->save();
 
-        // PROSES PENAMBAHAN OBAT YANG TELAH DIBELI KE TABEL SEBAGAI DATA OBAT DARI GUDANG
+        // PROSES PENAMBAHAN OBAT YANG TELAH DIBELI KE TABEL SEBAGAI DATA OBAT DARI DISTRIBUTOR
         $stokObat = StokObat::where('distributor_id', $detailPesanan->obat->distributor->id)
             ->where('obat_id', $detailPesanan->obat_id)
             ->where('lokasi', 'gudang')

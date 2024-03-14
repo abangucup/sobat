@@ -80,7 +80,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="display data-table">
+                <table class="table table-striped data-table">
                     <thead>
                         <tr>
                             <th>No</th>
@@ -89,6 +89,7 @@
                             <th>Tanggal Beli</th>
                             <th>Harga Jual</th>
                             <th>Lokasi Obat</th>
+                            <th>Ditambahkan Pada</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -99,8 +100,8 @@
                             <td>{{ 'Rp. '. number_format($stokObat->harga_beli, 0, ',', '.') }}</td>
                             <td>{{ \Carbon\Carbon::parse($stokObat->tanggal_beli)->isoFormat('LL') }}</td>
                             <td>{{ 'Rp. '.number_format($stokObat->harga_jual, 0, ',', '.') }}</td>
-                            <td>{{ Str::ucfirst($stokObat->lokasi) }}
-                            </td>
+                            <td>{{ Str::ucfirst($stokObat->lokasi) }}</td>
+                            <td>{{ Carbon\Carbon::parse($stokObat->updated_at)->isoFormat('LL') }}</td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -112,6 +113,7 @@
                             <th>Tanggal Beli</th>
                             <th>Harga Jual</th>
                             <th>Lokasi Obat</th>
+                            <th>Ditambahkan Pada</th>
                         </tr>
                     </tfoot>
                 </table>

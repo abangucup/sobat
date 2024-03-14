@@ -4,7 +4,6 @@
 
 @section('header', 'Dashboard')
 
-
 @section('content')
 
 <div class="row">

@@ -65,6 +65,11 @@ class Obat extends Model
         return $this->hasMany(DetailPesanan::class);
     }
 
+    public function permintaans()
+    {
+        return $this->hasMany(Permintaan::class);
+    }
+
     public function distributor()
     {
         /*
@@ -84,4 +89,5 @@ class Obat extends Model
     {
         return 'slug';
     }
+
 }
