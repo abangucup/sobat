@@ -41,8 +41,10 @@
                         <td>{{ Str::ucfirst($dataObat->lokasi) }}</td>
                         <td>
                             @if ($dataObat->expired)
-                            <button class="btn btn-xs btn-outline-success shadow-l" data-bs-toggle="modal"
-                                data-bs-target="#pengembalian-{{ $dataObat->id }}">Lihat Status</button>
+                            <a
+                                href="{{ route('expired.status', ['slug' => $dataObat->obat->slug, 'lokasi' => $dataObat->lokasi]) }}">
+                                <span class="btn btn-success btn-xs shadow-sm">Lihat Status</span>
+                            </a>
                             @else
                             <button class="btn btn-xs btn-outline-primary shadow-l" data-bs-toggle="modal"
                                 data-bs-target="#pengembalian-{{ $dataObat->id }}">Ajukan Pengembalian</button>

@@ -19,7 +19,8 @@
                     <i class="fa-solid fa-pills"></i> Obat
                 </a>
             </li>
-            <li><a href="{{ route('expired.index') }}">
+            <li><a href="{{ route('expired.index') }}"
+                    class="{{ Request::is('expired/*') ? 'bgl-primary rounded' : '' }}">
                     <i class="fa-solid fa-pills"></i> Obat Expired
                 </a>
             </li>
@@ -56,7 +57,7 @@
                     </li>
                 </ul>
             </li>
-            <li><a href="{{ route('keuangan.rekapan') }}">
+            <li><a href="#">
                     <i class="fa-solid fa-file-contract"></i> Laporan Pakai Obat
                 </a>
             </li>
@@ -82,11 +83,12 @@
                     <i class="fa-solid fa-truck-medical"></i> Daftar Pesanan
                 </a>
             </li>
-            <li><a href="{{ route('expired.index') }}">
+            <li><a href="{{ route('expired.index') }}"
+                    class="{{ Request::is('expired/*') ? 'bgl-primary rounded' : '' }}">
                     <i class="fa-solid fa-pills"></i> Data Pengembalian
                 </a>
             </li>
-            <li><a href="{{ route('keuangan.rekapan') }}">
+            <li><a href="{{ route('keuangan.distributor') }}">
                     <i class="fa-solid fa-file-invoice-dollar"></i> Rekapan Keuangan
                 </a>
             </li>

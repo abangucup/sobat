@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DetailPesananController;
 use App\Http\Controllers\DistributorController;
 use App\Http\Controllers\ExpiredController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ObatController;
 use App\Http\Controllers\PemesananController;
 use App\Http\Controllers\PermintaanController;
@@ -35,7 +36,9 @@ Route::middleware(['auth'])->group(function () {
     Route::put('obat/stok-obat/{id}', [ObatController::class, 'ubahHarga'])->name('obat.ubahHarga');
     Route::resource('user', UserController::class);
     Route::resource('akun-distributor', AkunDistributor::class);
-    Route::resource('expired', ExpiredController::class);
+
+    Route::get('expired', [ExpiredController::class, 'index'])->name('expired.index');
+    Route::get('expired/obat/{slug}/bidang/{lokasi}', [ExpiredController::class, 'detailStatus'])->name('expired.status');
 
     Route::resource('pemesanan', PemesananController::class)->only(['index', 'edit', 'update']);
     Route::get('pemesanan/status-proses', [PemesananController::class, 'pemesananOnProses'])->name('pemesanan.proses');
@@ -53,9 +56,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('preview/status/{pemesanan_id}/{distributor}', [SuratController::class, 'status'])->name('surat.status');
 
 
-    Route::get('rekapan-keuangan', function () {
-        return view('keuangan.rekapan');
-    })->name('keuangan.rekapan');
+    // Route::get('rekapan-keuangan', function () {
+    //     return view('keuangan.rekapan');
+    // })->name('keuangan.rekapan');
+    // Route::get('laporan')
 
     // LEVEL GUDANG
     Route::group(['middleware' => 'role:gudang'], function () {
@@ -69,8 +73,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('permintaan/status/setuju', [PermintaanController::class, 'permintaanDisetujui'])->name('permintaan.setuju');
         Route::post('permintaan/status/verif/{id}', [PermintaanController::class, 'verifPermintaan'])->name('permintaan.verif');
 
-        Route::resource('expired', ExpiredController::class);
+        // Route::resource('expired', ExpiredController::class);
         Route::post('expired/pengajuan/{id}', [ExpiredController::class, 'pengajuan'])->name('expired.pengajuan');
+        Route::post('expired/pengajuan/status/{id}', [ExpiredController::class, 'statusSelesai'])->name('expired.statusSelesai');
     });
 
     // LEVEL DISTRIBUTOR
@@ -78,6 +83,12 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('obat', ObatController::class)->only(['store', 'update', 'destroy', 'edit']);
         Route::get('pemesanan/daftar-pesanan', [PemesananController::class, 'pesananDistributor'])->name('pemesanan.daftar-pesanan');
         Route::post('pemesanan/status-proses/verif-pengiriman/{detail_pesanan_id}', [DetailPesananController::class, 'verifPengiriman'])->name('verif.pengiriman');
+
+        // EXPIRED
+        Route::post('expired/{id}/balas', [ExpiredController::class, 'balasan'])->name('expired.balasan');
+
+        // LAPORAN
+        Route::get('rekapan-keuangan', [LaporanController::class, 'keuanganDistributor'])->name('keuangan.distributor');
     });
 
     // LEVEL PPK

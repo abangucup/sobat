@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DetailPesanan;
 use App\Models\Distributor;
+use App\Models\Expired;
 use App\Models\Obat;
 use App\Models\Pemesanan;
 use App\Models\User;
@@ -38,7 +39,9 @@ class DashboardController extends Controller
                 })
                 ->latest()->paginate(5);
 
-            return view('dashboard.distributor', compact('totalObat', 'pesanans'));
+            $expireds = Expired::with('stokObat')->latest()->paginate(5);
+
+            return view('dashboard.distributor', compact('totalObat', 'pesanans', 'expireds'));
         } elseif ($user->role == 'gudang') {
             return view('dashboard.gudang');
         } elseif ($user->role == 'pelayanan') {

@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('expireds', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('stok_obat_id')->constrained();
+            $table->foreignId('stok_obat_id')->constrained()->onDelete('cascade');
             $table->enum('status_pengembalian', ['pending', 'disetujui', 'selesai'])->default('pending');
             $table->text('catatan')->nullable();
             $table->text('balasan')->nullable();

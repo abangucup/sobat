@@ -136,6 +136,7 @@
         <div class="card bgl-primary">
             <div class="card-header">
                 <h4 class="card-title">PENGEMBALIAN OBAT TERBARU</h4>
+                <a href="{{ route('expired.index') }}" class="btn btn-xs btn-primary">Lihat</a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -143,27 +144,29 @@
                         <thead>
                             <tr>
                                 <th>Nama Obat</th>
-                                <th>Tanggal Kedaluwarsa</th>
-                                <th>Lokasi</th>
+                                <th>Kedaluwarsa</th>
+                                <th>Tanggal Diajukan</th>
+                                <th>Jumlah</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ($expireds as $dataObat)
                             <tr>
-                                <td>Aminefron</td>
-                                <td>12 Maret 2024</td>
-                                <td>Pelayanan</td>
+                                <td>{{ $dataObat->stokObat->obat->nama_obat }}</td>
+                                <td>{{
+                                    Carbon\Carbon::parse($dataObat->stokObat->obat->tanggal_kedaluwarsa)->isoFormat('LL')
+                                    }}</td>
+                                <td>{{ Carbon\Carbon::parse($dataObat->created_at)->isoFormat('LL') }}</td>
+                                <td>{{ $dataObat->stokObat->stok }}</td>
                             </tr>
-                            <tr>
-                                <td>Betason-N</td>
-                                <td>12 Maret 2024</td>
-                                <td>Gudang Farmasi</td>
-                            </tr>
+                            @endforeach
                         </tbody>
                         <tfoot>
                             <tr>
                                 <th>Nama Obat</th>
-                                <th>Tanggal Kedaluwarsa</th>
-                                <th>Lokasi</th>
+                                <th>Kedaluwarsa</th>
+                                <th>Tanggal Diajukan</th>
+                                <th>Jumlah</th>
                             </tr>
                         </tfoot>
                     </table>
