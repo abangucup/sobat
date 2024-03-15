@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Obat;
 use App\Models\Permintaan;
 use App\Models\StokObat;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -13,21 +14,26 @@ class PermintaanController extends Controller
 {
     public function index()
     {
+        $tanggalSekarang = Carbon::parse(now());
+
         $dataObats = StokObat::with('obat')
             ->where('lokasi', 'gudang')
             ->where('stok', '>', 0)
+            ->whereHas('obat', function ($query) use ($tanggalSekarang) {
+                $query->where('tanggal_kedaluwarsa', '>', $tanggalSekarang->addMonths(6));
+            })
             ->latest()->get();
 
         $user = Auth::user();
         if ($user->role == 'gudang') {
             $permintaans = Permintaan::with('userPengaju.biodata', 'userPemverifikasi.biodata', 'stokObat.obat')
-                                    ->latest()->get();
+                ->latest()->get();
         } elseif ($user->role == 'depo') {
             $permintaans = Permintaan::with('userPengaju.biodata', 'userPemverifikasi.biodata', 'stokObat.obat')
-                                    ->where('bidang', 'depo')->latest()->get();
+                ->where('bidang', 'depo')->latest()->get();
         } elseif ($user->role == 'pelayanan') {
             $permintaans = Permintaan::with('userPengaju.biodata', 'userPemverifikasi.biodata', 'stokObat.obat')
-                                    ->where('bidang', 'pelayanan')->latest()->get();
+                ->where('bidang', 'pelayanan')->latest()->get();
         }
 
         return view('permintaan.index', compact('permintaans', 'dataObats'));

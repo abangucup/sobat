@@ -8,6 +8,7 @@ use App\Http\Controllers\DistributorController;
 use App\Http\Controllers\ExpiredController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ObatController;
+use App\Http\Controllers\PemakaianObatController;
 use App\Http\Controllers\PemesananController;
 use App\Http\Controllers\PermintaanController;
 use App\Http\Controllers\SuratController;
@@ -103,6 +104,10 @@ Route::middleware(['auth'])->group(function () {
 
     // LEVEL PELAYANAN
     Route::group(['middleware' => 'role:pelayanan'], function () {
+    });
+
+    Route::group(['middleware' => 'role:depo'], function () {
+        Route::resource('pemakaian', PemakaianObatController::class);
     });
 
     // LOGOUT

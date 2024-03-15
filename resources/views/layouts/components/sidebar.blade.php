@@ -111,7 +111,7 @@
                     <i class="fa-solid fa-pills"></i> Verifikasi Pesanan
                 </a>
             </li>
-            <li><a href="{{ route('keuangan.rekapan') }}">
+            <li><a href="#">
                     <i class="fa-solid fa-file-invoice-dollar"></i> Rekapan Keuangan
                 </a>
             </li>
@@ -150,11 +150,11 @@
                     <i class="fa-solid fa-arrow-right-arrow-left"></i> Permintaan
                 </a>
             </li>
-            <li><a href="{{ route('permintaan.index') }}">
+            <li><a href="{{ route('pemakaian.index') }}">
                     <i class="fa-solid fa-file-pen"></i> Pemakian
                 </a>
             </li>
-            <li><a href="{{ route('keuangan.rekapan') }}">
+            <li><a href="#">
                     <i class="fa-solid fa-file-contract"></i> Laporan Obat Terpakai
                 </a>
             </li>
@@ -162,7 +162,7 @@
             =================================================================================================================================================================
             --}}
 
-            {{-- MENU UNTUK DEPO --}}
+            {{-- MENU UNTUK PELAYANAN --}}
             @elseif (auth()->user()->role == 'pelayanan')
             {{--
             =================================================================================================================================================================
@@ -179,7 +179,7 @@
                     <i class="fa-solid fa-file-pen"></i> Pemakian
                 </a>
             </li>
-            <li><a href="{{ route('keuangan.rekapan') }}">
+            <li><a href="#">
                     <i class="fa-solid fa-file-contract"></i> Laporan Obat Terpakai
                 </a>
             </li>
@@ -187,7 +187,7 @@
             =================================================================================================================================================================
             --}}
 
-            {{-- MENU UNTUK DEPO --}}
+            {{-- MENU UNTUK POLI --}}
             @elseif (auth()->user()->role == 'poli')
             {{--
             =================================================================================================================================================================

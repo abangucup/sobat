@@ -16,7 +16,7 @@
                     </span>
                     <div class="media-body text-white text-end">
                         <p class="mb-1 text-white">TOTAL OBAT</p>
-                        <h3 class="text-white">1000</h3>
+                        <h3 class="text-white">{{ $totalObat }}</h3>
                     </div>
                 </div>
             </div>
@@ -46,7 +46,7 @@
                     </span>
                     <div class="media-body text-white text-end">
                         <p class="mb-1 text-white">TOTAL OBAT EXPIRED</p>
-                        <h3 class="text-white">1000</h3>
+                        <h3 class="text-white">{{ $totalExpired }}</h3>
                     </div>
                 </div>
             </div>
@@ -170,7 +170,7 @@
     <div class="col-sm-12 col-lg-6">
         <div class="card bgl-primary">
             <div class="card-header">
-                <h4 class="card-title">PERMINTAAN TERBARU</h4>
+                <h4 class="card-title">OBAT EXPIRED</h4>
             </div>
             <div class="card-body">
                 <div class="table-responsive">

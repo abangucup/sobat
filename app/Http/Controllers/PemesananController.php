@@ -6,6 +6,7 @@ use App\Models\DetailPesanan;
 use App\Models\Obat;
 use App\Models\Pemesanan;
 use App\Models\StokObat;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -66,9 +67,14 @@ class PemesananController extends Controller
 
     public function create()
     {
+        $tanggalSekarang = Carbon::parse(now());
+
         $stokObats = StokObat::with('obat')
             ->where('lokasi', 'distributor')
             ->where('stok', '>', 0)
+            ->whereHas('obat', function($query) use ($tanggalSekarang) {
+                $query->where('tanggal_kedaluwarsa', '>', $tanggalSekarang->addMonths(6));
+            })
             ->latest()->get();
         return view('pemesanan.buat-pesanan', compact('stokObats'));
     }

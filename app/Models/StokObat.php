@@ -38,4 +38,9 @@ class StokObat extends Model
     {
         return $this->hasOne(Expired::class);
     }
+
+    public function pemakaian()
+    {
+        return $this->hasOne(PemakaianObat::class);
+    }
 }

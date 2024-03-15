@@ -8,6 +8,7 @@ use App\Models\Expired;
 use App\Models\Obat;
 use App\Models\Pemesanan;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -17,6 +18,7 @@ class DashboardController extends Controller
     public function __invoke()
     {
         $user =  Auth::user();
+        $tanggalSekarang = Carbon::parse(now());
 
         if ($user->role == 'distributor') {
             $totalObat = Obat::with('stokObats')->whereHas('stokObats', function ($query) use ($user) {
@@ -43,7 +45,21 @@ class DashboardController extends Controller
 
             return view('dashboard.distributor', compact('totalObat', 'pesanans', 'expireds'));
         } elseif ($user->role == 'gudang') {
-            return view('dashboard.gudang');
+            $totalObat = Obat::where('tanggal_kedaluwarsa', '>', $tanggalSekarang->addMonths(6))
+                            ->whereHas('stokObats', function ($query) {
+                                $query->where('lokasi', '!=', 'distributor');
+                            })
+                            ->count();
+            $totalExpired = Obat::where('tanggal_kedaluwarsa', '<=', $tanggalSekarang->addMonths(6))
+                            ->whereHas('stokObats', function ($query) {
+                                $query->where('lokasi', '!=', 'distributor');
+                            })
+                            ->count();
+
+            return view('dashboard.gudang', compact([
+                'totalObat',
+                'totalExpired'
+            ]));
         } elseif ($user->role == 'pelayanan') {
             return view('dashboard.pelayanan');
         } elseif ($user->role == 'depo') {

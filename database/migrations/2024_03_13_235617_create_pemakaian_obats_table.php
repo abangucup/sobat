@@ -15,6 +15,10 @@ return new class extends Migration
     {
         Schema::create('pemakaian_obats', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('stok_obat_id')->constrained()->onDelete('cascade');
+            $table->string('banyak');
+            $table->text('catatan')->nullable();
+            $table->date('tanggal_pemakaian');
             $table->timestamps();
         });
     }

@@ -243,7 +243,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -252,7 +252,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2014_10_12_000000_create_users_table',1),(2,'2014_10_12_100000_create_password_resets_table',1),(3,'2019_08_19_000000_create_failed_jobs_table',1),(4,'2019_12_14_000001_create_personal_access_tokens_table',1),(5,'2024_02_04_122313_create_obats_table',1),(6,'2024_02_04_122332_create_biodatas_table',1),(7,'2024_02_09_181450_create_distributors_table',1),(8,'2024_02_10_032250_create_akun_distributors_table',1),(9,'2024_02_10_032922_create_stok_obats_table',1),(10,'2024_02_10_033257_create_pasiens_table',1),(11,'2024_02_10_034218_create_reseps_table',1),(12,'2024_02_10_035604_create_pemesanans_table',1),(13,'2024_02_10_040010_create_kunjungans_table',1),(14,'2024_02_10_041234_create_riwayats_table',1),(15,'2024_02_10_042020_create_pemeriksaans_table',1),(16,'2024_03_02_195958_create_detail_pesanans_table',1),(17,'2024_03_04_135412_create_penomorans_table',1),(18,'2024_03_06_004415_create_verif_pesanans_table',1),(19,'2024_03_08_035102_create_surats_table',1),(20,'2024_03_13_153207_create_permintaans_table',2),(21,'2024_03_13_153208_create_permintaans_table',3),(22,'2024_03_13_153209_create_permintaans_table',4),(23,'2024_03_13_235615_create_pemakaian_obats_table',5),(24,'2024_03_14_063419_create_expireds_table',5);
+INSERT INTO `migrations` VALUES (1,'2014_10_12_000000_create_users_table',1),(2,'2014_10_12_100000_create_password_resets_table',1),(3,'2019_08_19_000000_create_failed_jobs_table',1),(4,'2019_12_14_000001_create_personal_access_tokens_table',1),(5,'2024_02_04_122313_create_obats_table',1),(6,'2024_02_04_122332_create_biodatas_table',1),(7,'2024_02_09_181450_create_distributors_table',1),(8,'2024_02_10_032250_create_akun_distributors_table',1),(9,'2024_02_10_032922_create_stok_obats_table',1),(10,'2024_02_10_033257_create_pasiens_table',1),(11,'2024_02_10_034218_create_reseps_table',1),(12,'2024_02_10_035604_create_pemesanans_table',1),(13,'2024_02_10_040010_create_kunjungans_table',1),(14,'2024_02_10_041234_create_riwayats_table',1),(15,'2024_02_10_042020_create_pemeriksaans_table',1),(16,'2024_03_02_195958_create_detail_pesanans_table',1),(17,'2024_03_04_135412_create_penomorans_table',1),(18,'2024_03_06_004415_create_verif_pesanans_table',1),(19,'2024_03_08_035102_create_surats_table',1),(20,'2024_03_13_153207_create_permintaans_table',2),(21,'2024_03_13_153208_create_permintaans_table',3),(22,'2024_03_13_153209_create_permintaans_table',4),(23,'2024_03_13_235615_create_pemakaian_obats_table',5),(24,'2024_03_14_063419_create_expireds_table',5),(25,'2024_03_13_235616_create_pemakaian_obats_table',6),(26,'2024_03_13_235617_create_pemakaian_obats_table',7);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -352,10 +352,16 @@ DROP TABLE IF EXISTS `pemakaian_obats`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `pemakaian_obats` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `stok_obat_id` bigint unsigned NOT NULL,
+  `banyak` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `catatan` text COLLATE utf8mb4_unicode_ci,
+  `tanggal_pemakaian` date NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  PRIMARY KEY (`id`),
+  KEY `pemakaian_obats_stok_obat_id_foreign` (`stok_obat_id`),
+  CONSTRAINT `pemakaian_obats_stok_obat_id_foreign` FOREIGN KEY (`stok_obat_id`) REFERENCES `stok_obats` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -364,6 +370,7 @@ CREATE TABLE `pemakaian_obats` (
 
 LOCK TABLES `pemakaian_obats` WRITE;
 /*!40000 ALTER TABLE `pemakaian_obats` DISABLE KEYS */;
+INSERT INTO `pemakaian_obats` VALUES (3,9,'1','Pasien operasi','2024-03-15','2024-03-14 22:18:34','2024-03-14 22:18:34');
 /*!40000 ALTER TABLE `pemakaian_obats` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -455,7 +462,7 @@ CREATE TABLE `permintaans` (
   CONSTRAINT `permintaans_pemverifikasi_foreign` FOREIGN KEY (`pemverifikasi`) REFERENCES `users` (`id`),
   CONSTRAINT `permintaans_pengaju_foreign` FOREIGN KEY (`pengaju`) REFERENCES `users` (`id`),
   CONSTRAINT `permintaans_stok_obat_id_foreign` FOREIGN KEY (`stok_obat_id`) REFERENCES `stok_obats` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -464,7 +471,7 @@ CREATE TABLE `permintaans` (
 
 LOCK TABLES `permintaans` WRITE;
 /*!40000 ALTER TABLE `permintaans` DISABLE KEYS */;
-INSERT INTO `permintaans` VALUES (2,4,1,5,5,'selesai','depo',NULL,'2024-03-13 15:49:13','2024-03-13 17:39:49'),(3,4,1,5,2,'selesai','depo',NULL,'2024-03-13 17:40:42','2024-03-13 17:41:29'),(4,3,1,5,3,'selesai','pelayanan',NULL,'2024-03-13 18:01:47','2024-03-13 18:02:18');
+INSERT INTO `permintaans` VALUES (2,4,1,5,5,'selesai','depo',NULL,'2024-03-13 15:49:13','2024-03-13 17:39:49'),(3,4,1,5,2,'selesai','depo',NULL,'2024-03-13 17:40:42','2024-03-13 17:41:29'),(4,3,1,5,3,'selesai','pelayanan',NULL,'2024-03-13 18:01:47','2024-03-13 18:02:18'),(5,4,1,6,5,'selesai','depo',NULL,'2024-03-14 22:05:06','2024-03-14 22:05:40');
 /*!40000 ALTER TABLE `permintaans` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -585,7 +592,7 @@ CREATE TABLE `stok_obats` (
   KEY `stok_obats_obat_id_foreign` (`obat_id`),
   CONSTRAINT `stok_obats_distributor_id_foreign` FOREIGN KEY (`distributor_id`) REFERENCES `distributors` (`id`) ON DELETE CASCADE,
   CONSTRAINT `stok_obats_obat_id_foreign` FOREIGN KEY (`obat_id`) REFERENCES `obats` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -594,7 +601,7 @@ CREATE TABLE `stok_obats` (
 
 LOCK TABLES `stok_obats` WRITE;
 /*!40000 ALTER TABLE `stok_obats` DISABLE KEYS */;
-INSERT INTO `stok_obats` VALUES (1,1,1,20,20000.00,'2024-03-09',21000.00,'distributor','2024-03-08 22:15:18','2024-03-11 21:57:09'),(2,1,2,30,30000.00,'2024-03-10',31000.00,'distributor','2024-03-09 17:31:36','2024-03-11 21:57:09'),(3,2,3,4,100000.00,'2024-03-10',115000.00,'distributor','2024-03-09 17:33:40','2024-03-11 21:57:09'),(4,1,1,120,21000.00,'2024-03-10',25000.00,'gudang','2024-03-10 05:56:48','2024-03-11 22:15:32'),(5,1,2,10,31000.00,'2024-03-10',32000.00,'gudang','2024-03-10 11:54:26','2024-03-13 18:01:47'),(6,2,3,10,115000.00,'2024-03-10',NULL,'gudang','2024-03-10 22:39:41','2024-03-11 22:19:52'),(7,1,2,7,31000.00,'2024-03-13',32000.00,'depo','2024-03-13 17:39:49','2024-03-13 17:41:29'),(8,1,2,3,31000.00,'2024-03-14',32000.00,'pelayanan','2024-03-13 18:02:18','2024-03-13 18:02:18');
+INSERT INTO `stok_obats` VALUES (1,1,1,20,20000.00,'2024-03-09',21000.00,'distributor','2024-03-08 22:15:18','2024-03-11 21:57:09'),(2,1,2,30,30000.00,'2024-03-10',31000.00,'distributor','2024-03-09 17:31:36','2024-03-11 21:57:09'),(3,2,3,4,100000.00,'2024-03-10',115000.00,'distributor','2024-03-09 17:33:40','2024-03-11 21:57:09'),(4,1,1,120,21000.00,'2024-03-10',25000.00,'gudang','2024-03-10 05:56:48','2024-03-11 22:15:32'),(5,1,2,10,31000.00,'2024-03-10',32000.00,'gudang','2024-03-10 11:54:26','2024-03-13 18:01:47'),(6,2,3,5,115000.00,'2024-03-10',NULL,'gudang','2024-03-10 22:39:41','2024-03-14 22:05:06'),(7,1,2,7,31000.00,'2024-03-13',32000.00,'depo','2024-03-13 17:39:49','2024-03-13 17:41:29'),(8,1,2,3,31000.00,'2024-03-14',32000.00,'pelayanan','2024-03-13 18:02:18','2024-03-13 18:02:18'),(9,2,3,4,115000.00,'2024-03-15',NULL,'depo','2024-03-14 22:05:40','2024-03-14 22:19:13');
 /*!40000 ALTER TABLE `stok_obats` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -707,4 +714,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-03-15 12:52:27
+-- Dump completed on 2024-03-15 14:19:58
