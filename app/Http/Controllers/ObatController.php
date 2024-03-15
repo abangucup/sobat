@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Distributor;
 use App\Models\Obat;
 use App\Models\StokObat;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -15,6 +16,7 @@ class ObatController extends Controller
 {
     public function index()
     {
+        $tanggalSekarang = Carbon::parse(now());
         $user = Auth::user();
         switch ($user->role) {
             case 'distributor':
@@ -22,7 +24,11 @@ class ObatController extends Controller
                 $obats = StokObat::with('obat', 'distributor')->where('lokasi', 'distributor')->where('distributor_id', $distributor_id)->latest()->get();
                 break;
             case 'gudang':
-                $obats = StokObat::with('obat', 'distributor')->where('lokasi', 'gudang')->latest()->get();
+                $obats = StokObat::with('obat', 'distributor')->where('lokasi', 'gudang')
+                    ->whereHas('obat', function ($query) use ($tanggalSekarang) {
+                        $query->where('tanggal_kedaluwarsa', '>', $tanggalSekarang->addMonths(6));
+                    })
+                    ->latest()->get();
                 break;
             case 'pelayanan':
                 $obats = StokObat::with('obat', 'distributor')->where('lokasi', 'pelayanan')->latest()->get();
