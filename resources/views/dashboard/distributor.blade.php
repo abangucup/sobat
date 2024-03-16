@@ -8,7 +8,7 @@
 @section('content')
 
 <div class="row">
-    <div class="col-xl-3 col-xxl-6 col-lg-6 col-sm-6">
+    <div class="col-xl-4 col-xxl-6 col-lg-6 col-sm-6">
         <div class="widget-stat card bg-primary">
             <div class="card-body  p-4">
                 <div class="media">
@@ -23,22 +23,7 @@
             </div>
         </div>
     </div>
-    <div class="col-xl-3 col-xxl-6 col-lg-6 col-sm-6">
-        <div class="widget-stat card bg-success">
-            <div class="card-body  p-4">
-                <div class="media">
-                    <span class="me-3">
-                        <i class="fa-solid fa-hand-holding-dollar"></i>
-                    </span>
-                    <div class="media-body text-white text-end">
-                        <p class="mb-1 text-white">TOTAL OBAT TERJUAL</p>
-                        <h3 class="text-white">1000</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-3 col-xxl-6 col-lg-6 col-sm-6">
+    <div class="col-xl-4 col-xxl-6 col-lg-6 col-sm-6">
         <div class="widget-stat card bg-danger">
             <div class="card-body  p-4">
                 <div class="media">
@@ -47,13 +32,13 @@
                     </span>
                     <div class="media-body text-white text-end">
                         <p class="mb-1 text-white">TOTAL OBAT EXPIRED</p>
-                        <h3 class="text-white">1000</h3>
+                        <h3 class="text-white">{{ $totalExpired }}</h3>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-xl-3 col-xxl-6 col-lg-6 col-sm-6">
+    <div class="col-xl-4 col-xxl-6 col-lg-6 col-sm-6">
         <div class="widget-stat card bg-warning">
             <div class="card-body  p-4">
                 <div class="media">
@@ -62,13 +47,13 @@
                     </span>
                     <div class="media-body text-white text-end">
                         <p class="mb-1 text-white">TOTAL PESANAN</p>
-                        <h3 class="text-white">1000</h3>
+                        <h3 class="text-white">{{ $totalPemesanan }}</h3>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-xl-3 col-xxl-6 col-lg-6 col-sm-6">
+    <div class="col-xl-12 col-xxl-6 col-lg-6 col-sm-6">
         <div class="widget-stat card bg-success">
             <div class="card-body  p-4">
                 <div class="media">
@@ -77,7 +62,8 @@
                     </span>
                     <div class="media-body text-white text-end">
                         <p class="mb-1 text-white">KEUANGAN</p>
-                        <a class="text-white h3" href="{{ route('permintaan.index') }}">1000</a>
+                        <a class="text-white h3" href="{{ route('keuangan.distributor') }}">{{ 'Rp.
+                            '.number_format($total, 0, ',', '.') }}</a>
                     </div>
                 </div>
             </div>

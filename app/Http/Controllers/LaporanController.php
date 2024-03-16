@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DetailPesanan;
 use App\Models\PemakaianObat;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
@@ -12,8 +13,30 @@ class LaporanController extends Controller
 {
     public function keuanganDistributor()
     {
-        $distributor = Auth::user()->distributor;
-        dd($distributor);
+        $user = Auth::user();
+
+        $dataPesanans = DetailPesanan::with('obat.distributor', 'pemesanan.user.biodata', 'verif')
+            ->whereHas('obat.distributor', function ($query) use ($user) {
+                $query->where('slug', $user->distributor->slug);
+            })->whereHas('pemesanan', function ($query) {
+                $query->where('status_pemesanan', 'selesai');
+            })->latest()->get();
+
+        return view('laporan.laporan_keuangan_distributor', compact('dataPesanans'));
+    }
+    public function cetakKeuanganDistributor()
+    {
+        $user = Auth::user();
+
+        $dataPesanans = DetailPesanan::with('obat.distributor', 'pemesanan.user.biodata', 'verif')
+            ->whereHas('obat.distributor', function ($query) use ($user) {
+                $query->where('slug', $user->distributor->slug);
+            })->whereHas('pemesanan', function ($query) {
+                $query->where('status_pemesanan', 'selesai');
+            })->latest()->get();
+        $pdf = Pdf::loadView('laporan.export.cetak_laporan_keuangan_distributor', compact('dataPesanans', 'user'))
+            ->setPaper('A4', 'landscape');
+        return $pdf->stream('laporan-rekapan-keuangan-' . Carbon::parse(now())->isoFormat('LL') . '.pdf');
     }
 
     public function pemakaianObat()
@@ -27,7 +50,7 @@ class LaporanController extends Controller
         $pemakaians = PemakaianObat::with('stokObat.obat')->latest()->get();
         $pdf = Pdf::loadView('laporan.export.cetak_laporan_pemakaian', compact('pemakaians'))
             ->setPaper('A4', 'landscape');
-        return $pdf->stream('laporan-pemakaian-obat-'. Carbon::parse(now())->isoFormat('LL'). '.pdf');
+        return $pdf->stream('laporan-pemakaian-obat-' . Carbon::parse(now())->isoFormat('LL') . '.pdf');
     }
 
     public function rekapKeuangan()
@@ -40,6 +63,6 @@ class LaporanController extends Controller
         // $pemakaians = PemakaianObat::with('stokObat.obat')->latest()->get();
         $pdf = Pdf::loadView('laporan.export.cetak_laporan_keuangan')
             ->setPaper('A4', 'landscape');
-        return $pdf->stream('laporan-pemakaian-obat-'. Carbon::parse(now())->isoFormat('LL'). '.pdf');
+        return $pdf->stream('laporan-pemakaian-obat-' . Carbon::parse(now())->isoFormat('LL') . '.pdf');
     }
 }

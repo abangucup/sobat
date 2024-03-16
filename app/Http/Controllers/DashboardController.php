@@ -39,22 +39,50 @@ class DashboardController extends Controller
                 ->whereHas('pemesanan', function ($query) {
                     $query->where('status_verif_direktur', 'diverifikasi');
                 })
-                ->latest()->paginate(5);
+                ->latest()->get();
 
-            $expireds = Expired::with('stokObat')->latest()->paginate(5);
+            $totalPemesanan = DetailPesanan::whereHas('obat.distributor', function ($query) use ($user) {
+                $query->where('slug', $user->distributor->slug);
+            })->count();
 
-            return view('dashboard.distributor', compact('totalObat', 'pesanans', 'expireds'));
+            $dataPesanans = DetailPesanan::with('obat.distributor', 'pemesanan.user.biodata', 'verif')
+                ->whereHas('obat.distributor', function ($query) use ($user) {
+                    $query->where('slug', $user->distributor->slug);
+                })->whereHas('pemesanan', function ($query) {
+                    $query->where('status_pemesanan', 'selesai');
+                })->latest()->get();
+
+
+            $totalPajak = 0;
+            foreach ($dataPesanans as $dataPesanan) {
+                $pajak = $dataPesanan->harga_pesanan * 0.11;
+                $totalPajak += $pajak;
+            }
+            $totalHargaPesanan = $dataPesanans->sum('harga_pesanan');
+            $total = $totalHargaPesanan + $totalPajak;
+
+            $expireds = Expired::with('stokObat')->where('status_pengembalian', 'pending')->latest()->get();
+            $totalExpired = count($expireds);
+
+            return view('dashboard.distributor', compact([
+                'totalObat',
+                'pesanans',
+                'expireds',
+                'totalExpired',
+                'totalPemesanan',
+                'total'
+            ]));
         } elseif ($user->role == 'gudang') {
             $totalObat = Obat::where('tanggal_kedaluwarsa', '>', $tanggalSekarang->addMonths(6))
-                            ->whereHas('stokObats', function ($query) {
-                                $query->where('lokasi', '!=', 'distributor');
-                            })
-                            ->count();
+                ->whereHas('stokObats', function ($query) {
+                    $query->where('lokasi', '!=', 'distributor');
+                })
+                ->count();
             $totalExpired = Obat::where('tanggal_kedaluwarsa', '<=', $tanggalSekarang->addMonths(6))
-                            ->whereHas('stokObats', function ($query) {
-                                $query->where('lokasi', '!=', 'distributor');
-                            })
-                            ->count();
+                ->whereHas('stokObats', function ($query) {
+                    $query->where('lokasi', '!=', 'distributor');
+                })
+                ->count();
 
             return view('dashboard.gudang', compact([
                 'totalObat',

@@ -8,7 +8,7 @@
                     </div>
                 </div>
                 <ul class="navbar-nav header-right">
-                    <li class="nav-item dropdown notification_dropdown">
+                    {{-- <li class="nav-item dropdown notification_dropdown">
                         <a class="nav-link " href="javascript:void(0);" data-bs-toggle="dropdown">
                             <svg width="22" height="22" viewBox="0 0 22 22" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -173,7 +173,7 @@
                             <a class="all-notification" href="javascript:void(0);">See all notifications <i
                                     class="ti-arrow-end"></i></a>
                         </div>
-                    </li>
+                    </li> --}}
                     <li class="nav-item">
                         <div class="dropdown header-profile2">
                             <a class="nav-link" href="javascript:void(0);" role="button" data-bs-toggle="dropdown"

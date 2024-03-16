@@ -33,6 +33,7 @@
             margin-top: -40px;
         }
     </style>
+    <title>Laporan Obat Terpakai</title>
 </head>
 
 <body style="font-size: 12px">
@@ -41,7 +42,7 @@
             <td align="left">
                 <img width="90px" src="assets/images/png/logo_kota.png" height="100px">
             </td>
-            <td style="text-align: center">
+            <td style="text-align: center" width="100%">
                 <p style="font-size: 2em"><b>
                         PEMERINTAH KOTA GORONTALO <br>
                         RSUD OTANAHA

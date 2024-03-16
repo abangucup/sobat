@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
-@section('title', 'Laporan Pemakaian')
+@section('title', 'Rekapan Keuangan')
 
-@section('header', 'Laporan Pemakain Obat')
+@section('header', 'Laporan Rekap Keuangan')
 
 @section('content')
 
 <div class="card">
     <div class="card-header">
-        <h3>Laporan obat terpakai</h3>
-        <a href="{{ route('cetak.laporanPemakaian') }}" target="_blank" class="btn btn-sm btn-danger text-end"><i
+        <h3>Laporan Semua Rekapan Keuangan</h3>
+        <a href="{{ route('cetak.keuanganDistributor') }}" target="_blank" class="btn btn-sm btn-danger text-end"><i
                 class="fa-solid fa-print me-2"></i>Cetak Laporan</a>
     </div>
 
@@ -19,33 +19,39 @@
                 <thead>
                     <tr>
                         <th>NO</th>
+                        <th>PEMESAN</th>
                         <th>REAGEN/BHP/OBAT</th>
                         <th>NO. BATCH</th>
-                        <th>EXP. DATE</th>
                         <th>SATUAN</th>
-                        <th>PENGGUNAAN</th>
-                        <th>TANGGAL PAKAI</th>
-                        <th>SISA STOK</th>
-                        <th>LOKASI</th>
-                        <th>CATATAN</th>
-
+                        <th>QTY</th>
+                        <th>TOTAL</th>
+                        <th>PAJAK</th>
+                        <th>JUMLAH</th>
+                        <th>TANGGAL PESANAN</th>
                     </tr>
                 </thead>
                 <tbody>
 
-                    @foreach ($pemakaians as $pemakaian)
+                    @php
+                    $jumlah = 0;
+                    @endphp
+                    @foreach ($dataPesanans as $dataPesanan)
+                    @php
+                    $pajak = $dataPesanan->harga_pesanan * 0.11;
+                    $total = $pajak + $dataPesanan->harga_pesanan;
+                    @endphp
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $pemakaian->stokObat->obat->nama_obat }}</td>
-                        <td>{{ $pemakaian->stokObat->obat->no_batch }}</td>
-                        <td>{{ $pemakaian->stokObat->obat->tanggal_kedaluwarsa }}</td>
-                        <td>{{ $pemakaian->stokObat->obat->satuan. ' @ '.$pemakaian->stokObat->obat->kapasitas.' '.
-                            $pemakaian->stokObat->obat->satuan_kapasitas }}</td>
-                        <td>{{ $pemakaian->banyak }}</td>
-                        <td>{{ Carbon\Carbon::parse($pemakaian->tanggal_pemakaian)->isoFormat('LL') }}</td>
-                        <td>{{ $pemakaian->stokObat->stok }}</td>
-                        <td>{{ Str::upper($pemakaian->stokObat->lokasi) }}</td>
-                        <td>{{ $pemakaian->catatan ?? '-' }}</td>
+                        <td>{{ $dataPesanan->pemesanan->user->biodata->nama_lengkap }}</td>
+                        <td>{{ $dataPesanan->obat->nama_obat }}</td>
+                        <td>{{ $dataPesanan->obat->no_batch }}</td>
+                        <td>{{ $dataPesanan->obat->satuan. ' @ '.$dataPesanan->obat->kapasitas.' '.
+                            $dataPesanan->obat->satuan_kapasitas }}</td>
+                        <td>{{ $dataPesanan->jumlah }}</td>
+                        <td>{{ 'Rp. '. number_format($dataPesanan->harga_pesanan, 0, ',', '.') }}</td>
+                        <td>{{ 'Rp. '. number_format($pajak, 0, ',', '.') }}</td>
+                        <td>{{ 'Rp. '. number_format($total, 0, ',', '.') }}</td>
+                        <td>{{ Carbon\Carbon::parse($dataPesanan->created_at)->isoFormat('LL') }}</td>
                     </tr>
                     @endforeach
                 </tbody>

@@ -33,6 +33,7 @@
             margin-top: -40px;
         }
     </style>
+    <title>Laporan Rekap Keuangan</title>
 </head>
 
 <body style="font-size: 12px">
@@ -41,15 +42,13 @@
             <td align="left">
                 <img width="90px" src="assets/images/png/logo_kota.png" height="100px">
             </td>
-            <td style="text-align: center">
+            <td style="text-align: center" width="100%">
                 <p style="font-size: 2em"><b>
-                        PEMERINTAH KOTA GORONTALO <br>
-                        RSUD OTANAHA
+                        {{ $user->distributor->nama_perusahaan }}
                 </p>
                 <p>
-                    Jl. Rambutan No.412, Buladu, Kec. Kota Bar., Kabupaten Gorontalo, Gorontalo 96136<br>
-                    Mail : otanahahospital@yahoo.com,
-                    Laman <u> https://rsudotanaha.gorontalokota.go.id/</u>
+                    {{ $user->distributor->lokasi_perusahaan ?? '-' }}<br>
+                    Telp : {{ $user->distributor->telepon_perusahaan ?? '-' }}
                 </p>
             </td>
             <td align="right" width="100px">
@@ -64,42 +63,48 @@
         <table>
             <tr>
                 <td>Perihal </td>
-                <td>: Laporan Pemakaian Obat</td>
+                <td>: Laporan Rekapan Keuangan</td>
             </tr>
         </table>
 
         <br>
-        <table border=1" cellspacing="0" cellpadding="5" width=100%>
+        <table border=1" cellspacing="0" cellpadding="5" width=100% style="text-align: center">
             <thead>
                 <tr>
                     <th>NO</th>
+                    <th>PEMESAN</th>
                     <th>REAGEN/BHP/OBAT</th>
                     <th>NO. BATCH</th>
-                    <th>EXP. DATE</th>
                     <th>SATUAN</th>
-                    <th>PENGGUNAAN</th>
-                    <th>TANGGAL PAKAI</th>
-                    <th>SISA STOK</th>
-                    <th>LOKASI</th>
-                    <th>CATATAN</th>
-
+                    <th>QTY</th>
+                    <th>TOTAL</th>
+                    <th>PAJAK</th>
+                    <th>JUMLAH</th>
+                    <th>TANGGAL PESANAN</th>
                 </tr>
             </thead>
             <tbody>
 
-                @foreach ($pemakaians as $pemakaian)
+                @php
+                $jumlah = 0;
+                @endphp
+                @foreach ($dataPesanans as $dataPesanan)
+                @php
+                $pajak = $dataPesanan->harga_pesanan * 0.11;
+                $total = $pajak + $dataPesanan->harga_pesanan;
+                @endphp
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $pemakaian->stokObat->obat->nama_obat }}</td>
-                    <td>{{ $pemakaian->stokObat->obat->no_batch }}</td>
-                    <td>{{ $pemakaian->stokObat->obat->tanggal_kedaluwarsa }}</td>
-                    <td>{{ $pemakaian->stokObat->obat->satuan. ' @ '.$pemakaian->stokObat->obat->kapasitas.' '.
-                        $pemakaian->stokObat->obat->satuan_kapasitas }}</td>
-                    <td>{{ $pemakaian->banyak }}</td>
-                    <td>{{ Carbon\Carbon::parse($pemakaian->tanggal_pemakaian)->isoFormat('LL') }}</td>
-                    <td>{{ $pemakaian->stokObat->stok }}</td>
-                    <td>{{ Str::upper($pemakaian->stokObat->lokasi) }}</td>
-                    <td>{{ $pemakaian->catatan ?? '-' }}</td>
+                    <td>{{ $dataPesanan->pemesanan->user->biodata->nama_lengkap }}</td>
+                    <td>{{ $dataPesanan->obat->nama_obat }}</td>
+                    <td>{{ $dataPesanan->obat->no_batch }}</td>
+                    <td>{{ $dataPesanan->obat->satuan. ' @ '.$dataPesanan->obat->kapasitas.' '.
+                        $dataPesanan->obat->satuan_kapasitas }}</td>
+                    <td>{{ $dataPesanan->jumlah }}</td>
+                    <td>{{ 'Rp. '. number_format($dataPesanan->harga_pesanan, 0, ',', '.') }}</td>
+                    <td>{{ 'Rp. '. number_format($pajak, 0, ',', '.') }}</td>
+                    <td>{{ 'Rp. '. number_format($total, 0, ',', '.') }}</td>
+                    <td>{{ Carbon\Carbon::parse($dataPesanan->created_at)->isoFormat('LL') }}</td>
                 </tr>
                 @endforeach
             </tbody>
@@ -108,27 +113,19 @@
 
         <br>
 
-        <p style="margin-left: 50px">Demikian laporan pemakaian data obat ini dengan dapat digunakan dengan sebaik
-            baiknya</p>
+        <p style="margin-left: 50px">Demikian laporan keuangan ini dicetak dan dapat digunakan dengan sebaik baiknya.
+        </p>
         <br><br><br>
         <table width="100%">
             <tr>
-                <td style="text-align: center" width="40%">
-                    <p>Mengetahui,</p>
-                    <p>Direktur RSUD Otanaha</p>
-                    <img src="assets/images/ttd_direktur.jpeg" alt="ttd direktur" width="100px">
-                    <p><u>dr. Grace Tumewu</u></p>
-                    <p>NIP. 19731004201012001</p>
-                </td>
-                <td width="20%"></td>
+                <td width="60%"></td>
                 <td style="text-align: center" width="40%">
                     <div id="tanggal">
                         Gorontalo, {{ \Carbon\Carbon::parse(now())->isoFormat('LL') }}
                     </div>
-                    <p>PPK</p>
-                    <img src="assets/images/ttd_ppk.jpeg" alt="ttd ppk" width="100px">
-                    <p><u>Zikriana Adiwarsa Mahmud, S. Farm., Apt</u></p>
-                    <p>NIP. 19940810 202012 2 003</p>
+                    <p>PETUGAS {{ $user->distributor->nama_perusahaan }}</p>
+                    <br><br><br>
+                    <p><u>{{ $user->biodata->nama_lengkap }}</u></p>
                 </td>
             </tr>
         </table>
