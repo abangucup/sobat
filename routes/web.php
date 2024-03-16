@@ -57,10 +57,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('preview/status/{pemesanan_id}/{distributor}', [SuratController::class, 'status'])->name('surat.status');
 
 
-    // Route::get('rekapan-keuangan', function () {
-    //     return view('keuangan.rekapan');
-    // })->name('keuangan.rekapan');
-    // Route::get('laporan')
+    // LAPORAN
+    Route::get('laporan-pemakaian', [LaporanController::class, 'pemakaianObat'])->name('laporan.pemakaian');
+    Route::get('laporan-keuangan', [LaporanController::class, 'rekapKeuangan'])->name('laporan.keuangan');
+
+    // CETAK LAPORAN
+    Route::get('laporan-pemakaian/cetak', [LaporanController::class, 'cetakPemakaianObat'])->name('cetak.laporanPemakaian');
+    Route::get('laporan-keuangan/cetak', [LaporanController::class, 'cetakRekapKeuangan'])->name('cetak.laporanKeuangan');
 
     // LEVEL GUDANG
     Route::group(['middleware' => 'role:gudang'], function () {
@@ -90,6 +93,7 @@ Route::middleware(['auth'])->group(function () {
 
         // LAPORAN
         Route::get('rekapan-keuangan', [LaporanController::class, 'keuanganDistributor'])->name('keuangan.distributor');
+        Route::get('rekapan-keuangan/cetak', [LaporanController::class, 'cetakKeuanganDistributor'])->name('cetak.keuanganDistributor');
     });
 
     // LEVEL PPK

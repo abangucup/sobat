@@ -57,7 +57,7 @@
                     </li>
                 </ul>
             </li>
-            <li><a href="#">
+            <li><a href="{{ route('laporan.pemakaian') }}">
                     <i class="fa-solid fa-file-contract"></i> Laporan Pakai Obat
                 </a>
             </li>
@@ -107,11 +107,12 @@
             {{--
             =================================================================================================================================================================
             --}}
-            <li><a href="{{ route('pemesanan.proses') }}">
-                    <i class="fa-solid fa-pills"></i> Verifikasi Pesanan
+            <li><a href="{{ route('pemesanan.proses') }}"
+                    class="{{ Request::is('pemesanan/*') ? 'bgl-primary rounded' : '' }}">
+                    <i class=" fa-solid fa-pills"></i> Verifikasi Pesanan
                 </a>
             </li>
-            <li><a href="#">
+            <li><a href="{{ route('laporan.keuangan') }}">
                     <i class="fa-solid fa-file-invoice-dollar"></i> Rekapan Keuangan
                 </a>
             </li>
@@ -129,7 +130,7 @@
                     <i class="fa-solid fa-pills"></i> Verifikasi Pesanan
                 </a>
             </li>
-            <li><a href="{{ route('keuangan.rekapan') }}">
+            <li><a href="{{ route('laporan.pemakaian') }}">
                     <i class="fa-solid fa-file-contract"></i> Laporan Kelola Obat
                 </a>
             </li>
@@ -154,7 +155,7 @@
                     <i class="fa-solid fa-file-pen"></i> Pemakian
                 </a>
             </li>
-            <li><a href="#">
+            <li><a href="{{ route('laporan.pemakaian') }}">
                     <i class="fa-solid fa-file-contract"></i> Laporan Obat Terpakai
                 </a>
             </li>
@@ -176,11 +177,11 @@
                 </a>
             </li>
             <li><a href="{{ route('permintaan.index') }}">
-                    <i class="fa-solid fa-file-pen"></i> Pemakian
+                    <i class="fa-solid fa-file-pen"></i> Pemakaian
                 </a>
             </li>
-            <li><a href="#">
-                    <i class="fa-solid fa-file-contract"></i> Laporan Obat Terpakai
+            <li><a href="{{ route('laporan.keuangan') }}">
+                    <i class="fa-solid fa-file-contract"></i> Laporan Obat Keluar
                 </a>
             </li>
             {{--

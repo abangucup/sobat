@@ -60,97 +60,73 @@
 
     <hr>
 
-    <p style="font-size: 1.2em; text-align:center">
-        <u>NOMOR :
-        <?php echo "445/RSUD.O/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/".date('n')."/".date('Y') ?>
-        </u>
-    </p>
-
-    <br>
     <div style="font-size: 1em">
         <table>
             <tr>
                 <td>Perihal </td>
-                <td>: Pemesanan Obat</td>
+                <td>: Laporan Pemakaian Obat</td>
             </tr>
         </table>
-
-        <p style="margin-left: 3px">Kepada Yth.</p>
-        <span style="margin-left: 3px">{{ $distributor }}</span>
-        <p style="margin-left: 50px">Di~</p>
-        <p style="margin-left: 80px">Tempat</p>
-        <p style="margin-left: 50px">
-            {{ $pemesanan->keterangan ?? 'Mohon dikirimkan permintaan dengan rincian sebagai berikut' }}
-        </p>
 
         <br>
         <table border=1" cellspacing="0" cellpadding="5" width=100%>
             <thead>
                 <tr>
                     <th>NO</th>
-                    <th>NAMA REAGEN/BHP/OBAT</th>
-                    <th>JUMLAH</th>
+                    <th>REAGEN/BHP/OBAT</th>
+                    <th>NO. BATCH</th>
+                    <th>EXP. DATE</th>
                     <th>SATUAN</th>
-                    <th>HARGA</th>
-                    <th>JUMLAH</th>
+                    <th>PENGGUNAAN</th>
+                    <th>TANGGAL PAKAI</th>
+                    <th>SISA STOK</th>
+                    <th>LOKASI</th>
+                    <th>CATATAN</th>
+
                 </tr>
             </thead>
-            <tbody style="font-weight: bold">
-                @php
-                $total = 0;
-                @endphp
-                @foreach ($dataObat as $obat)
-                @php
-                $detailPesanan = $obat->detailPesanans->where('pemesanan_id', $pemesanan->id)->first();
-                $total += $detailPesanan->harga_pesanan;
-                @endphp
+            <tbody>
+
+                @foreach ($pemakaians as $pemakaian)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $obat->nama_obat }}</td>
-                    <td style="text-align: center">{{ $detailPesanan->jumlah }}</td>
-                    <td style="text-align: center">{{ $obat->satuan . ' @ ' . $obat->kapasitas . ' ' .
-                        $obat->satuan_kapasitas}}</td>
-                    <td>{{ 'Rp ' . number_format($obat->stokObats->where('lokasi',
-                        'distributor')->first()->harga_jual, 0, ',', '.') }}</td>
-                    <td>{{ 'Rp ' . number_format($detailPesanan->harga_pesanan, 0, ',', '.') }}</td>
+                    <td>{{ $pemakaian->stokObat->obat->nama_obat }}</td>
+                    <td>{{ $pemakaian->stokObat->obat->no_batch }}</td>
+                    <td>{{ $pemakaian->stokObat->obat->tanggal_kedaluwarsa }}</td>
+                    <td>{{ $pemakaian->stokObat->obat->satuan. ' @ '.$pemakaian->stokObat->obat->kapasitas.' '.
+                        $pemakaian->stokObat->obat->satuan_kapasitas }}</td>
+                    <td>{{ $pemakaian->banyak }}</td>
+                    <td>{{ Carbon\Carbon::parse($pemakaian->tanggal_pemakaian)->isoFormat('LL') }}</td>
+                    <td>{{ $pemakaian->stokObat->stok }}</td>
+                    <td>{{ Str::upper($pemakaian->stokObat->lokasi) }}</td>
+                    <td>{{ $pemakaian->catatan ?? '-' }}</td>
                 </tr>
                 @endforeach
-                <tr>
-                    <td colspan="5" style="text-align: center">TOTAL</td>
-                    <td>{{ 'Rp ' . number_format($total, 0, ',', '.') }}</td>
-                </tr>
-                <tr>
-                    <td colspan="5" style="text-align: center">PPN 11%</td>
-                    <td>{{ 'Rp ' . number_format($total * 0.11, 0, ',', '.') }}</td>
-                </tr>
-                <tr>
-                    <td colspan="5" style="text-align: center">TOTAL + PPN 11%</td>
-                    <td>{{ 'Rp '. number_format(($total * 0.11) + $total, 0, ',', '.') }}</td>
-                </tr>
             </tbody>
 
         </table>
 
         <br>
 
-        <p style="margin-left: 50px">Demikian surat ini diajukan.</p>
+        <p style="margin-left: 50px">Demikian laporan pemakaian data obat ini dengan dapat digunakan dengan sebaik
+            baiknya</p>
         <br><br><br>
         <table width="100%">
             <tr>
                 <td style="text-align: center" width="40%">
                     <p>Mengetahui,</p>
                     <p>Direktur RSUD Otanaha</p>
-                    <br><br><br>
+                    <img src="assets/images/ttd_direktur.jpeg" alt="ttd direktur" width="100px">
                     <p><u>dr. Grace Tumewu</u></p>
                     <p>NIP. 19731004201012001</p>
                 </td>
                 <td width="20%"></td>
                 <td style="text-align: center" width="40%">
                     <div id="tanggal">
-                        <?php echo "Gorontalo, " . date("j F Y"); ?>
+                        Gorontalo, {{ \Carbon\Carbon::parse(now())->isoFormat('LL') }}
                     </div>
                     <p>PPK</p>
-                    <br><br><br>
+                    <img src="assets/images/ttd_ppk.jpeg" alt="ttd ppk" width="100px">
                     <p><u>Zikriana Adiwarsa Mahmud, S. Farm., Apt</u></p>
                     <p>NIP. 19940810 202012 2 003</p>
                 </td>

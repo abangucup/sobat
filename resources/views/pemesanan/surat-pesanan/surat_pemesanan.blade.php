@@ -44,7 +44,7 @@
             </td>
             <td style="text-align: center">
                 <p style="font-size: 2em"><b>
-                        PEMERINTA KOTA GORONTALO <br>
+                        PEMERINTAH KOTA GORONTALO <br>
                         RSUD OTANAHA
                 </p>
                 <p>
