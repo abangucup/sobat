@@ -10,14 +10,15 @@ class Resep extends Model
     use HasFactory;
 
     protected $fillable = [
-        'obat_id',
+        'stok_obat_id',
         'pemeriksaan_id',
         'jumlah',
+        'keterangan'
     ];
 
-    public function obat()
+    public function stokObat()
     {
-        return $this->belongsTo(Obat::class);
+        return $this->belongsTo(StokObat::class);
     }
 
     public function pemeriksaan()

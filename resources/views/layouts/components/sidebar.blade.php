@@ -180,6 +180,10 @@
                     <i class="fa-solid fa-file-pen"></i> Pemakaian
                 </a>
             </li>
+            <li><a href="{{ route('permintaan.index') }}">
+                <i class="fa-solid fa-hand-holding-dollar"></i> Tebus Obat
+                </a>
+            </li>
             <li><a href="{{ route('laporan.keuangan') }}">
                     <i class="fa-solid fa-file-contract"></i> Laporan Obat Keluar
                 </a>
@@ -193,20 +197,16 @@
             {{--
             =================================================================================================================================================================
             --}}
-            <li><a href="{{ route('obat.index') }}">
-                    <i class="fa-solid fa-pills"></i> Obat
+            <li><a href="{{ route('pasien.index') }}">
+                    <i class="fa-solid fa-arrow-right-arrow-left"></i> Pasien
                 </a>
             </li>
-            <li><a href="{{ route('permintaan.index') }}">
-                    <i class="fa-solid fa-arrow-right-arrow-left"></i> Permintaan
+            <li><a href="{{ route('pemeriksaan.index') }}" class="{{ Request::is('pemeriksaan/*') ? 'bgl-primary rounded' : '' }}">
+                    <i class="fa-solid fa-file-pen"></i> Pemeriksaan
                 </a>
             </li>
-            <li><a href="{{ route('permintaan.index') }}">
-                    <i class="fa-solid fa-file-pen"></i> Pemakian
-                </a>
-            </li>
-            <li><a href="{{ route('keuangan.rekapan') }}">
-                    <i class="fa-solid fa-file-contract"></i> Laporan Obat Terpakai
+            <li><a href="{{ route('laporan.pemeriksaan') }}">
+                    <i class="fa-solid fa-file-pen"></i> Laporan Rekam Medis
                 </a>
             </li>
             {{--

@@ -214,7 +214,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -223,6 +223,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
+INSERT INTO `migrations` VALUES (34,'2014_10_12_000000_create_users_table',1),(35,'2014_10_12_100000_create_password_resets_table',1),(36,'2019_08_19_000000_create_failed_jobs_table',1),(37,'2019_12_14_000001_create_personal_access_tokens_table',1),(38,'2024_02_04_122313_create_obats_table',1),(39,'2024_02_04_122332_create_biodatas_table',1),(40,'2024_02_09_181450_create_distributors_table',1),(41,'2024_02_10_023220_create_pasiens_table',1),(42,'2024_02_10_024020_create_pemeriksaans_table',1),(43,'2024_02_10_032250_create_akun_distributors_table',1),(44,'2024_02_10_032922_create_stok_obats_table',1),(45,'2024_02_10_034221_create_reseps_table',1),(46,'2024_02_10_035604_create_pemesanans_table',1),(47,'2024_03_02_195958_create_detail_pesanans_table',1),(48,'2024_03_06_004415_create_verif_pesanans_table',1),(49,'2024_03_08_035102_create_surats_table',1),(50,'2024_03_13_153209_create_permintaans_table',1),(51,'2024_03_13_235617_create_pemakaian_obats_table',1),(52,'2024_03_14_063419_create_expireds_table',1);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -479,6 +480,38 @@ LOCK TABLES `personal_access_tokens` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `reseps`
+--
+
+DROP TABLE IF EXISTS `reseps`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `reseps` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `pemeriksaan_id` bigint unsigned NOT NULL,
+  `stok_obat_id` bigint unsigned NOT NULL,
+  `jumlah` int NOT NULL,
+  `keterangan` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `reseps_pemeriksaan_id_foreign` (`pemeriksaan_id`),
+  KEY `reseps_stok_obat_id_foreign` (`stok_obat_id`),
+  CONSTRAINT `reseps_pemeriksaan_id_foreign` FOREIGN KEY (`pemeriksaan_id`) REFERENCES `pemeriksaans` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `reseps_stok_obat_id_foreign` FOREIGN KEY (`stok_obat_id`) REFERENCES `stok_obats` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `reseps`
+--
+
+LOCK TABLES `reseps` WRITE;
+/*!40000 ALTER TABLE `reseps` DISABLE KEYS */;
+/*!40000 ALTER TABLE `reseps` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `stok_obats`
 --
 
@@ -623,4 +656,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-03-17  1:13:58
+-- Dump completed on 2024-03-17  2:46:54

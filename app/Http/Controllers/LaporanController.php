@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DetailPesanan;
 use App\Models\PemakaianObat;
+use App\Models\Pemeriksaan;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -64,5 +65,20 @@ class LaporanController extends Controller
         $pdf = Pdf::loadView('laporan.export.cetak_laporan_keuangan')
             ->setPaper('A4', 'landscape');
         return $pdf->stream('laporan-pemakaian-obat-' . Carbon::parse(now())->isoFormat('LL') . '.pdf');
+    }
+
+    // REKAM MEDIS / PEMERIKSAAN
+    public function pemeriksaan()
+    {
+        $pemeriksaans = Pemeriksaan::with('pasien.biodata', 'reseps')->latest()->get();
+        return view('laporan.laporan_pemeriksaan', compact('pemeriksaans'));
+    }
+
+    public function cetakPemeriksaan()
+    {
+        $pemeriksaans = Pemeriksaan::with('pasien.biodata', 'reseps')->latest()->get();
+        $pdf = Pdf::loadView('laporan.export.cetak_laporan_pemeriksaan', compact('pemeriksaans'))
+            ->setPaper('A4', 'landscape');
+        return $pdf->stream('laporan-rekam-medis-' . Carbon::parse(now())->isoFormat('LL') . '.pdf');
     }
 }

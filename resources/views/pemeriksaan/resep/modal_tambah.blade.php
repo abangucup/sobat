@@ -1,4 +1,4 @@
-<div class="modal fade tampil-modal" id="tambahPemakaian" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade tampil-modal" id="tambahResep" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -6,7 +6,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal">
                 </button>
             </div>
-            <form action="{{ route('pemakaian.store') }}" method="post">
+            <form action="{{ route('pemeriksaan.storeResep', $pemeriksaan->id) }}" method="post">
                 @csrf
                 <div class="modal-body">
                     <div class="row">
@@ -30,22 +30,18 @@
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Tanggal Pemakaian
-                                    <span class="required">*</span>
-                                </label>
-                                <input type="date" name="tanggal_pemakaian" value="{{ old('tanggal_pemakaian') }}"
-                                    class="form-control">
-                            </div>
-                            <div class="mb-3">
                                 <label class="form-label">Banyak Pemakaian
                                     <span class="text-danger">*</span>
                                 </label>
-                                <input type="number" class="form-control" name="banyak" value="{{ old('banyak') }}" placeholder="100" required>
+                                <input type="number" class="form-control" name="jumlah" value="{{ old('jumlah') }}"
+                                    placeholder="1" required>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Catatan</label>
-                                <textarea name="catatan" class="form-control" rows="3"
-                                    placeholder="Tambahkan catatan jika perlu"></textarea>
+                                <label class="form-label">Keterangan
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <textarea name="keterangan" class="form-control" rows="3"
+                                    placeholder="3x Sehari"></textarea>
                             </div>
                         </div>
                     </div>

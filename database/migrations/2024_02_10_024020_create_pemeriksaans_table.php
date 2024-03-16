@@ -15,12 +15,8 @@ return new class extends Migration
     {
         Schema::create('pemeriksaans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('kunjungan_id');
-            $table->string('hasil_uji_lab')->nullable();
-            $table->text('deskripsi_tindakan')->nullable();
-            $table->string('hasil_pemeriksaan')->nullable();
-            $table->string('dokter_pemeriksa');
-            $table->string('spesialisasi');
+            $table->foreignId('pasien_id')->constrained()->onDelete('cascade');
+            $table->text('diagnosis');
             $table->timestamps();
         });
     }

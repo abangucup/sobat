@@ -10,17 +10,13 @@ class Pemeriksaan extends Model
     use HasFactory;
 
     protected $fillable = [
-        'kunjungan_id',
-        'hasil_uji_lab',
-        'deskripsi_tindakan',
-        'hasil_pemeriksaan',
-        'dokter_pemeriksa',
-        'spesialisasi'
+        'pasien_id',
+        'diagnosis',
     ];
 
-    public function kunjungan()
+    public function pasien()
     {
-        return $this->belongsTo(Kunjungan::class);
+        return $this->belongsTo(Pasien::class);
     }
 
     public function reseps()

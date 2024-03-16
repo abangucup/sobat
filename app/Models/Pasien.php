@@ -10,7 +10,7 @@ class Pasien extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nomor_rekam_medis',
+        'no_register',
         'biodata_id'
     ];
 
@@ -18,19 +18,13 @@ class Pasien extends Model
     {
         return $this->belongsTo(Biodata::class);
     }
-
-    public function kunjungans()
-    {
-        return $this->hasMany(Kunjungan::class);
-    }
-
     public function pemeriksaans()
     {
-        return $this->hasManyThrough(Pemeriksaan::class, Kunjungan::class);
+        return $this->hasMany(Pemeriksaan::class);
     }
 
-    public function riwayats()
+    public function getRouteKeyName()
     {
-        return $this->hasMany(Riwayat::class);
+        return 'no_register';
     }
 }

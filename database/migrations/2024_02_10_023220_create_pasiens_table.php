@@ -13,11 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('reseps', function (Blueprint $table) {
+        Schema::create('pasiens', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('obat_id')->constrained();
-            $table->foreignId('pemeriksaan_id')->constrained();
-            $table->integer('jumlah');
+            $table->string('no_register')->unique();
+            $table->foreignId('biodata_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('reseps');
+        Schema::dropIfExists('pasiens');
     }
 };

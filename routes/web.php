@@ -8,7 +8,9 @@ use App\Http\Controllers\DistributorController;
 use App\Http\Controllers\ExpiredController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ObatController;
+use App\Http\Controllers\PasienController;
 use App\Http\Controllers\PemakaianObatController;
+use App\Http\Controllers\PemeriksaanController;
 use App\Http\Controllers\PemesananController;
 use App\Http\Controllers\PermintaanController;
 use App\Http\Controllers\SuratController;
@@ -60,10 +62,12 @@ Route::middleware(['auth'])->group(function () {
     // LAPORAN
     Route::get('laporan-pemakaian', [LaporanController::class, 'pemakaianObat'])->name('laporan.pemakaian');
     Route::get('laporan-keuangan', [LaporanController::class, 'rekapKeuangan'])->name('laporan.keuangan');
+    Route::get('laporan-pemeriksaan', [LaporanController::class, 'pemeriksaan'])->name('laporan.pemeriksaan');
 
     // CETAK LAPORAN
     Route::get('laporan-pemakaian/cetak', [LaporanController::class, 'cetakPemakaianObat'])->name('cetak.laporanPemakaian');
     Route::get('laporan-keuangan/cetak', [LaporanController::class, 'cetakRekapKeuangan'])->name('cetak.laporanKeuangan');
+    Route::get('laporan-pemeriksaan/cetak', [LaporanController::class, 'cetakPemeriksaan'])->name('cetak.laporanPemeriksaan');
 
     // LEVEL GUDANG
     Route::group(['middleware' => 'role:gudang'], function () {
@@ -106,12 +110,21 @@ Route::middleware(['auth'])->group(function () {
         Route::post('pemesanan/status-proses/{pemesanan_id}/verif-direktur', [DetailPesananController::class, 'verifDirektur'])->name('verif.direktur');
     });
 
+    // LEVEL DEPO
+    Route::group(['middleware' => 'role:depo'], function () {
+        Route::resource('pemakaian', PemakaianObatController::class);
+    });
+
     // LEVEL PELAYANAN
     Route::group(['middleware' => 'role:pelayanan'], function () {
     });
 
-    Route::group(['middleware' => 'role:depo'], function () {
-        Route::resource('pemakaian', PemakaianObatController::class);
+    // LEVEL PELAYANAN
+    Route::group(['middleware' => 'role:poli'], function () {
+        Route::resource('pasien', PasienController::class);
+        Route::resource('pemeriksaan', PemeriksaanController::class);
+        Route::post('pemeriksaan/resep/{pemeriksaan_id}', [PemeriksaanController::class, 'storeResep'])->name('pemeriksaan.storeResep');
+        Route::delete('pemeriksaan/resep/{id}', [PemeriksaanController::class, 'destroyResep'])->name('pemeriksaan.destroyResep');
     });
 
     // LOGOUT
