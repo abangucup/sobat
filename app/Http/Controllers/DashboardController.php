@@ -7,6 +7,8 @@ use App\Models\Distributor;
 use App\Models\Expired;
 use App\Models\Obat;
 use App\Models\Pemesanan;
+use App\Models\Permintaan;
+use App\Models\StokObat;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -18,9 +20,10 @@ class DashboardController extends Controller
     public function __invoke()
     {
         $user =  Auth::user();
-        $tanggalSekarang = Carbon::parse(now());
 
-        if ($user->role == 'distributor') {
+        if ($user->role === 'distributor') {
+            $tanggalSekarang = Carbon::parse(now());
+
             $totalObat = Obat::with('stokObats')->whereHas('stokObats', function ($query) use ($user) {
                 $query->where('lokasi', 'distributor')
                     ->where('distributor_id', $user->akunDistributor->distributor_id);
@@ -72,31 +75,194 @@ class DashboardController extends Controller
                 'totalPemesanan',
                 'total'
             ]));
-        } elseif ($user->role == 'gudang') {
-            $totalObat = Obat::where('tanggal_kedaluwarsa', '>', $tanggalSekarang->addMonths(6))
-                ->whereHas('stokObats', function ($query) {
-                    $query->where('lokasi', '!=', 'distributor');
-                })
-                ->count();
-            $totalExpired = Obat::where('tanggal_kedaluwarsa', '<=', $tanggalSekarang->addMonths(6))
+        } elseif ($user->role === 'gudang') {
+            $tanggalSekarang = now()->copy();
+
+            $totalObat = Obat::where('tanggal_kedaluwarsa', '>', $tanggalSekarang->copy()->addMonths(6))
                 ->whereHas('stokObats', function ($query) {
                     $query->where('lokasi', '!=', 'distributor');
                 })
                 ->count();
 
-            return view('dashboard.gudang', compact([
+            $totalExpired = Obat::where('tanggal_kedaluwarsa', '<=', $tanggalSekarang->copy()->addMonths(6))
+                ->whereHas('stokObats', function ($query) {
+                    $query->where('lokasi', '!=', 'distributor');
+                })
+                ->count();
+
+            $totalPesananSelesai = Pemesanan::where('status_pemesanan', 'selesai')->count();
+            $totalPesananProses = Pemesanan::where('status_pemesanan', '!=', 'selesai')->count();
+
+            $permintaans = Permintaan::where('status_permintaan', 'tunda')->latest()->get();
+            $totalPermintaanSelesai = Permintaan::where('status_permintaan', 'selesai')->count();
+            $totalPermintaanProses = count($permintaans);
+
+            $obatExpireds = StokObat::with('obat')
+                ->whereHas('obat', function ($query) use ($tanggalSekarang) {
+                    $query->where('tanggal_kedaluwarsa', '<=', $tanggalSekarang->copy()->addMonths(6));
+                })
+                ->where('lokasi', '!=', 'distributor')
+                ->latest()
+                ->get();
+
+            return view('dashboard.gudang', compact(
                 'totalObat',
-                'totalExpired'
-            ]));
+                'totalExpired',
+                'totalPesananSelesai',
+                'totalPesananProses',
+                'totalPermintaanSelesai',
+                'totalPermintaanProses',
+                'permintaans',
+                'obatExpireds'
+            ));
         } elseif ($user->role == 'pelayanan') {
-            return view('dashboard.pelayanan');
+            $tanggalSekarang = now()->copy();
+
+            $totalObat = Obat::where('tanggal_kedaluwarsa', '>', $tanggalSekarang->copy()->addMonths(6))
+                ->whereHas('stokObats', function ($query) {
+                    $query->where('lokasi', 'pelayanan');
+                })
+                ->count();
+
+            $totalExpired = Obat::where('tanggal_kedaluwarsa', '<=', $tanggalSekarang->copy()->addMonths(6))
+                ->whereHas('stokObats', function ($query) {
+                    $query->where('lokasi', 'pelayanan');
+                })
+                ->count();
+
+            $totalPermintaanSelesai = Permintaan::where('status_permintaan', 'selesai')->where('bidang', 'pelayanan')->count();
+            $totalPermintaanProses = Permintaan::where('status_permintaan', 'tunda')->where('bidang', 'pelayanan')->count();
+
+            $obatExpireds = StokObat::with('obat')
+                ->whereHas('obat', function ($query) use ($tanggalSekarang) {
+                    $query->where('tanggal_kedaluwarsa', '<=', $tanggalSekarang->copy()->addMonths(6));
+                })
+                ->where('lokasi', 'pelayanan')
+                ->latest()
+                ->get();
+
+            return view('dashboard.pelayanan', compact(
+                'totalObat',
+                'totalExpired',
+                'totalPermintaanSelesai',
+                'totalPermintaanProses',
+                'obatExpireds'
+            ));
         } elseif ($user->role == 'depo') {
-            return view('dashboard.depo');
+            $tanggalSekarang = now()->copy();
+
+            $totalObat = Obat::where('tanggal_kedaluwarsa', '>', $tanggalSekarang->copy()->addMonths(6))
+                ->whereHas('stokObats', function ($query) {
+                    $query->where('lokasi', 'depo');
+                })
+                ->count();
+
+            $totalExpired = Obat::where('tanggal_kedaluwarsa', '<=', $tanggalSekarang->copy()->addMonths(6))
+                ->whereHas('stokObats', function ($query) {
+                    $query->where('lokasi', 'depo');
+                })
+                ->count();
+
+            $totalPermintaanSelesai = Permintaan::where('status_permintaan', 'selesai')->where('bidang', 'depo')->count();
+            $totalPermintaanProses = Permintaan::where('status_permintaan', 'tunda')->where('bidang', 'depo')->count();
+
+            $obatExpireds = StokObat::with('obat')
+                ->whereHas('obat', function ($query) use ($tanggalSekarang) {
+                    $query->where('tanggal_kedaluwarsa', '<=', $tanggalSekarang->copy()->addMonths(6));
+                })
+                ->where('lokasi','depo')
+                ->latest()
+                ->get();
+
+            return view('dashboard.depo', compact(
+                'totalObat',
+                'totalExpired',
+                'totalPermintaanSelesai',
+                'totalPermintaanProses',
+                'obatExpireds'
+            ));
         } elseif ($user->role == 'ppk') {
-            return view('dashboard.ppk');
+            $tanggalSekarang = now()->copy();
+
+            $totalObat = Obat::where('tanggal_kedaluwarsa', '>', $tanggalSekarang->copy()->addMonths(6))
+                ->whereHas('stokObats', function ($query) {
+                    $query->where('lokasi', '!=', 'distributor');
+                })
+                ->count();
+
+            $totalExpired = Obat::where('tanggal_kedaluwarsa', '<=', $tanggalSekarang->copy()->addMonths(6))
+                ->whereHas('stokObats', function ($query) {
+                    $query->where('lokasi', '!=', 'distributor');
+                })
+                ->count();
+
+            $totalPesananSelesai = Pemesanan::where('status_pemesanan', 'selesai')->count();
+            $totalPesananProses = Pemesanan::where('status_pemesanan', '!=', 'selesai')->count();
+
+            $permintaans = Permintaan::where('status_permintaan', 'tunda')->latest()->get();
+            $totalPermintaanSelesai = Permintaan::where('status_permintaan', 'selesai')->count();
+            $totalPermintaanProses = count($permintaans);
+
+            $obatExpireds = StokObat::with('obat')
+                ->whereHas('obat', function ($query) use ($tanggalSekarang) {
+                    $query->where('tanggal_kedaluwarsa', '<=', $tanggalSekarang->copy()->addMonths(6));
+                })
+                ->where('lokasi', '!=', 'distributor')
+                ->latest()
+                ->get();
+
+            return view('dashboard.ppk', compact(
+                'totalObat',
+                'totalExpired',
+                'totalPesananSelesai',
+                'totalPesananProses',
+                'totalPermintaanSelesai',
+                'totalPermintaanProses',
+                'permintaans',
+                'obatExpireds'
+            ));
         } elseif ($user->role == 'direktur') {
-            return view('dashboard.direktur');
+            $tanggalSekarang = now()->copy();
+
+            $totalObat = Obat::where('tanggal_kedaluwarsa', '>', $tanggalSekarang->copy()->addMonths(6))
+                ->whereHas('stokObats', function ($query) {
+                    $query->where('lokasi', '!=', 'distributor');
+                })
+                ->count();
+
+            $totalExpired = Obat::where('tanggal_kedaluwarsa', '<=', $tanggalSekarang->copy()->addMonths(6))
+                ->whereHas('stokObats', function ($query) {
+                    $query->where('lokasi', '!=', 'distributor');
+                })
+                ->count();
+
+            $totalPesananSelesai = Pemesanan::where('status_pemesanan', 'selesai')->count();
+            $totalPesananProses = Pemesanan::where('status_pemesanan', '!=', 'selesai')->count();
+
+            $permintaans = Permintaan::where('status_permintaan', 'tunda')->latest()->get();
+            $totalPermintaanSelesai = Permintaan::where('status_permintaan', 'selesai')->count();
+            $totalPermintaanProses = count($permintaans);
+
+            $obatExpireds = StokObat::with('obat')
+                ->whereHas('obat', function ($query) use ($tanggalSekarang) {
+                    $query->where('tanggal_kedaluwarsa', '<=', $tanggalSekarang->copy()->addMonths(6));
+                })
+                ->where('lokasi', '!=', 'distributor')
+                ->latest()
+                ->get();
+
+            return view('dashboard.direktur', compact(
+                'totalObat',
+                'totalExpired',
+                'totalPesananSelesai',
+                'totalPesananProses',
+                'totalPermintaanSelesai',
+                'totalPermintaanProses',
+                'permintaans',
+                'obatExpireds'
+            ));
         } elseif ($user->role == 'poli') {
+
             return view('dashboard.poli');
         } else {
             Auth::logout();

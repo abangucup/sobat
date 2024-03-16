@@ -27,6 +27,7 @@
                         <th>Nama</th>
                         <th>No. Batch</th>
                         <th>Exp Date</th>
+                        <th>Status Exp</th>
                         {{-- Box @ 100 Tablet --}}
                         <th>Satuan</th>
                         <th>Harga Beli</th>
@@ -43,6 +44,10 @@
                         <td>{{ $dataObat->obat->nama_obat }}</td>
                         <td>{{ $dataObat->obat->no_batch }}</td>
                         <td>{{ \Carbon\Carbon::parse($dataObat->obat->tanggal_kedaluwarsa)->isoFormat('LL') }}</td>
+                        <td>
+                            <span class="badge badge-{{ $dataObat->obat->tanggal_kedaluwarsa < now()->copy()->addMonths(6) ? 'danger' : 'primary' }}">{{ $dataObat->obat->tanggal_kedaluwarsa < now()->
+                                    copy()->addMonths(6) ? '< 6 Bulan | Expired' : '> 6 Bulan | Valid' }} </span>
+                        </td>
                         <td>{{ $dataObat->obat->satuan. ' @ '.$dataObat->obat->kapasitas.' '.
                             $dataObat->obat->satuan_kapasitas }}</td>
                         <td>{{ 'Rp. ' . number_format($dataObat->harga_beli, 0, ',',
@@ -63,7 +68,7 @@
                                     data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"
                                     class="btn btn-warning shadow btn-xs sharp me-1"><i
                                         class="fa-solid fa-pen-to-square"></i></button>
-                                        
+
                                 @if ($user->role == 'distributor')
                                 <form action="{{ route('obat.destroy', $dataObat->obat->slug) }}" method="post">
                                     @csrf
@@ -242,9 +247,9 @@
                                                     <label class="form-label">Nama Obat
                                                         <span class="required">*</span>
                                                     </label>
-                                                    <input type="text" class="form-control"
-                                                        name="nama_obat" value="{{ $dataObat->obat->nama_obat }}"
-                                                        disabled placeholder="Paracetamol">
+                                                    <input type="text" class="form-control" name="nama_obat"
+                                                        value="{{ $dataObat->obat->nama_obat }}" disabled
+                                                        placeholder="Paracetamol">
                                                 </div>
                                                 <div class="mb-3">
                                                     <label class="form-label">Nomor Batch
@@ -258,7 +263,8 @@
                                                         <span class="required">*</span>
                                                     </label>
                                                     <select name="satuan" class="form-select">
-                                                        <option value="{{ $dataObat->obat->satuan }}" selected disabled>{{
+                                                        <option value="{{ $dataObat->obat->satuan }}" selected disabled>
+                                                            {{
                                                             $dataObat->obat->satuan }}
                                                         </option>
                                                     </select>
@@ -286,7 +292,8 @@
                                                     <label class="form-label">Harga Beli
                                                         <span class="required">*</span>
                                                     </label>
-                                                    <input type="text" class="form-control" id="harga" name="harga_beli" disabled
+                                                    <input type="text" class="form-control" id="harga" name="harga_beli"
+                                                        disabled
                                                         value="{{ 'Rp ' . number_format($dataObat->harga_beli, 0, ',', '.') }}"
                                                         placeholder="20">
                                                 </div>
@@ -314,7 +321,8 @@
                                                 <div class="mb-3">
                                                     <label class="form-label">Satuan Kapasitas</label>
                                                     <select name="satuan_kapasitas" class="form-select">
-                                                        <option value="{{ $dataObat->satuan_kapasitas }}" selected disabled>{{
+                                                        <option value="{{ $dataObat->satuan_kapasitas }}" selected
+                                                            disabled>{{
                                                             $dataObat->obat->satuan_kapasitas }}
                                                         </option>
                                                     </select>

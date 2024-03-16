@@ -25,7 +25,7 @@ class ExpiredController extends Controller
             $obatExpireds = StokObat::with('obat', 'distributor')
                 ->whereHas('obat', function ($query) use ($tanggalSekarang) {
                     $query->where('tanggal_kedaluwarsa', '<=', $tanggalSekarang->addMonths(6));
-                })->where('lokasi', '!=', 'distributor')->get();
+                })->where('lokasi', '!=', 'distributor')->latest()->get();
         }
 
         return view('obat.expired.index', compact('obatExpireds'));

@@ -61,7 +61,7 @@
                     </span>
                     <div class="media-body text-white text-end">
                         <p class="mb-1 text-white">TOTAL PESANAN SELESAI</p>
-                        <h3 class="text-white">1000</h3>
+                        <a href="{{ route('pemesanan.selesai') }}" class="h3 text-white">{{ $totalPesananSelesai }}</a>
                     </div>
                 </div>
             </div>
@@ -76,7 +76,7 @@
                     </span>
                     <div class="media-body text-white text-end">
                         <p class="mb-1 text-white">PESANAN STATUS PROSES</p>
-                        <h3 class="text-white">1000</h3>
+                        <a class="h3 text-white" href="{{ route('pemesanan.proses') }}">{{ $totalPesananProses }}</a>
                     </div>
                 </div>
             </div>
@@ -91,7 +91,7 @@
                     </span>
                     <div class="media-body text-white text-end">
                         <p class="mb-1 text-white">PERMINTAAN DIPROSES</p>
-                        <a class="text-white h3" href="{{ route('permintaan.index') }}">1000</a>
+                        <a class="text-white h3" href="{{ route('permintaan.tunda') }}">{{ $totalPermintaanProses }}</a>
                     </div>
                 </div>
             </div>
@@ -106,7 +106,8 @@
                     </span>
                     <div class="media-body text-white text-end">
                         <p class="mb-1 text-white">PERMINTAAN DISETUJUI</p>
-                        <a class="text-white h3" href="{{ route('permintaan.index') }}">1000</a>
+                        <a class="text-white h3" href="{{ route('permintaan.setuju') }}">{{ $totalPermintaanSelesai
+                            }}</a>
                     </div>
                 </div>
             </div>
@@ -134,6 +135,7 @@
         <div class="card bgl-primary">
             <div class="card-header">
                 <h4 class="card-title">PERMINTAAN TERBARU</h4>
+                <a href="{{ route('permintaan.tunda') }}" class="btn btn-xs btn-primary">Cek</a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -147,21 +149,19 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @forelse ($permintaans as $permintaan)
                             <tr>
-                                <td>Paracetamol</td>
-                                <td>Pelayanan</td>
-                                <td>20 Tablet</td>
-                                <td>13 Februari 2024</td>
+                                <td>{{ $permintaan->stokObat->obat->nama_obat }}</td>
+                                <td>{{ Str::ucfirst($permintaan->bidang) }}</td>
+                                <td>{{ $permintaan->banyak }}</td>
+                                <td>{{ Carbon\Carbon::parse($permintaan->created_at)->isoFormat('LL') }}</td>
                             </tr>
+                            @empty
+                            <tr>
+                                <td colspan="4" style="text-align: center">Kosong</td>
+                            </tr>
+                            @endforelse
                         </tbody>
-                        <tfoot>
-                            <tr>
-                                <th>Nama Obat</th>
-                                <th>Bidang</th>
-                                <th>Jumlah Obat</th>
-                                <th>Tanggal Permintaan</th>
-                            </tr>
-                        </tfoot>
                     </table>
                 </div>
             </div>
@@ -171,6 +171,7 @@
         <div class="card bgl-primary">
             <div class="card-header">
                 <h4 class="card-title">OBAT EXPIRED</h4>
+                <a href="{{ route('expired.index') }}" class="btn btn-xs btn-primary">Cek</a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -183,24 +184,17 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ($obatExpireds as $dataObat)
                             <tr>
-                                <td>Aminefron</td>
-                                <td>12 Maret 2024</td>
-                                <td>Pelayanan</td>
+                                <td>{{ $dataObat->obat->nama_obat }}</td>
+                                <td>
+                                    {{
+                                    Carbon\Carbon::parse($dataObat->obat->tanggal_kedaluwarsa)->isoFormat('LL') }}
+                                </td>
+                                <td>{{ Str::ucfirst($dataObat->lokasi) }}</td>
                             </tr>
-                            <tr>
-                                <td>Betason-N</td>
-                                <td>12 Maret 2024</td>
-                                <td>Gudang Farmasi</td>
-                            </tr>
+                            @endforeach
                         </tbody>
-                        <tfoot>
-                            <tr>
-                                <th>Nama Obat</th>
-                                <th>Tanggal Kedaluwarsa</th>
-                                <th>Lokasi</th>
-                            </tr>
-                        </tfoot>
                     </table>
                 </div>
             </div>
