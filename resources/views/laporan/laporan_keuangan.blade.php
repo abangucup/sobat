@@ -8,65 +8,44 @@
 
 <div class="card">
     <div class="card-header">
-        <h3>Laporan obat terpakai</h3>
-        <a href="{{ route('cetak.laporanPemakaian') }}" target="_blank" class="btn btn-sm btn-danger text-end"><i
+        <h3>Laporan obat keluar</h3>
+        <a href="{{ route('cetak.laporanKeuangan') }}" target="_blank" class="btn btn-sm btn-danger text-end"><i
                 class="fa-solid fa-print me-2"></i>Cetak Laporan</a>
     </div>
 
     <div class="card-body shadow-sm pb-0">
-        <div class="default-tab">
-            <ul class="nav nav-tabs" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" data-bs-toggle="tab" href="#home"><i class="la la-home me-2"></i> Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#profile"><i class="la la-user me-2"></i> Profile</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#contact"><i class="la la-phone me-2"></i> Contact</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#message"><i class="la la-envelope me-2"></i> Message</a>
-                </li>
-            </ul>
-            <div class="tab-content">
-                <div class="tab-pane fade show active" id="home" role="tabpanel">
-                    <div class="pt-4">
-                        <h4>This is home title</h4>
-                        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove.
-                        </p>
-                        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove.
-                        </p>
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="profile">
-                    <div class="pt-4">
-                        <h4>This is profile title</h4>
-                        <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor.
-                        </p>
-                        <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor.
-                        </p>
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="contact">
-                    <div class="pt-4">
-                        <h4>This is contact title</h4>
-                        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove.
-                        </p>
-                        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove.
-                        </p>
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="message">
-                    <div class="pt-4">
-                        <h4>This is message title</h4>
-                        <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor.
-                        </p>
-                        <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor.
-                        </p>
-                    </div>
-                </div>
-            </div>
+        <div class="table-responsive">
+            <table class="table table-striped data-table">
+                <thead>
+                    <tr>
+                        <th>NO</th>
+                        <th>PASIEN</th>
+                        <th>REAGEN/BHP/OBAT</th>
+                        <th>EXP. DATE</th>
+                        <th>SATUAN</th>
+                        <th>PEMAKAIAN</th>
+                        <th>SISA STOK</th>
+                        <th>PENDAPATAN</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach ($obatKeluars as $pemakaian)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $pemakaian->pemeriksaan->pasien->biodata->nama_lengkap }}</td>
+                        <td>{{ $pemakaian->stokObat->obat->nama_obat }}</td>
+                        <td>{{ Carbon\Carbon::parse($pemakaian->stokObat->obat->tanggal_kedaluwarsa)->isoFormat('LL') }}
+                        </td>
+                        <td>{{ $pemakaian->stokObat->obat->satuan. ' @ '.$pemakaian->stokObat->obat->kapasitas.' '.
+                            $pemakaian->stokObat->obat->satuan_kapasitas }}</td>
+                        <td>{{ $pemakaian->jumlah }}</td>
+                        <td>{{ $pemakaian->stokObat->stok }}</td>
+                        <td>{{ 'Rp. '. number_format($pemakaian->stokObat->harga_jual,0,',','.') }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

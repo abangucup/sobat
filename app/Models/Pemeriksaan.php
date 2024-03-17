@@ -23,4 +23,9 @@ class Pemeriksaan extends Model
     {
         return $this->hasMany(Resep::class);
     }
+
+    public function tebusObat()
+    {
+        return $this->hasOne(TebusObat::class);
+    }
 }

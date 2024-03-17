@@ -176,15 +176,11 @@
                     <i class="fa-solid fa-arrow-right-arrow-left"></i> Permintaan
                 </a>
             </li>
-            <li><a href="{{ route('permintaan.index') }}">
-                    <i class="fa-solid fa-file-pen"></i> Pemakaian
+            <li><a href="{{ route('tebus-obat.index') }}">
+                    <i class="fa-solid fa-hand-holding-dollar"></i> Tebus Obat
                 </a>
             </li>
-            <li><a href="{{ route('permintaan.index') }}">
-                <i class="fa-solid fa-hand-holding-dollar"></i> Tebus Obat
-                </a>
-            </li>
-            <li><a href="{{ route('laporan.keuangan') }}">
+            <li><a href="{{ route('laporan.obatKeluar') }}">
                     <i class="fa-solid fa-file-contract"></i> Laporan Obat Keluar
                 </a>
             </li>
@@ -201,7 +197,8 @@
                     <i class="fa-solid fa-arrow-right-arrow-left"></i> Pasien
                 </a>
             </li>
-            <li><a href="{{ route('pemeriksaan.index') }}" class="{{ Request::is('pemeriksaan/*') ? 'bgl-primary rounded' : '' }}">
+            <li><a href="{{ route('pemeriksaan.index') }}"
+                    class="{{ Request::is('pemeriksaan/*') ? 'bgl-primary rounded' : '' }}">
                     <i class="fa-solid fa-file-pen"></i> Pemeriksaan
                 </a>
             </li>

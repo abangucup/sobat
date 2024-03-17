@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DetailPesanan;
 use App\Models\PemakaianObat;
 use App\Models\Pemeriksaan;
+use App\Models\Resep;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -54,17 +55,48 @@ class LaporanController extends Controller
         return $pdf->stream('laporan-pemakaian-obat-' . Carbon::parse(now())->isoFormat('LL') . '.pdf');
     }
 
+    public function obatKeluar()
+    {
+        $obatKeluars = Resep::with('pemeriksaan.tebusObat', 'stokObat.obat')
+            ->whereHas('pemeriksaan.tebusObat', function ($query) {
+                $query->where('status_bayar', 'lunas');
+            })
+            ->latest()->get();
+        return view('laporan.laporan_obat_keluar', compact('obatKeluars'));
+    }
+
+    public function cetakObatKeluar()
+    {
+        $obatKeluars = Resep::with('pemeriksaan.tebusObat', 'stokObat.obat')
+            ->whereHas('pemeriksaan.tebusObat', function ($query) {
+                $query->where('status_bayar', 'lunas');
+            })
+            ->latest()->get();
+        $pdf = Pdf::loadView('laporan.export.cetak_laporan_obat_keluar', compact('obatKeluars'))
+            ->setPaper('A4', 'landscape');
+        return $pdf->stream('laporan-obat-keluar' . Carbon::parse(now())->isoFormat('LL') . '.pdf');
+    }
+
     public function rekapKeuangan()
     {
-        return view('laporan.laporan_keuangan');
+        $obatKeluars = Resep::with('pemeriksaan.tebusObat', 'stokObat.obat')
+            ->whereHas('pemeriksaan.tebusObat', function ($query) {
+                $query->where('status_bayar', 'lunas');
+            })
+            ->latest()->get();
+        return view('laporan.laporan_keuangan', compact('obatKeluars'));
     }
 
     public function cetakRekapKeuangan()
     {
-        // $pemakaians = PemakaianObat::with('stokObat.obat')->latest()->get();
-        $pdf = Pdf::loadView('laporan.export.cetak_laporan_keuangan')
+        $obatKeluars = Resep::with('pemeriksaan.tebusObat', 'stokObat.obat')
+            ->whereHas('pemeriksaan.tebusObat', function ($query) {
+                $query->where('status_bayar', 'lunas');
+            })
+            ->latest()->get();
+        $pdf = Pdf::loadView('laporan.export.cetak_laporan_keuangan', compact('obatKeluars'))
             ->setPaper('A4', 'landscape');
-        return $pdf->stream('laporan-pemakaian-obat-' . Carbon::parse(now())->isoFormat('LL') . '.pdf');
+        return $pdf->stream('laporan-rekapan-keuangan-' . Carbon::parse(now())->isoFormat('LL') . '.pdf');
     }
 
     // REKAM MEDIS / PEMERIKSAAN

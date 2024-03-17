@@ -65,7 +65,7 @@
         <table>
             <tr>
                 <td>Perihal </td>
-                <td>: Laporan Pemakaian Obat</td>
+                <td>: Laporan Obat Keluar</td>
             </tr>
         </table>
 
@@ -78,17 +78,16 @@
                     <th>NO. BATCH</th>
                     <th>EXP. DATE</th>
                     <th>SATUAN</th>
-                    <th>PENGGUNAAN</th>
+                    <th>PEMAKAIAN</th>
                     <th>TANGGAL PAKAI</th>
                     <th>SISA STOK</th>
                     <th>LOKASI</th>
                     <th>CATATAN</th>
-
                 </tr>
             </thead>
             <tbody>
 
-                @foreach ($pemakaians as $pemakaian)
+                @foreach ($obatKeluars as $pemakaian)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $pemakaian->stokObat->obat->nama_obat }}</td>
@@ -96,11 +95,12 @@
                     <td>{{ Carbon\Carbon::parse($pemakaian->stokObat->obat->tanggal_kedaluwarsa)->isoFormat('LL') }}</td>
                     <td>{{ $pemakaian->stokObat->obat->satuan. ' @ '.$pemakaian->stokObat->obat->kapasitas.' '.
                         $pemakaian->stokObat->obat->satuan_kapasitas }}</td>
-                    <td>{{ $pemakaian->banyak }}</td>
-                    <td>{{ Carbon\Carbon::parse($pemakaian->tanggal_pemakaian)->isoFormat('LL') }}</td>
+                    <td>{{ $pemakaian->jumlah }}</td>
+                    <td>{{ Carbon\Carbon::parse($pemakaian->pemeriksaan->tebusObat->updated_at)->isoFormat('LL') }}
+                    </td>
                     <td>{{ $pemakaian->stokObat->stok }}</td>
                     <td>{{ Str::upper($pemakaian->stokObat->lokasi) }}</td>
-                    <td>{{ $pemakaian->catatan ?? '-' }}</td>
+                    <td class="wrap">{{ $pemakaian->pemeriksaan->diagnosis ?? '-' }}</td>
                 </tr>
                 @endforeach
             </tbody>
@@ -109,7 +109,7 @@
 
         <br>
 
-        <p style="margin-left: 50px">Demikian laporan pemakaian data obat ini dengan dapat digunakan dengan sebaik
+        <p style="margin-left: 50px">Demikian laporan obat keluar ini dibuat dengan dapat digunakan dengan sebaik
             baiknya</p>
         <br><br><br>
         <table width="100%">

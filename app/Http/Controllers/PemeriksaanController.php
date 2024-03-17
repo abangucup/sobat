@@ -6,6 +6,7 @@ use App\Models\Pasien;
 use App\Models\Pemeriksaan;
 use App\Models\Resep;
 use App\Models\StokObat;
+use App\Models\TebusObat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -41,15 +42,20 @@ class PemeriksaanController extends Controller
         $pemeriksaan->diagnosis = $request->diagnosis;
         $pemeriksaan->save();
 
+        $tebusObat = new TebusObat();
+        $tebusObat->pemeriksaan_id = $pemeriksaan->id;
+        $tebusObat->save();
+
         return redirect()->route('pemeriksaan.show', $pemeriksaan->id)->withToastSuccess('Silahkan tambahkan resep untuk ditebus pasien');
     }
 
     public function show($id)
     {
         $dataObats = StokObat::where('lokasi', 'pelayanan')
-            // ->whereHas('obat', function ($query) {
-            //     $query->where('tanggal_kedaluwarsa', '>', now()->copy()->addMonths(6));
-            // })
+            ->whereHas('obat', function ($query) {
+                $query->where('tanggal_kedaluwarsa', '>', now()->copy()->addMonths(6));
+            })
+            ->where('stok', '>', 0)
             ->latest()->get();
         $pemeriksaan = Pemeriksaan::findOrFail($id);
         $reseps = $pemeriksaan->reseps()->latest()->get();
@@ -88,6 +94,9 @@ class PemeriksaanController extends Controller
     public function destroy($id)
     {
         $pemeriksaan = Pemeriksaan::findOrFail($id);
+        if ($pemeriksaan->tebusObat->status_bayar === 'lunas') {
+            return redirect()->back()->withToastError('Resep telah ditebus');
+        }
         $pemeriksaan->delete();
 
         return redirect()->back()->withToastSuccess('Pemeriksaan berhasil dihapus');
@@ -105,6 +114,11 @@ class PemeriksaanController extends Controller
             return redirect()->back()->withInput()->withToastError('Lengkapi datanya');
         }
 
+        $pemeriksaan = Pemeriksaan::findOrFail($pemeriksaan_id);
+        if ($pemeriksaan->tebusObat->status_bayar === 'lunas') {
+            return redirect()->back()->withToastError('Resep telah ditebus');
+        }
+
         $resep = new Resep();
         $resep->pemeriksaan_id = $pemeriksaan_id;
         $resep->stok_obat_id = $request->stok_obat_id;
@@ -115,9 +129,13 @@ class PemeriksaanController extends Controller
         return redirect()->back()->withToastSuccess('Resep ditambahkan');
     }
 
-    public function destroyResep($resep_id)
+    public function destroyResep($pemeriksaan_id, $id)
     {
-        $resep = Resep::findOrFail($resep_id);
+        $pemeriksaan = Pemeriksaan::findOrFail($pemeriksaan_id);
+        $resep = Resep::findOrFail($id);
+        if ($pemeriksaan->tebusObat->status_bayar === 'lunas') {
+            return redirect()->back()->withToastError('Resep telah ditebus');
+        }
         $resep->delete();
         return redirect()->back()->withToastSuccess('Resep dihapus');
     }

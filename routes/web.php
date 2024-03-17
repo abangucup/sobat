@@ -14,9 +14,9 @@ use App\Http\Controllers\PemeriksaanController;
 use App\Http\Controllers\PemesananController;
 use App\Http\Controllers\PermintaanController;
 use App\Http\Controllers\SuratController;
+use App\Http\Controllers\TebusObatController;
 use App\Http\Controllers\UserController;
 use App\Models\AkunDistributor;
-use App\Models\DetailPesanan;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -61,11 +61,13 @@ Route::middleware(['auth'])->group(function () {
 
     // LAPORAN
     Route::get('laporan-pemakaian', [LaporanController::class, 'pemakaianObat'])->name('laporan.pemakaian');
+    Route::get('laporan-obat-keluar', [LaporanController::class, 'obatKeluar'])->name('laporan.obatKeluar');
     Route::get('laporan-keuangan', [LaporanController::class, 'rekapKeuangan'])->name('laporan.keuangan');
     Route::get('laporan-pemeriksaan', [LaporanController::class, 'pemeriksaan'])->name('laporan.pemeriksaan');
 
     // CETAK LAPORAN
     Route::get('laporan-pemakaian/cetak', [LaporanController::class, 'cetakPemakaianObat'])->name('cetak.laporanPemakaian');
+    Route::get('laporan-obat-keluar/cetak', [LaporanController::class, 'cetakObatKeluar'])->name('cetak.laporanObatKeluar');
     Route::get('laporan-keuangan/cetak', [LaporanController::class, 'cetakRekapKeuangan'])->name('cetak.laporanKeuangan');
     Route::get('laporan-pemeriksaan/cetak', [LaporanController::class, 'cetakPemeriksaan'])->name('cetak.laporanPemeriksaan');
 
@@ -117,6 +119,7 @@ Route::middleware(['auth'])->group(function () {
 
     // LEVEL PELAYANAN
     Route::group(['middleware' => 'role:pelayanan'], function () {
+        Route::resource('tebus-obat', TebusObatController::class);
     });
 
     // LEVEL PELAYANAN
@@ -124,7 +127,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('pasien', PasienController::class);
         Route::resource('pemeriksaan', PemeriksaanController::class);
         Route::post('pemeriksaan/resep/{pemeriksaan_id}', [PemeriksaanController::class, 'storeResep'])->name('pemeriksaan.storeResep');
-        Route::delete('pemeriksaan/resep/{id}', [PemeriksaanController::class, 'destroyResep'])->name('pemeriksaan.destroyResep');
+        Route::delete('pemeriksaan/{pemeriksaan_id}/resep/{id}', [PemeriksaanController::class, 'destroyResep'])->name('pemeriksaan.destroyResep');
     });
 
     // LOGOUT

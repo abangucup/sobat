@@ -78,7 +78,7 @@
 
                                     <td>
                                         <div class="d-flex">
-                                            <form action="{{ route('pemeriksaan.destroyResep', $resep->id) }}"
+                                            <form action="{{ route('pemeriksaan.destroyResep', ['pemeriksaan_id' => $resep->pemeriksaan_id, 'id' => $resep->id]) }}"
                                                 method="post">
                                                 @csrf
                                                 @method('DELETE')
