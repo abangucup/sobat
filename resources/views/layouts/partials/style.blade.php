@@ -1,4 +1,4 @@
-<link rel="shortcut icon" type="image/png" href="{{ asset('assets/images/png/logo_kota.png') }}">
+<link rel="icon" type="image/png" href="{{ asset('assets/images/png/logo_kota.png') }}">
 <link href="{{ asset('assets/vendor/wow-master/css/libs/animate.css') }}" rel="stylesheet">
 
 {{-- MENGGANGGU ALERT --}}
