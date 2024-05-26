@@ -8,7 +8,7 @@
 
 <div class="card">
 
-    @if (auth()->user()->role == 'distributor')
+    @if (auth()->user()->role == 'distributor' || auth()->user()->role == 'gudang')
     <div class="card-header">
         <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#tambahObat"><i
                 class="fa-regular fa-square-plus"></i> Tambah Obat</button>
@@ -45,7 +45,9 @@
                         <td>{{ $dataObat->obat->no_batch }}</td>
                         <td>{{ \Carbon\Carbon::parse($dataObat->obat->tanggal_kedaluwarsa)->isoFormat('LL') }}</td>
                         <td>
-                            <span class="badge badge-{{ $dataObat->obat->tanggal_kedaluwarsa < now()->copy()->addMonths(6) ? 'danger' : 'primary' }}">{{ $dataObat->obat->tanggal_kedaluwarsa < now()->
+                            <span
+                                class="badge badge-{{ $dataObat->obat->tanggal_kedaluwarsa < now()->copy()->addMonths(6) ? 'danger' : 'primary' }}">{{
+                                $dataObat->obat->tanggal_kedaluwarsa < now()->
                                     copy()->addMonths(6) ? '< 6 Bulan | Expired' : '> 6 Bulan | Valid' }} </span>
                         </td>
                         <td>{{ $dataObat->obat->satuan. ' @ '.$dataObat->obat->kapasitas.' '.
@@ -64,12 +66,13 @@
                                     data-bs-placement="top" title="Detail"
                                     class="btn btn-primary shadow btn-xs sharp me-1"><i
                                         class="fa-solid fa-info"></i></a>
+
                                 <button data-bs-toggle="modal" data-bs-target="#editObat-{{ $dataObat->obat->slug }}"
                                     data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"
                                     class="btn btn-warning shadow btn-xs sharp me-1"><i
                                         class="fa-solid fa-pen-to-square"></i></button>
 
-                                @if ($user->role == 'distributor')
+                                @if ($user->role == 'distributor' || $user->role == 'gudang')
                                 <form action="{{ route('obat.destroy', $dataObat->obat->slug) }}" method="post">
                                     @csrf
                                     @method('DELETE')
@@ -84,7 +87,7 @@
                     </tr>
 
                     {{-- Modal Edit TAPI UNTUK LEVEL DISTRIBUTOR--}}
-                    @if ($user->role == 'distributor')
+                    @if ($user->role == 'distributor' || $user->role == 'gudang')
                     <div class="modal fade tampil-modal" id="editObat-{{ $dataObat->obat->slug }}" tabindex="-1"
                         role="dialog" aria-hidden="true">
                         <div class="modal-dialog modal-lg">
@@ -187,7 +190,7 @@
                                                 <div class="mb-3">
                                                     <label class="form-label">Satuan Kapasitas</label>
                                                     <select name="satuan_kapasitas" class="form-select">
-                                                        <option value="{{ $dataObat->satuan_kapasitas }}" selected>{{
+                                                        <option value="{{ $dataObat->obat->satuan_kapasitas }}" selected>{{
                                                             $dataObat->obat->satuan_kapasitas }}
                                                         </option>
                                                         <option value="" disabled>-- Pilih Satuan Untuk Kapasitas --
@@ -342,7 +345,6 @@
                     {{-- END MODAL EDIT BUKAN LEVEL DISTRIBUTOR --}}
                     @endif
                     {{-- End Modal Edit --}}
-
 
                     @endforeach
                 </tbody>

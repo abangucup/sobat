@@ -35,7 +35,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('dashboard', DashboardController::class)->name('dashboard');
 
-    Route::resource('obat', ObatController::class)->only(['index', 'show']);
+    // Route::resource('obat', ObatController::class)->only(['index', 'show']);
+    // Route::resource('obat', ObatController::class)->only(['store', 'update', 'destroy', 'edit']);
+    Route::resource('obat', ObatController::class);
+
+
     Route::put('obat/stok-obat/{id}', [ObatController::class, 'ubahHarga'])->name('obat.ubahHarga');
     Route::resource('user', UserController::class);
     Route::resource('akun-distributor', AkunDistributor::class);
@@ -90,7 +94,6 @@ Route::middleware(['auth'])->group(function () {
 
     // LEVEL DISTRIBUTOR
     Route::group(['middleware' => 'role:distributor'], function () {
-        Route::resource('obat', ObatController::class)->only(['store', 'update', 'destroy', 'edit']);
         Route::get('pemesanan/daftar-pesanan', [PemesananController::class, 'pesananDistributor'])->name('pemesanan.daftar-pesanan');
         Route::post('pemesanan/status-proses/verif-pengiriman/{detail_pesanan_id}', [DetailPesananController::class, 'verifPengiriman'])->name('verif.pengiriman');
 

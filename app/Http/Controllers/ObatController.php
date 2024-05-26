@@ -40,12 +40,17 @@ class ObatController extends Controller
                 Alert::error('Error', 'Obat tidak ada');
                 return redirect()->back();
         }
+        $distributors = Distributor::all();
 
-        return view('obat.index', compact('obats', 'user'));
+        return view('obat.index', compact('obats', 'user', 'distributors'));
     }
 
     public function store(Request $request)
     {
+        if (auth()->user()->role != 'distributor' && auth()->user()->role != 'gudang') {
+            return back()->withInput()->withToastError('Anda tidak memiliki akses');
+        }
+
         $validasi = Validator::make($request->all(), [
             'nama_obat' => 'required',
             'no_batch' => 'required',
@@ -61,9 +66,8 @@ class ObatController extends Controller
             return back()->withErrors($validasi)->withInput()->withToastError('Terjadi kesalahan');
         }
 
-        $distributor = Distributor::whereHas('akuns', function ($query) {
-            $query->where('user_id', Auth::user()->id);
-        })->first('id');
+
+
 
         $obat = new Obat();
         $obat->kode_obat = '#' . Str::upper(substr(Str::uuid(), 0, 6));
@@ -77,13 +81,22 @@ class ObatController extends Controller
         $obat->save();
 
         $stokObat = new StokObat();
-        $stokObat->distributor_id = $distributor->id;
+        if (!$request->distributor_id) {
+            $distributor = Distributor::whereHas('akuns', function ($query) {
+                $query->where('user_id', Auth::user()->id);
+            })->first()->id;
+
+            $stokObat->distributor_id = $distributor;
+            $stokObat->lokasi = 'distributor';
+        } else {
+            $stokObat->distributor_id = $request->distributor_id;
+            $stokObat->lokasi = 'gudang';
+        }
         $stokObat->obat_id = $obat->id;
         $stokObat->stok = $request->stok;
         $stokObat->harga_beli = preg_replace('/[^\d]/', '', $request->harga_beli);
         $stokObat->tanggal_beli = $request->tanggal_beli;
         $stokObat->harga_jual = preg_replace('/[^\d]/', '', $request->harga_jual);
-        $stokObat->lokasi = 'distributor';
         $stokObat->save();
 
         return redirect()->back()->withToastSuccess('Berhasil tambah obat');
@@ -97,6 +110,9 @@ class ObatController extends Controller
 
     public function update(Request $request, $slug)
     {
+        if (auth()->user()->role != 'distributor' && auth()->user()->role != 'gudang') {
+            return back()->withInput()->withToastError('Anda tidak memiliki akses');
+        }
         $validasi = Validator::make($request->all(), [
             'nama_obat' => 'required',
             'no_batch' => 'required',
@@ -122,7 +138,7 @@ class ObatController extends Controller
             return redirect()->back()->withToastError('Data obat tidak ditemukan');
         } else {
             // rubada data obat
-            if ($obat->stokObats->where('lokasi', '!=', 'distributor')->first() == null) {
+            // if ($obat->stokObats->where('lokasi', '!=', 'distributor')->first() == null) {
                 # code...
                 $obat->update([
                     'nama_obat' => $request->nama_obat,
@@ -135,15 +151,15 @@ class ObatController extends Controller
                 ]);
 
                 // rubah data stok obat
-                $obat->stokObats->first()->update([
+                $obat->stokObats()->where('lokasi', auth()->user()->role)->first()->update([
                     'stok' => $request->stok,
                     'harga_beli' => preg_replace('/[^\d]/', '', $request->harga_beli),
                     'tanggal_beli' => $request->tanggal_beli,
                     'harga_jual' => preg_replace('/[^\d]/', '', $request->harga_jual),
                 ]);
-            } else {
-                return redirect()->back()->withToastError('Data obat tidak dapat dirubah lagi');
-            }
+            // } else {
+            //     return redirect()->back()->withToastError('Data obat tidak dapat dirubah lagi');
+            // }
         }
 
         return redirect()->back()->withToastSuccess('Berhasil merubah data obat');
@@ -155,6 +171,10 @@ class ObatController extends Controller
             'harga_jual' => 'required',
         ]);
 
+        if ($validasi->fails()) {
+            return redirect()->back()->withToastError('Lengkapi data inputan');
+        }
+
         $dataObat = StokObat::where('id', $id)->first();
         $dataObat->update([
             'harga_jual' => preg_replace('/[^\d]/', '', $request->harga_jual),
@@ -165,6 +185,9 @@ class ObatController extends Controller
 
     public function destroy($slug)
     {
+        if (auth()->user()->role != 'distributor' && auth()->user()->role != 'gudang') {
+            return back()->withInput()->withToastError('Anda tidak memiliki akses');
+        }
         $obat = Obat::where('slug', $slug)->first();
         $obat->delete();
         return to_route('obat.index')->withToastSuccess('Berhasil hapus obat');
