@@ -103,6 +103,23 @@
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="col-md-6">
+                                                @if (auth()->user()->role == 'gudang')
+                                                <div class="mb-3">
+                                                    <label class="form-label">Nama Distributor
+                                                        <span class="required">*</span>
+                                                    </label>
+                                                    <select name="distributor_id" class="form-select">
+                                                        <option value="{{ $dataObat->distributor_id }}" selected>{{
+                                                            $dataObat->distributor->nama_perusahaan }}</option>
+                                                        <option value="" disabled>-- Pilih Distributor --
+                                                        </option>
+                                                        @foreach ($distributors as $distributor)
+                                                        <option value="{{ $distributor->id }}">{{
+                                                            $distributor->nama_perusahaan }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                @endif
                                                 <div class="mb-3">
                                                     <label class="form-label">Nama Obat
                                                         <span class="required">*</span>
@@ -190,7 +207,8 @@
                                                 <div class="mb-3">
                                                     <label class="form-label">Satuan Kapasitas</label>
                                                     <select name="satuan_kapasitas" class="form-select">
-                                                        <option value="{{ $dataObat->obat->satuan_kapasitas }}" selected>{{
+                                                        <option value="{{ $dataObat->obat->satuan_kapasitas }}"
+                                                            selected>{{
                                                             $dataObat->obat->satuan_kapasitas }}
                                                         </option>
                                                         <option value="" disabled>-- Pilih Satuan Untuk Kapasitas --

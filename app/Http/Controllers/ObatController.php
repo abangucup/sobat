@@ -139,24 +139,38 @@ class ObatController extends Controller
         } else {
             // rubada data obat
             // if ($obat->stokObats->where('lokasi', '!=', 'distributor')->first() == null) {
-                # code...
-                $obat->update([
-                    'nama_obat' => $request->nama_obat,
-                    'slug' => Str::slug($request->nama_obat),
-                    'no_batch' => $request->no_batch,
-                    'satuan' => $request->satuan,
-                    'tanggal_kedaluwarsa' => $request->tanggal_kedaluwarsa,
-                    'kapasitas' => $request->kapasitas ?? null,
-                    'satuan_kapasitas' => $request->satuan_kapasitas ?? null,
-                ]);
+            # code...
+            $obat->update([
+                'nama_obat' => $request->nama_obat,
+                'slug' => Str::slug($request->nama_obat),
+                'no_batch' => $request->no_batch,
+                'satuan' => $request->satuan,
+                'tanggal_kedaluwarsa' => $request->tanggal_kedaluwarsa,
+                'kapasitas' => $request->kapasitas ?? null,
+                'satuan_kapasitas' => $request->satuan_kapasitas ?? null,
+            ]);
 
-                // rubah data stok obat
+            // rubah data stok obat
+            $obat->stokObats()->where('lokasi', auth()->user()->role)->first()->update([
+                'stok' => $request->stok,
+                'harga_beli' => preg_replace('/[^\d]/', '', $request->harga_beli),
+                'tanggal_beli' => $request->tanggal_beli,
+                'harga_jual' => preg_replace('/[^\d]/', '', $request->harga_jual),
+            ]);
+            if (!$request->distributor_id) {
+                $distributor = Distributor::whereHas('akuns', function ($query) {
+                    $query->where('user_id', Auth::user()->id);
+                })->first()->id;
+
                 $obat->stokObats()->where('lokasi', auth()->user()->role)->first()->update([
-                    'stok' => $request->stok,
-                    'harga_beli' => preg_replace('/[^\d]/', '', $request->harga_beli),
-                    'tanggal_beli' => $request->tanggal_beli,
-                    'harga_jual' => preg_replace('/[^\d]/', '', $request->harga_jual),
+                    'distributor_id' => $distributor,
                 ]);
+            } else {
+                $obat->stokObats()->where('lokasi', auth()->user()->role)->first()->update([
+                    'distributor_id' => $request->distributor_id,
+                ]);
+            }
+
             // } else {
             //     return redirect()->back()->withToastError('Data obat tidak dapat dirubah lagi');
             // }
