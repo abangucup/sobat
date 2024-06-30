@@ -88,7 +88,7 @@
                     </li>
                     <li class="list-group-item d-flex px-0 justify-content-between">
                         <strong>BANYAK OBAT</strong>
-                        <span class="mb-0">{{ $dataObat->stok }}</span>
+                        <span class="mb-0">{{ $dataObat->jumlah_stok_isi . ' '.$dataObat->obat->satuan_kapasitas }}</span>
                     </li>
                     <li class="list-group-item d-flex px-0 justify-content-between">
                         <strong>TANGGAL PENGAJUAN PENGEMBALIAN</strong>

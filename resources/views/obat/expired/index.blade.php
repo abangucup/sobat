@@ -21,7 +21,7 @@
                         {{-- Box @ 100 Tablet --}}
                         <th>Satuan</th>
                         <th>Harga Beli</th>
-                        <th>Stok</th>
+                        <th>Jumlah Obat</th>
                         <th>Bidang</th>
                         <th>Aksi</th>
                     </tr>
@@ -38,7 +38,7 @@
                             $dataObat->obat->satuan_kapasitas }}</td>
                         @if (auth()->user()->role == 'distributor')
                         <td>{{ 'Rp. ' . number_format($dataObat->harga_beli, 0, ',', '.') }}</td>
-                        <td>{{ $dataObat->stok }}</td>
+                        <td>{{ $dataObat->jumlah_stok_isi . ' '.$dataObat->obat->satuan_kapasitas }}</td>
                         @else
                         <td>{{ 'Rp. ' . number_format($dataObat->harga_beli, 0, ',', '.') . ' Per '.$dataObat->obat->satuan }}</td>
                         <td>{{ $dataObat->stok * $dataObat->obat->kapasitas .' Per '.$dataObat->obat->satuan_kapasitas }}</td>

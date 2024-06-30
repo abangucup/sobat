@@ -217,7 +217,7 @@
 
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label class="form-label">Satuan Kapasitas</label>
+                                                    <label class="form-label">Satuan</label>
                                                     <select name="satuan_kapasitas" class="form-select">
                                                         <option value="{{ $dataObat->obat->satuan_kapasitas }}"
                                                             selected>{{
@@ -245,7 +245,7 @@
                                                         <option value="Strip">Strip</option>
                                                         <option value="Sachet">Sachet</option>
                                                     </select>
-                                                    <sub>Catatan: Satuan dari isi misal</sub>
+                                                    <sub>Catatan: Satuan dari isi berdasarkan kategori</sub>
 
                                                 </div>
                                             </div>
