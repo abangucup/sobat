@@ -8,7 +8,7 @@
 
 <div class="card">
 
-    @if (auth()->user()->role == 'distributor' || auth()->user()->role == 'gudang')
+    @if (auth()->user()->role == 'distributor')
     <div class="card-header">
         <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#tambahObat"><i
                 class="fa-regular fa-square-plus"></i> Tambah Obat</button>
@@ -52,13 +52,24 @@
                         </td>
                         <td>{{ $dataObat->obat->satuan. ' @ '.$dataObat->obat->kapasitas.' '.
                             $dataObat->obat->satuan_kapasitas }}</td>
+
+                        @if (auth()->user()->role == 'distributor')
                         <td>{{ 'Rp. ' . number_format($dataObat->harga_beli, 0, ',',
                             '.') }}
                         </td>
-                        <td>{{ $dataObat->stok }}</td>
+                        <td>{{ $dataObat->stok .' '.$dataObat->obat->satuan }}</td>
                         <td>{{ 'Rp. ' . number_format($dataObat->harga_jual, 0, ',',
                             '.') }}
                         </td>
+                        @else
+                        <td>{{ 'Rp. ' . number_format($dataObat->harga_beli, 0, ',',
+                            '.') . ' Per '.$dataObat->obat->satuan }}
+                        </td>
+                        <td>{{ $dataObat->jumlah_stok_isi . ' '.$dataObat->obat->satuan_kapasitas }}</td>
+                        <td>{{ 'Rp. ' . number_format($dataObat->harga_jual, 0, ',',
+                            '.') . ' Per '.$dataObat->obat->satuan_kapasitas }}
+                        </td>
+                        @endif
 
                         <td>
                             <div class="d-flex">
@@ -87,7 +98,7 @@
                     </tr>
 
                     {{-- Modal Edit TAPI UNTUK LEVEL DISTRIBUTOR--}}
-                    @if ($user->role == 'distributor' || $user->role == 'gudang')
+                    @if ($user->role == 'distributor')
                     <div class="modal fade tampil-modal" id="editObat-{{ $dataObat->obat->slug }}" tabindex="-1"
                         role="dialog" aria-hidden="true">
                         <div class="modal-dialog modal-lg">
@@ -121,7 +132,7 @@
                                                 </div>
                                                 @endif
                                                 <div class="mb-3">
-                                                    <label class="form-label">Nama Obat
+                                                    <label class="form-label">Nama Obat / BMHP
                                                         <span class="required">*</span>
                                                     </label>
                                                     <input type="text" class="form-control" name="nama_obat"
@@ -137,22 +148,19 @@
                                                         placeholder="F6009">
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label class="form-label">Satuan
+                                                    <label class="form-label">Kategori
                                                         <span class="required">*</span>
                                                     </label>
                                                     <select name="satuan" class="form-select">
                                                         <option value="{{ $dataObat->obat->satuan }}" selected>{{
                                                             $dataObat->obat->satuan }}
                                                         </option>
-                                                        <option value="" disabled>-- Pilih Satuan --</option>
-                                                        <option value="Kotak (box)">Kotak (box)</option>
-                                                        <option value="Botol Besar (bottle)">Botol Besar (bottle)
-                                                        </option>
-                                                        <option value="Kemasan (pack)">Kemasan (pack)</option>
-                                                        <option value="Karton (carton)">Karton (carton)</option>
-                                                        <option value="Jerigen (jerry can)">Jerigen (jerry can)</option>
-                                                        <option value="Drum">Drum</option>
-                                                        <option value="Bal (bale)">Bal (bale)</option>
+                                                        <option value="" disabled>-- Pilih Kategori --</option>
+                                                        <option value="Karton">Karton</option>
+                                                        <option value="Dos">Dos</option>
+                                                        <option value="Pak">Pak</option>
+                                                        <option value="Strip">Strip</option>
+                                                        <option value="Bal">Bal</option>
                                                     </select>
                                                 </div>
                                                 <div class="mb-3">
@@ -169,6 +177,7 @@
                                                     </label>
                                                     <input type="number" class="form-control" name="stok"
                                                         value="{{ old('stok', $dataObat->stok) }}" placeholder="20">
+                                                    <sub>Catatan: Stok obat berdasarkan kategori</sub>
                                                 </div>
 
 
@@ -199,10 +208,13 @@
                                                         placeholder="20">
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label class="form-label">Kapasitas</label>
+                                                    <label class="form-label">Isi</label>
                                                     <input type="number" name="kapasitas"
                                                         value="{{ old('kapasitas', $dataObat->obat->kapasitas) }}"
                                                         class="form-control" placeholder="20">
+                                                    <sub>Catatan: Isi merupakan banyaknya yang ada didalam
+                                                        kategori.</sub>
+
                                                 </div>
                                                 <div class="mb-3">
                                                     <label class="form-label">Satuan Kapasitas</label>
@@ -211,10 +223,11 @@
                                                             selected>{{
                                                             $dataObat->obat->satuan_kapasitas }}
                                                         </option>
-                                                        <option value="" disabled>-- Pilih Satuan Untuk Kapasitas --
+                                                        <option value="" disabled>-- Pilih Satuan --
                                                         </option>
                                                         <option value="Tablet (tab)">Tablet (tab)</option>
                                                         <option value="Kapsul (kap / cps)">Kapsul (kap / cps)</option>
+                                                        <option value="Vial">Vial</option>
                                                         <option value="Kaplet">Kaplet</option>
                                                         <option value="Sirup">Sirup</option>
                                                         <option value="Krim">Krim</option>
@@ -232,6 +245,8 @@
                                                         <option value="Strip">Strip</option>
                                                         <option value="Sachet">Sachet</option>
                                                     </select>
+                                                    <sub>Catatan: Satuan dari isi misal</sub>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -265,7 +280,7 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="mb-3">
-                                                    <label class="form-label">Nama Obat
+                                                    <label class="form-label">Nama Obat / BMHP
                                                         <span class="required">*</span>
                                                     </label>
                                                     <input type="text" class="form-control" name="nama_obat"
@@ -280,10 +295,10 @@
                                                         value="{{$dataObat->obat->no_batch }}" placeholder="F6009">
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label class="form-label">Satuan
+                                                    <label class="form-label">Kategori
                                                         <span class="required">*</span>
                                                     </label>
-                                                    <select name="satuan" class="form-select">
+                                                    <select name="satuan" class="form-select" disabled>
                                                         <option value="{{ $dataObat->obat->satuan }}" selected disabled>
                                                             {{
                                                             $dataObat->obat->satuan }}
@@ -299,11 +314,13 @@
                                                         class="form-control">
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label class="form-label">Stok Obat
+                                                    <label class="form-label">Stok
                                                         <span class="required">*</span>
                                                     </label>
                                                     <input type="number" class="form-control" name="stok" disabled
                                                         value="{{ $dataObat->stok }}" placeholder="20">
+                                                    <sub>Catatan: Stok obat berdasarkan kategori</sub>
+
                                                 </div>
 
 
@@ -334,14 +351,17 @@
                                                         placeholder="20">
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label class="form-label">Kapasitas</label>
+                                                    <label class="form-label">Isi</label>
                                                     <input type="number" name="kapasitas" disabled
                                                         value="{{ $dataObat->obat->kapasitas }}" class="form-control"
                                                         placeholder="20">
+                                                    <sub>Catatan: Isi merupakan banyaknya yang ada didalam
+                                                        kategori.</sub>
+
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label class="form-label">Satuan Kapasitas</label>
-                                                    <select name="satuan_kapasitas" class="form-select">
+                                                    <label class="form-label">Satuan</label>
+                                                    <select name="satuan_kapasitas" class="form-select" disabled>
                                                         <option value="{{ $dataObat->satuan_kapasitas }}" selected
                                                             disabled>{{
                                                             $dataObat->obat->satuan_kapasitas }}

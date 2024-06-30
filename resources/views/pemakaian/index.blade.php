@@ -33,7 +33,7 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $pemakaian->stokObat->obat->nama_obat }}</td>
-                        <td>{{ $pemakaian->banyak }}</td>
+                        <td>{{ $pemakaian->banyak . ' '.$pemakaian->stokObat->obat->satuan_kapasitas }}</td>
                         <td>{{ Carbon\Carbon::parse($pemakaian->tanggal_pemakaian)->isoFormat('LL') }}</td>
                         <td>{{ $pemakaian->catatan ?? '-' }}</td>
                         <td>

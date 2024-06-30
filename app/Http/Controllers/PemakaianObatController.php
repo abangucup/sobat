@@ -34,17 +34,26 @@ class PemakaianObatController extends Controller
             return redirect()->back()->withErrors($validasi)->withInput()->withToastError('Kayaknya terjadi kesalahan saat pengisian, coba lagi');
         }
 
-        $pemakaian = new PemakaianObat();
-        $pemakaian->stok_obat_id = $request->stok_obat_id;
-        $pemakaian->banyak = $request->banyak;
-        $pemakaian->tanggal_pemakaian = $request->tanggal_pemakaian;
-        $pemakaian->catatan = $request->catatan ?? null;
-        $pemakaian->save();
+        $stokObat = StokObat::where('id', $request->stok_obat_id)->first();
 
-        $stokObat = $pemakaian->stokObat;
-        $stokObat->update([
-            'stok' => $stokObat->stok - $pemakaian->banyak,
-        ]);
+        if ($request->banyak <= $stokObat->jumlah_stok_isi) {
+            # code...
+
+            $pemakaian = new PemakaianObat();
+            $pemakaian->stok_obat_id = $request->stok_obat_id;
+            $pemakaian->banyak = $request->banyak;
+            $pemakaian->tanggal_pemakaian = $request->tanggal_pemakaian;
+            $pemakaian->catatan = $request->catatan ?? null;
+            $pemakaian->save();
+
+            // if (($stokObat->jumlah_stok_isi / $pemakaian->stokObat->obat->kapasitas)) {
+            $stokObat->update([
+                'stok' => floor(($stokObat->jumlah_stok_isi - $pemakaian->banyak) / $stokObat->obat->kapasitas),
+                'jumlah_stok_isi' => $stokObat->jumlah_stok_isi - $pemakaian->banyak,
+            ]);
+        } else {
+            return redirect()->route('permintaan.index')->withToastError('Stok telah habis, segera lakukan permintaan kembali');
+        }
 
         return redirect()->back()->withToastSuccess('Berhasil menambahkan pemakaian obat hari ini');
     }
@@ -62,14 +71,15 @@ class PemakaianObatController extends Controller
         }
 
         $pemakaian = PemakaianObat::findOrFail($id);
-        $stok = $pemakaian->stokObat->stok;
 
         // Kembalikan stok awal
+        $returnStok = $pemakaian->banyak / $pemakaian->stokObat->obat->kapasitas;
         $pemakaian->stokObat->update([
-            'stok' => $stok + $pemakaian->banyak,
+            'stok' => $pemakaian->stokObat->stok + $returnStok,
+            'jumlah_stok_isi' => $pemakaian->stokObat->jumlah_stok_isi + $pemakaian->banyak,
         ]);
 
-        // 
+
         $pemakaian->update([
             'stok_obat_id' => $request->stok_obat_id,
             'banyak' => $request->banyak,
@@ -79,9 +89,10 @@ class PemakaianObatController extends Controller
         ]);
 
         // update stok yang sesuai dengan pemakaian
-        $stokObat = $pemakaian->stokObat;
+        $stokObat = StokObat::where('id', $request->stok_obat_id)->first();
         $stokObat->update([
-            'stok' => $stokObat->stok - $pemakaian->banyak,
+            'stok' => floor(($stokObat->jumlah_stok_isi - $pemakaian->banyak) / $stokObat->obat->kapasitas),
+            'jumlah_stok_isi' => $stokObat->jumlah_stok_isi - $pemakaian->banyak,
         ]);
 
         return redirect()->back()->withToastSuccess('Pemakaian berhasil dirubah');
@@ -90,10 +101,12 @@ class PemakaianObatController extends Controller
     public function destroy($id)
     {
         $pemakaian = PemakaianObat::findOrFail($id);
-        $stok = $pemakaian->stokObat->stok;
+
+        $returnStok = $pemakaian->banyak / $pemakaian->stokObat->obat->kapasitas;
 
         $pemakaian->stokObat->update([
-            'stok' => $stok + $pemakaian->banyak,
+            'stok' => $pemakaian->stokObat->stok + $returnStok,
+            'jumlah_stok_isi' => $pemakaian->stokObat->jumlah_stok_isi + $pemakaian->banyak,
         ]);
 
         $pemakaian->delete();

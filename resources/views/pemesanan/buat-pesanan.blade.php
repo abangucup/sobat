@@ -26,9 +26,11 @@
                             $obat = $stok->obat;
                             $harga_jual = 'Rp '.number_format($stok->harga_jual, 0, ',', '.');
                             @endphp
-                            <option value="{{ $obat->id }}">{{ $obat->nama_obat }} - {{ $obat->satuan }} @ {{
+                            {{-- <option value="{{ $obat->id }}">{{ $obat->nama_obat }} - {{ $obat->satuan }} @ {{
                                 $obat->kapasitas }} {{ $obat->satuan_kapasitas }} | Stok {{
-                                $stok->stok }} | Harga {{ $harga_jual }} </option>
+                                $stok->stok }} | Harga {{ $harga_jual }} </option> --}}
+                                <option value="{{ $obat->id }}">{{ $obat->nama_obat }} | Stok {{
+                                $stok->stok .' '. $obat->satuan}} | Isi {{ $obat->kapasitas.' '.$obat->satuan_kapasitas }} | Harga {{ $harga_jual }} </option>
                             @endforeach
                         </select>
                     </div>
@@ -86,9 +88,8 @@
                             $obat = $stok->obat;
                             $harga_jual = 'Rp '.number_format($stok->harga_jual, 0, ',', '.');
                             @endphp
-                            <option value="{{ $obat->id }}">{{ $obat->nama_obat }} - {{ $obat->satuan }} @ {{
-                                $obat->kapasitas }} {{ $obat->satuan_kapasitas }} | Stok {{
-                                $stok->stok }} | Harga {{ $harga_jual }} </option>
+                            <option value="{{ $obat->id }}">{{ $obat->nama_obat }} | Stok {{
+                                $stok->stok .' '. $obat->satuan}} | Isi {{ $obat->kapasitas.' '.$obat->satuan_kapasitas }} | Harga {{ $harga_jual }} </option>
                             @endforeach
                         </select>
                     </div>

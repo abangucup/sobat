@@ -16,7 +16,8 @@ class StokObat extends Model
         'harga_beli',
         'tanggal_beli',
         'harga_jual',
-        'lokasi'
+        'lokasi',
+        'jumlah_stok_isi',
     ];
 
     public function distributor()

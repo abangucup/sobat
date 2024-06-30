@@ -117,6 +117,7 @@ class DetailPesananController extends Controller
             $stokObat->distributor_id = $detailPesanan->obat->distributor->id;
             $stokObat->obat_id = $detailPesanan->obat_id;
             $stokObat->stok = $detailPesanan->jumlah;
+            $stokObat->jumlah_stok_isi = $detailPesanan->jumlah * $detailPesanan->obat->kapasitas;
             $stokObat->harga_beli = $detailPesanan->obat->stokObats->where('lokasi', 'distributor')->pluck('harga_jual')->first();
             $stokObat->tanggal_beli = $detailPesanan->pemesanan->created_at;
             $stokObat->harga_jual = null;
@@ -125,13 +126,20 @@ class DetailPesananController extends Controller
         } else {
             $stokObat->update([
                 'stok' => $stokObat->stok + $detailPesanan->jumlah,
+                'jumlah_stok_isi' => ($stokObat->stok + $detailPesanan->jumlah) * $stokObat->obat->kapasitas,
             ]);
         }
 
         $pemesanan = Pemesanan::findOrFail($detailPesanan->pemesanan_id);
         $pemesanan->updateStatusPemesanan();
 
-        return redirect()->back()->withToastSuccess('Pesanan telah diverifikasi');
+        if ($pemesanan->status_pemesanan == 'selesai') {
+            # code...
+            return redirect()->route('pemesanan.selesai')->withToastSuccess('Pesanan telah diverifikasi');
+        } else {
+            return redirect()->back()->withToastSuccess('Pesanan telah diverifikasi');
+
+        }
     }
 
     // FUNGSI UNTUK DISTRIBUTOR MELAKUKAN UPDATE STATUS PENGIRIMAN

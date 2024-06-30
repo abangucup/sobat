@@ -96,7 +96,7 @@
                         @foreach ($obat->stokObats as $stokObat)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $stokObat->stok }}</td>
+                            <td>{{ $stokObat->stok .' '.$stokObat->obat->satuan}}</td>
                             <td>{{ 'Rp. '. number_format($stokObat->harga_beli, 0, ',', '.') }}</td>
                             <td>{{ \Carbon\Carbon::parse($stokObat->tanggal_beli)->isoFormat('LL') }}</td>
                             <td>{{ 'Rp. '.number_format($stokObat->harga_jual, 0, ',', '.') }}</td>

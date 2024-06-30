@@ -22,10 +22,8 @@
                                     $obat = $dataObat->obat;
                                     $harga_jual = 'Rp '.number_format($dataObat->harga_jual, 0, ',', '.');
                                     @endphp
-                                    <option value="{{ $dataObat->id }}">{{ $obat->nama_obat }} - {{ $obat->satuan }} @
-                                        {{
-                                        $obat->kapasitas }} {{ $obat->satuan_kapasitas }} | Stok {{
-                                        $dataObat->stok }} | Harga {{ $harga_jual }} </option>
+                                    <option value="{{ $dataObat->id }}">{{ $obat->nama_obat }} | Stok {{
+                                        $dataObat->jumlah_stok_isi . ' '.$dataObat->obat->satuan_kapasitas }} | Harga {{ $harga_jual }} </option>
                                     @endforeach
                                 </select>
                             </div>

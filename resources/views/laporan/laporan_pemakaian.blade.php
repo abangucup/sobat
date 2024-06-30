@@ -40,9 +40,9 @@
                         <td>{{ Carbon\Carbon::parse($pemakaian->stokObat->obat->tanggal_kedaluwarsa)->isoFormat('LL') }}</td>
                         <td>{{ $pemakaian->stokObat->obat->satuan. ' @ '.$pemakaian->stokObat->obat->kapasitas.' '.
                             $pemakaian->stokObat->obat->satuan_kapasitas }}</td>
-                        <td>{{ $pemakaian->banyak }}</td>
+                        <td>{{ $pemakaian->banyak. ' '.$pemakaian->stokObat->obat->satuan_kapasitas }}</td>
                         <td>{{ Carbon\Carbon::parse($pemakaian->tanggal_pemakaian)->isoFormat('LL') }}</td>
-                        <td>{{ $pemakaian->stokObat->stok }}</td>
+                        <td>{{ $pemakaian->stokObat->jumlah_stok_isi . ' '.$pemakaian->stokObat->obat->satuan_kapasitas  }}</td>
                         <td>{{ Str::upper($pemakaian->stokObat->lokasi) }}</td>
                         <td>{{ $pemakaian->catatan ?? '-' }}</td>
                     </tr>

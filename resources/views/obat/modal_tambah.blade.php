@@ -11,7 +11,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6">
-                            @if (auth()->user()->role == 'gudang')
+                            {{-- @if (auth()->user()->role == 'gudang')
                             <div class="mb-3">
                                 <label class="form-label">Nama Distributor
                                     <span class="required">*</span>
@@ -19,13 +19,13 @@
                                 <select name="distributor_id" class="form-select">
                                     <option value="" selected disabled>-- Pilih Distributor --</option>
                                     @foreach ($distributors as $distributor)
-                                        <option value="{{ $distributor->id }}">{{ $distributor->nama_perusahaan }}</option>
+                                    <option value="{{ $distributor->id }}">{{ $distributor->nama_perusahaan }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                            @endif
+                            @endif --}}
                             <div class="mb-3">
-                                <label class="form-label">Nama Obat
+                                <label class="form-label">Nama Obat / BMHP
                                     <span class="required">*</span>
                                 </label>
                                 <input type="text" class="form-control" name="nama_obat" value="{{ old('nama_obat') }}"
@@ -39,18 +39,16 @@
                                     placeholder="F6009">
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Satuan
+                                <label class="form-label">Kategori
                                     <span class="required">*</span>
                                 </label>
                                 <select name="satuan" class="form-select">
-                                    <option value="" selected disabled>-- Pilih Satuan --</option>
-                                    <option value="Kotak (box)">Kotak (box)</option>
-                                    <option value="Botol Besar (bottle)">Botol Besar (bottle)</option>
-                                    <option value="Kemasan (pack)">Kemasan (pack)</option>
-                                    <option value="Karton (carton)">Karton (carton)</option>
-                                    <option value="Jerigen (jerry can)">Jerigen (jerry can)</option>
-                                    <option value="Drum">Drum</option>
-                                    <option value="Bal (bale)">Bal (bale)</option>
+                                    <option value="" selected disabled>-- Pilih Kategori --</option>
+                                    <option value="Karton">Karton</option>
+                                    <option value="Dos">Dos</option>
+                                    <option value="Pak">Pak</option>
+                                    <option value="Strip">Strip</option>
+                                    <option value="Bal">Bal</option>
                                 </select>
                             </div>
                             <div class="mb-3">
@@ -66,8 +64,9 @@
                                 </label>
                                 <input type="number" class="form-control" name="stok" value="{{ old('stok') }}"
                                     placeholder="20">
+                                <sub>Catatan: Stok obat berdasarkan kategori</sub>
                             </div>
-                            
+
 
                         </div>
                         <div class="col-md-6">
@@ -77,6 +76,8 @@
                                 </label>
                                 <input type="text" class="form-control" id="harga" name="harga_beli"
                                     value="{{ old('harga_beli') }}" placeholder="20">
+                                <sub>Catatan: Harga beli per kategorinya</sub>
+
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Tanggal Pembelian
@@ -91,18 +92,22 @@
                                 </label>
                                 <input type="text" class="form-control" id="harga" name="harga_jual"
                                     value="{{ old('harga_jual') }}" placeholder="20">
+                                <sub>Catatan: Harga jual per kategorinya</sub>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Kapasitas</label>
+                                <label class="form-label">Isi</label>
                                 <input type="number" name="kapasitas" value="{{ old('kapasitas') }}"
                                     class="form-control" placeholder="20">
+                                <sub>Catatan: Isi merupakan banyaknya yang ada didalam kategori.</sub>
+
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Satuan Kapasitas</label>
+                                <label class="form-label">Satuan</label>
                                 <select name="satuan_kapasitas" class="form-select">
-                                    <option value="" selected disabled>-- Pilih Satuan Untuk Kapasitas --</option>
+                                    <option value="" selected disabled>-- Pilih Satuan --</option>
                                     <option value="Tablet (tab)">Tablet (tab)</option>
                                     <option value="Kapsul (kap / cps)">Kapsul (kap / cps)</option>
+                                    <option value="Vial">Vial</option>
                                     <option value="Kaplet">Kaplet</option>
                                     <option value="Sirup">Sirup</option>
                                     <option value="Krim">Krim</option>
@@ -120,6 +125,7 @@
                                     <option value="Strip">Strip</option>
                                     <option value="Sachet">Sachet</option>
                                 </select>
+                                <sub>Catatan: Satuan dari isi misal vial</sub>
                             </div>
                         </div>
                     </div>

@@ -72,7 +72,7 @@ class PemesananController extends Controller
         $stokObats = StokObat::with('obat')
             ->where('lokasi', 'distributor')
             ->where('stok', '>', 0)
-            ->whereHas('obat', function($query) use ($tanggalSekarang) {
+            ->whereHas('obat', function ($query) use ($tanggalSekarang) {
                 $query->where('tanggal_kedaluwarsa', '>', $tanggalSekarang->addMonths(6));
             })
             ->latest()->get();
@@ -94,11 +94,11 @@ class PemesananController extends Controller
         $validasiStok = true;
 
         for ($i = 0; $i < count($request->obat); $i++) {
-            $obat = StokObat::where('obat_id', $request->obat[$i])
+            $stokObat = StokObat::where('obat_id', $request->obat[$i])
                 ->where('lokasi', 'distributor')
                 ->first();
 
-            if ($obat && $request->banyak[$i] > $obat->stok) {
+            if ($stokObat && $request->banyak[$i] > $stokObat->stok) {
                 $validasiStok = false;
                 break;
             }
@@ -113,33 +113,37 @@ class PemesananController extends Controller
 
             for ($i = 0; $i < count($request->obat); $i++) {
 
-                $obat = StokObat::where('obat_id', $request->obat[$i])
+                $stokObat = StokObat::where('obat_id', $request->obat[$i])
                     ->where('lokasi', 'distributor')
                     ->first();
 
-                if ($request->banyak[$i] <= $obat->stok) {
+                if ($request->banyak[$i] <= $stokObat->stok) {
 
+                    // $detailPesanan = DetailPesanan::where('pemesanan_id', $pemesanan->id)
+                    //     ->where('obat_id', $obat->id)
+                    //     ->first();
                     $detailPesanan = DetailPesanan::where('pemesanan_id', $pemesanan->id)
-                        ->where('obat_id', $obat->id)
+                        ->where('obat_id', $stokObat->obat->id)
                         ->first();
 
                     if ($detailPesanan) {
                         $jumlahPesanan = $detailPesanan->jumlah + $request->banyak[$i];
                         $detailPesanan->update([
                             'jumlah' => $jumlahPesanan,
-                            'harga_pesanan' => ($obat->harga_jual * $jumlahPesanan),
+                            'harga_pesanan' => ($stokObat->harga_jual * $jumlahPesanan),
                         ]);
                     } else {
                         $detailPesanan = new DetailPesanan();
                         $detailPesanan->pemesanan_id = $pemesanan->id;
                         $detailPesanan->obat_id = $request->obat[$i];
                         $detailPesanan->jumlah = $request->banyak[$i];
-                        $detailPesanan->harga_pesanan = ($obat->harga_jual * $request->banyak[$i]);
+                        $detailPesanan->harga_pesanan = ($stokObat->harga_jual * $request->banyak[$i]);
                         $detailPesanan->save();
                     }
 
-                    $obat->update([
-                        'stok' => $obat->stok - $request->banyak[$i],
+                    $stokObat->update([
+                        'stok' => $stokObat->stok - $request->banyak[$i],
+                        'jumlah_stok_isi' => (($stokObat->stok - $request->banyak[$i]) * $stokObat->obat->kapasitas),
                     ]);
                 } else {
                     foreach ($pemesanan->detailPesanans as $detailPesanan) {
@@ -147,6 +151,7 @@ class PemesananController extends Controller
                         $stokObat = $obat->stokObats->where('lokasi', 'distributor')->first();
                         $stokObat->update([
                             'stok' => $stokObat->stok + $detailPesanan->jumlah,
+                            'jumlah_stok_isi' => (($stokObat->stok + $detailPesanan->jumlah) * $obat->kapasitas),
                         ]);
                     }
                     $pemesanan->delete();

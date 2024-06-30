@@ -25,7 +25,7 @@
                                     <option value="{{ $dataObat->id }}">{{ $obat->nama_obat }} - {{ $obat->satuan }} @
                                         {{
                                         $obat->kapasitas }} {{ $obat->satuan_kapasitas }} | Stok {{
-                                        $dataObat->stok }} | Harga {{ $harga_jual }} </option>
+                                        $dataObat->jumlah_stok_isi. ' '.$dataObat->obat->satuan_kapasitas }} | Harga {{ $harga_jual }} </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -41,6 +41,7 @@
                                     <span class="text-danger">*</span>
                                 </label>
                                 <input type="number" class="form-control" name="banyak" value="{{ old('banyak') }}" placeholder="100" required>
+                                <sub>Catatan: Pemakaian berdasarkan stok</sub>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Catatan</label>

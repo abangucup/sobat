@@ -152,7 +152,7 @@
                 </a>
             </li>
             <li><a href="{{ route('pemakaian.index') }}">
-                    <i class="fa-solid fa-file-pen"></i> Pemakian
+                    <i class="fa-solid fa-file-pen"></i> Pemakaian
                 </a>
             </li>
             <li><a href="{{ route('laporan.pemakaian') }}">

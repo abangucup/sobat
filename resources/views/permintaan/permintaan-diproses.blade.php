@@ -27,7 +27,7 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $permintaan->stokObat->obat->nama_obat }}</td>
                         <td>{{ $permintaan->userPengaju->biodata->nama_lengkap }}</td>
-                        <td>{{ $permintaan->banyak }}</td>
+                        <td>{{ $permintaan->banyak. ' '.$permintaan->stokObat->obat->satuan }}</td>
                         @if ($permintaan->status_permintaan == 'tunda')
                         <td>
                             <form action="{{ route('permintaan.verif', $permintaan->id) }}" method="post">

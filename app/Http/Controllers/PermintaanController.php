@@ -82,6 +82,7 @@ class PermintaanController extends Controller
 
             $dataObat->update([
                 'stok' => $dataObat->stok - $permintaan->banyak,
+                'jumlah_stok_isi' => ($dataObat->stok - $permintaan->banyak) * $dataObat->obat->kapasitas,
             ]);
         }
 
@@ -115,10 +116,10 @@ class PermintaanController extends Controller
         } else {
 
             // ubah stok obat awal
-            $dataObat = StokObat::findOrFail($request->obat);
-
-            $dataObat->update([
-                'stok' => $dataObat->stok + $permintaan->banyak,
+            $stokObat = $permintaan->stokObat;
+            $stokObat->update([
+                'stok' => $stokObat->stok + $permintaan->banyak,
+                'jumlah_stok_isi' => ($stokObat->stok + $permintaan->banyak) * $stokObat->obat->kapasitas
             ]);
 
             // kemudian update permintaannya
@@ -126,10 +127,12 @@ class PermintaanController extends Controller
                 'stok_obat_id' => $request->obat,
                 'banyak' => $request->banyak,
             ]);
-
+            
+            $dataObat = StokObat::findOrFail($request->obat);
             // // kemudian lakukan pengurangan kembali sisa stok yang ada
             $dataObat->update([
                 'stok' => $dataObat->stok - $permintaan->banyak,
+                'jumlah_stok_isi' => ($dataObat->stok - $permintaan->banyak) * $dataObat->obat->kapasitas,
             ]);
         }
 
@@ -162,8 +165,7 @@ class PermintaanController extends Controller
                 $dataObat->distributor_id = $permintaan->stokObat->distributor_id;
                 $dataObat->obat_id = $permintaan->stokObat->obat_id;
                 $dataObat->stok = $permintaan->banyak;
-                // $dataObat->harga_beli = $detailPesanan->obat->stokObats->where('lokasi', 'distributor')->pluck('harga_jual')->first();
-                // $dataObat->tanggal_beli = $detailPesanan->pemesanan->created_at;
+                $dataObat->jumlah_stok_isi = $permintaan->banyak * $permintaan->stokObat->obat->kapasitas;
                 $dataObat->harga_beli = $permintaan->stokObat->harga_beli;
                 $dataObat->tanggal_beli = $permintaan->created_at;
                 $dataObat->harga_jual = $permintaan->stokObat->harga_jual;
@@ -172,11 +174,12 @@ class PermintaanController extends Controller
             } else {
                 $dataObat->update([
                     'stok' => $dataObat->stok + $permintaan->banyak,
+                    'jumlah_stok_isi' => ($dataObat->stok + $permintaan->banyak) * $dataObat->obat->kapasitas,
                 ]);
             }
         }
 
-        return redirect()->back()->withToastSuccess('Permintaan telah di verifikasi');
+        return redirect()->route('permintaan.setuju')->withToastSuccess('Permintaan telah di verifikasi');
     }
 
     public function destroy($id)
@@ -188,6 +191,7 @@ class PermintaanController extends Controller
             $dataObat = StokObat::findOrFail($permintaan->stok_obat_id);
             $dataObat->update([
                 'stok' => $dataObat->stok + $permintaan->banyak,
+                'jumlah_stok_isi' => ($dataObat->stok + $permintaan->banyak) * $dataObat->obat->kapasitas
             ]);
             $permintaan->delete();
         }

@@ -36,8 +36,13 @@
                         <td>{{ \Carbon\Carbon::parse($dataObat->obat->tanggal_kedaluwarsa)->isoFormat('LL') }}</td>
                         <td>{{ $dataObat->obat->satuan. ' @ '.$dataObat->obat->kapasitas.' '.
                             $dataObat->obat->satuan_kapasitas }}</td>
+                        @if (auth()->user()->role == 'distributor')
                         <td>{{ 'Rp. ' . number_format($dataObat->harga_beli, 0, ',', '.') }}</td>
                         <td>{{ $dataObat->stok }}</td>
+                        @else
+                        <td>{{ 'Rp. ' . number_format($dataObat->harga_beli, 0, ',', '.') . ' Per '.$dataObat->obat->satuan }}</td>
+                        <td>{{ $dataObat->stok * $dataObat->obat->kapasitas .' Per '.$dataObat->obat->satuan_kapasitas }}</td>
+                        @endif
                         <td>{{ Str::ucfirst($dataObat->lokasi) }}</td>
                         <td>
                             @if ($dataObat->expired)

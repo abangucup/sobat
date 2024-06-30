@@ -7,7 +7,7 @@
 @section('content')
 
 <div class="row">
-    <div class="col-xl-3 col-xxl-6 col-lg-6 col-sm-6">
+    <div class="col-xl-4 col-xxl-6 col-lg-6 col-sm-6">
         <div class="widget-stat card bg-primary">
             <div class="card-body  p-4">
                 <div class="media">
@@ -22,7 +22,7 @@
             </div>
         </div>
     </div>
-    <div class="col-xl-3 col-xxl-6 col-lg-6 col-sm-6">
+    {{-- <div class="col-xl-4 col-xxl-6 col-lg-6 col-sm-6">
         <div class="widget-stat card bg-success">
             <div class="card-body  p-4">
                 <div class="media">
@@ -36,8 +36,8 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-xl-3 col-xxl-6 col-lg-6 col-sm-6">
+    </div> --}}
+    <div class="col-xl-4 col-xxl-6 col-lg-6 col-sm-6">
         <div class="widget-stat card bg-danger">
             <div class="card-body  p-4">
                 <div class="media">
@@ -52,7 +52,7 @@
             </div>
         </div>
     </div>
-    <div class="col-xl-3 col-xxl-6 col-lg-6 col-sm-6">
+    <div class="col-xl-4 col-xxl-6 col-lg-6 col-sm-6">
         <div class="widget-stat card bg-warning">
             <div class="card-body  p-4">
                 <div class="media">
@@ -67,7 +67,7 @@
             </div>
         </div>
     </div>
-    <div class="col-xl-3 col-xxl-6 col-lg-6 col-sm-6">
+    <div class="col-xl-4 col-xxl-6 col-lg-6 col-sm-6">
         <div class="widget-stat card bg-info">
             <div class="card-body  p-4">
                 <div class="media">
@@ -82,7 +82,7 @@
             </div>
         </div>
     </div>
-    <div class="col-xl-3 col-xxl-6 col-lg-6 col-sm-6">
+    <div class="col-xl-4 col-xxl-6 col-lg-6 col-sm-6">
         <div class="widget-stat card bg-secondary">
             <div class="card-body  p-4">
                 <div class="media">
@@ -97,7 +97,7 @@
             </div>
         </div>
     </div>
-    <div class="col-xl-3 col-xxl-6 col-lg-6 col-sm-6">
+    <div class="col-xl-4 col-xxl-6 col-lg-6 col-sm-6">
         <div class="widget-stat card bg-primary">
             <div class="card-body  p-4">
                 <div class="media">
@@ -113,7 +113,7 @@
             </div>
         </div>
     </div>
-    <div class="col-xl-3 col-xxl-6 col-lg-6 col-sm-6">
+    {{-- <div class="col-xl-4 col-xxl-6 col-lg-6 col-sm-6">
         <div class="widget-stat card bg-success">
             <div class="card-body  p-4">
                 <div class="media">
@@ -127,7 +127,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 </div>
 
 <div class="row">

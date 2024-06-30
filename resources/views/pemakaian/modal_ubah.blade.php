@@ -23,7 +23,7 @@
                                         $pemakaian->stokObat->obat->satuan }} @ {{
                                         $pemakaian->stokObat->obat->kapasitas }} {{
                                         $pemakaian->stokObat->obat->satuan_kapasitas }} | Stok {{
-                                        $pemakaian->stokObat->stok }} | Harga {{ 'Rp. '.
+                                        $pemakaian->stokObat->jumlah_stok_isi.' '.$pemakaian->stokObat->obat->satuan_kapasitas }} | Harga {{ 'Rp. '.
                                         number_format($pemakaian->stokObat->harga_jual, 0, ',', '.') }} </option>
                                     <option value="" disabled>-- Pilih Obat -- </option>
                                     @foreach ($dataObats as $dataObat)

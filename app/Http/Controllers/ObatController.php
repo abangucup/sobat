@@ -94,6 +94,7 @@ class ObatController extends Controller
         }
         $stokObat->obat_id = $obat->id;
         $stokObat->stok = $request->stok;
+        $stokObat->jumlah_stok_isi = $request->stok * $obat->kapasitas;
         $stokObat->harga_beli = preg_replace('/[^\d]/', '', $request->harga_beli);
         $stokObat->tanggal_beli = $request->tanggal_beli;
         $stokObat->harga_jual = preg_replace('/[^\d]/', '', $request->harga_jual);
@@ -153,6 +154,7 @@ class ObatController extends Controller
             // rubah data stok obat
             $obat->stokObats()->where('lokasi', auth()->user()->role)->first()->update([
                 'stok' => $request->stok,
+                'jumlah_stok_isi' => $request->stok * $obat->kapasitas, 
                 'harga_beli' => preg_replace('/[^\d]/', '', $request->harga_beli),
                 'tanggal_beli' => $request->tanggal_beli,
                 'harga_jual' => preg_replace('/[^\d]/', '', $request->harga_jual),

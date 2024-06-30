@@ -21,10 +21,9 @@
                                     $obat = $dataObat->obat;
                                     $harga_jual = 'Rp '.number_format($dataObat->harga_jual, 0, ',', '.');
                                     @endphp
-                                    <option value="{{ $dataObat->id }}">{{ $obat->nama_obat }} - {{ $obat->satuan }} @
-                                        {{
-                                        $obat->kapasitas }} {{ $obat->satuan_kapasitas }} | Stok {{
-                                        $dataObat->stok }} | Harga {{ $harga_jual }} </option>
+                                    <option value="{{ $dataObat->id }}">{{ $obat->nama_obat }} 
+                                        | Stok {{ $dataObat->stok . ' '.$dataObat->obat->satuan }} | Isi {{ $dataObat->obat->kapasitas. ' '.$dataObat->obat->satuan_kapasitas. ' Per '.$dataObat->obat->satuan }}
+                                        | Harga Jual {{ $harga_jual }} </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -33,6 +32,7 @@
                                     <span class="text-danger">*</span>
                                 </label>
                                 <input type="number" class="form-control" name="banyak" placeholder="100" required>
+                                <sub>Catatan: banyak permintaan berdasarkan stok</sub>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Catatan</label>

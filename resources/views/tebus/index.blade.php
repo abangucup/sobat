@@ -46,7 +46,7 @@
                         <td>
                             @foreach ($tebusObat->pemeriksaan->reseps as $resep)
                             <span class="badge badge-primary mt-1">
-                                {{ $resep->stokObat->obat->nama_obat }} | Qty: {{ $resep->jumlah }} | Harga: {{
+                                {{ $resep->stokObat->obat->nama_obat }} | Qty: {{ $resep->jumlah . ' '.$resep->stokObat->obat->satuan_kapasitas }} | Harga: {{
                                 $resep->stokObat->harga_jual }}
                             </span><br>
                             @endforeach

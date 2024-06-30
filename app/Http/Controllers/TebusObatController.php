@@ -38,7 +38,8 @@ class TebusObatController extends Controller
         foreach ($tebusObat->pemeriksaan->reseps as $resep) {
             $stokObat = StokObat::findOrFail($resep->stok_obat_id);
             $stokObat->update([
-                'stok' => $stokObat->stok - $resep->jumlah,
+                'stok' => floor(($stokObat->jumlah_stok_isi - $resep->jumlah) / $stokObat->obat->kapasitas),
+                'jumlah_stok_isi' => $stokObat->jumlah_stok_isi - $resep->jumlah,
             ]);
         }
 

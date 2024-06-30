@@ -70,7 +70,7 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $detailPesanan->obat->nama_obat }}</td>
-                            <td>{{ $detailPesanan->jumlah }}</td>
+                            <td>{{ $detailPesanan->jumlah . ' '.$detailPesanan->obat->satuan }}</td>
                             <td>{{ $detailPesanan->obat->satuan . ' @ ' . $detailPesanan->obat->kapasitas . ' ' .
                                 $detailPesanan->obat->satuan_kapasitas}}</td>
                             <td>

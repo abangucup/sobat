@@ -36,7 +36,7 @@
                         <td>{{ $permintaan->stokObat->obat->nama_obat }}</td>
                         <td>{{ $permintaan->userPengaju->biodata->nama_lengkap }}</td>
                         <td>{{ $permintaan->userPemverifikasi->biodata->nama_lengkap ?? 'Belum diverifikasi' }}</td>
-                        <td>{{ $permintaan->banyak }}</td>
+                        <td>{{ $permintaan->banyak. ' '.$permintaan->stokObat->obat->satuan }}</td>
                         <td>
                             <span
                                 class="badge badge-{{ $permintaan->status_permintaan === 'disetujui' || $permintaan->status_permintaan === 'selesai' ? 'success' : 'danger' }}">

@@ -18,28 +18,41 @@
                                     <span class="required">*</span>
                                 </label>
                                 <select name="obat" class="form-control" required>
-                                    <option value="{{ $permintaan->stok_obat_id }}" selected>{{
+                                    {{-- <option value="{{ $permintaan->stok_obat_id }}" selected>{{
                                         $permintaan->stokObat->obat->nama_obat }} -
                                         {{ $permintaan->stokObat->obat->satuan }} @ {{
                                         $permintaan->stokObat->obat->kapasitas }} {{
                                         $permintaan->stokObat->obat->satuan_kapasitas }} | Exp:
                                         {{
                                         \Carbon\Carbon::parse($permintaan->stokObat->obat->tanggal_kedaluwarsa)->isoFormat('LL')
-                                        }} </option>
+                                        }} </option> --}}
+                                    <option value="{{ $permintaan->stok_obat_id }}">{{ $permintaan->stokObat->obat->nama_obat }}
+                                        | Stok {{ $permintaan->stokObat->stok . ' '.$permintaan->stokObat->obat->satuan }} | Isi {{
+                                        $permintaan->stokObat->obat->kapasitas. ' '.$permintaan->stokObat->obat->satuan_kapasitas. ' Per
+                                        '.$permintaan->stokObat->obat->satuan }}
+                                        | Harga Jual {{ 'Rp '.number_format($permintaan->stokObat->harga_jual, 0, ',','.') }} </option>
                                     <option value="" disabled>-- Pilih Obat -- </option>
                                     @foreach ($dataObats as $dataObat)
                                     @php
                                     $obat = $dataObat->obat;
                                     $harga_jual = 'Rp '.number_format($dataObat->harga_jual, 0, ',', '.');
                                     @endphp
-                                    <option value="{{ $dataObat->id }}">{{ $obat->nama_obat }} - Stok {{ $obat->satuan
+                                    {{-- <option value="{{ $dataObat->id }}">{{ $obat->nama_obat }} - Stok {{
+                                        $obat->satuan
                                         }} @ {{
                                         $obat->kapasitas }} {{ $obat->satuan_kapasitas }} |
                                         Exp: {{
                                         \Carbon\Carbon::parse($dataObat->obat->tanggal_kedaluwarsa)->isoFormat('LL') }}
-                                    </option>
+                                    </option> --}}
+                                    <option value="{{ $dataObat->id }}">{{ $obat->nama_obat }}
+                                        | Stok {{ $dataObat->stok . ' '.$dataObat->obat->satuan }} | Isi {{
+                                        $dataObat->obat->kapasitas. ' '.$dataObat->obat->satuan_kapasitas. ' Per
+                                        '.$dataObat->obat->satuan }}
+                                        | Harga Jual {{ $harga_jual }} </option>
                                     @endforeach
                                 </select>
+                                <sub>Catatan: banyak permintaan berdasarkan stok</sub>
+
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Banyak Permintaan
@@ -51,7 +64,7 @@
                             <div class="mb-3">
                                 <label class="form-label">Catatan</label>
                                 <textarea name="catatan" class="form-control" rows="3"
-                                    placeholder="Tambahkan catatan jika perlu"></textarea>
+                                    placeholder="Tambahkan catatan jika perlu">{{ $permintaan->catatan }}</textarea>
                             </div>
                         </div>
                     </div>

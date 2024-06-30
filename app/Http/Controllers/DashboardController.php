@@ -65,7 +65,17 @@ class DashboardController extends Controller
             $total = $totalHargaPesanan + $totalPajak;
 
             $expireds = Expired::with('stokObat')->where('status_pengembalian', 'pending')->latest()->get();
-            $totalExpired = count($expireds);
+
+            $obats = StokObat::with('obat', 'distributor')->where('lokasi', 'gudang')
+                    ->whereHas('obat', function ($query) use ($tanggalSekarang) {
+                        $query->where('tanggal_kedaluwarsa', '>', $tanggalSekarang->addMonths(6));
+                    })
+                    ->latest()->get();
+            $totalExpired = StokObat::with('obat', 'distributor')->where('lokasi', 'distributor')->where('distributor_id', $user->akunDistributor->id)
+                                    ->whereHas('obat', function ($query) {
+                                        $query->where('tanggal_kedaluwarsa', '<', now()->copy()->addMonths(6));
+                                    })->count();
+                                    // StokObat::with('obat', 'distributor')->where('lokasi', 'distributor')->where('distributor_id', $distributor_id)->latest()->get()
 
             return view('dashboard.distributor', compact([
                 'totalObat',
@@ -190,36 +200,38 @@ class DashboardController extends Controller
                 })
                 ->count();
 
-            $totalExpired = Obat::where('tanggal_kedaluwarsa', '<=', $tanggalSekarang->copy()->addMonths(6))
-                ->whereHas('stokObats', function ($query) {
-                    $query->where('lokasi', '!=', 'distributor');
-                })
-                ->count();
+            // $totalExpired = Obat::where('tanggal_kedaluwarsa', '<=', $tanggalSekarang->copy()->addMonths(6))
+            //     ->whereHas('stokObats', function ($query) {
+            //         $query->where('lokasi', '!=', 'distributor');
+            //     })
+            //     ->count();
 
             $totalPesananSelesai = Pemesanan::where('status_pemesanan', 'selesai')->count();
             $totalPesananProses = Pemesanan::where('status_pemesanan', '!=', 'selesai')->count();
 
-            $permintaans = Permintaan::where('status_permintaan', 'tunda')->latest()->get();
-            $totalPermintaanSelesai = Permintaan::where('status_permintaan', 'selesai')->count();
-            $totalPermintaanProses = count($permintaans);
+            // $permintaans = Permintaan::where('status_permintaan', 'tunda')->latest()->get();
+            // $totalPermintaanSelesai = Permintaan::where('status_permintaan', 'selesai')->count();
+            // $totalPermintaanProses = count($permintaans);
 
-            $obatExpireds = StokObat::with('obat')
-                ->whereHas('obat', function ($query) use ($tanggalSekarang) {
-                    $query->where('tanggal_kedaluwarsa', '<=', $tanggalSekarang->copy()->addMonths(6));
-                })
-                ->where('lokasi', '!=', 'distributor')
-                ->latest()
-                ->get();
+            // $obatExpireds = StokObat::with('obat')
+            //     ->whereHas('obat', function ($query) use ($tanggalSekarang) {
+            //         $query->where('tanggal_kedaluwarsa', '<=', $tanggalSekarang->copy()->addMonths(6));
+            //     })
+            //     ->where('lokasi', '!=', 'distributor')
+            //     ->latest()
+            //     ->get();
+            $pemesanans = Pemesanan::where('status_verif_ppk', 'pending')->latest()->get();
 
             return view('dashboard.ppk', compact(
                 'totalObat',
-                'totalExpired',
+                // 'totalExpired',
                 'totalPesananSelesai',
                 'totalPesananProses',
-                'totalPermintaanSelesai',
-                'totalPermintaanProses',
-                'permintaans',
-                'obatExpireds'
+                // 'totalPermintaanSelesai',
+                // 'totalPermintaanProses',
+                // 'permintaans',
+                // 'obatExpireds'
+                'pemesanans'
             ));
         } elseif ($user->role == 'direktur') {
             $tanggalSekarang = now()->copy();
@@ -230,36 +242,39 @@ class DashboardController extends Controller
                 })
                 ->count();
 
-            $totalExpired = Obat::where('tanggal_kedaluwarsa', '<=', $tanggalSekarang->copy()->addMonths(6))
-                ->whereHas('stokObats', function ($query) {
-                    $query->where('lokasi', '!=', 'distributor');
-                })
-                ->count();
+            // $totalExpired = Obat::where('tanggal_kedaluwarsa', '<=', $tanggalSekarang->copy()->addMonths(6))
+            //     ->whereHas('stokObats', function ($query) {
+            //         $query->where('lokasi', '!=', 'distributor');
+            //     })
+            //     ->count();
 
             $totalPesananSelesai = Pemesanan::where('status_pemesanan', 'selesai')->count();
             $totalPesananProses = Pemesanan::where('status_pemesanan', '!=', 'selesai')->count();
 
-            $permintaans = Permintaan::where('status_permintaan', 'tunda')->latest()->get();
-            $totalPermintaanSelesai = Permintaan::where('status_permintaan', 'selesai')->count();
-            $totalPermintaanProses = count($permintaans);
+            // $permintaans = Permintaan::where('status_permintaan', 'tunda')->latest()->get();
+            // $totalPermintaanSelesai = Permintaan::where('status_permintaan', 'selesai')->count();
+            // $totalPermintaanProses = count($permintaans);
 
-            $obatExpireds = StokObat::with('obat')
-                ->whereHas('obat', function ($query) use ($tanggalSekarang) {
-                    $query->where('tanggal_kedaluwarsa', '<=', $tanggalSekarang->copy()->addMonths(6));
-                })
-                ->where('lokasi', '!=', 'distributor')
-                ->latest()
-                ->get();
+            // $obatExpireds = StokObat::with('obat')
+            //     ->whereHas('obat', function ($query) use ($tanggalSekarang) {
+            //         $query->where('tanggal_kedaluwarsa', '<=', $tanggalSekarang->copy()->addMonths(6));
+            //     })
+            //     ->where('lokasi', '!=', 'distributor')
+            //     ->latest()
+            //     ->get();
+
+            $pemesanans = Pemesanan::where('status_verif_direktur', 'pending')->latest()->get();
 
             return view('dashboard.direktur', compact(
                 'totalObat',
-                'totalExpired',
+                // 'totalExpired',
                 'totalPesananSelesai',
                 'totalPesananProses',
-                'totalPermintaanSelesai',
-                'totalPermintaanProses',
-                'permintaans',
-                'obatExpireds'
+                // 'totalPermintaanSelesai',
+                // 'totalPermintaanProses',
+                // 'permintaans',
+                // 'obatExpireds'
+                'pemesanans'
             ));
         } elseif ($user->role == 'poli') {
 

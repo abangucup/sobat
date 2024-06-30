@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Laporan Pemakaian')
+@section('title', 'Laporan Obat Keluar')
 
-@section('header', 'Laporan Pemakain Obat')
+@section('header', 'Laporan Obat Keluar')
 
 @section('content')
 
@@ -23,8 +23,8 @@
                         <th>NO. BATCH</th>
                         <th>EXP. DATE</th>
                         <th>SATUAN</th>
-                        <th>PEMAKAIAN</th>
-                        <th>TANGGAL PAKAI</th>
+                        <th>DITEBUS</th>
+                        <th>TANGGAL TEBUS</th>
                         <th>SISA STOK</th>
                         <th>LOKASI</th>
                         <th>CATATAN</th>
@@ -32,20 +32,20 @@
                 </thead>
                 <tbody>
 
-                    @foreach ($obatKeluars as $pemakaian)
+                    @foreach ($obatKeluars as $obatKeluar)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $pemakaian->stokObat->obat->nama_obat }}</td>
-                        <td>{{ $pemakaian->stokObat->obat->no_batch }}</td>
-                        <td>{{ Carbon\Carbon::parse($pemakaian->stokObat->obat->tanggal_kedaluwarsa)->isoFormat('LL') }}</td>
-                        <td>{{ $pemakaian->stokObat->obat->satuan. ' @ '.$pemakaian->stokObat->obat->kapasitas.' '.
-                            $pemakaian->stokObat->obat->satuan_kapasitas }}</td>
-                        <td>{{ $pemakaian->jumlah }}</td>
-                        <td>{{ Carbon\Carbon::parse($pemakaian->pemeriksaan->tebusObat->updated_at)->isoFormat('LL') }}
+                        <td>{{ $obatKeluar->stokObat->obat->nama_obat }}</td>
+                        <td>{{ $obatKeluar->stokObat->obat->no_batch }}</td>
+                        <td>{{ Carbon\Carbon::parse($obatKeluar->stokObat->obat->tanggal_kedaluwarsa)->isoFormat('LL') }}</td>
+                        <td>{{ $obatKeluar->stokObat->obat->satuan. ' @ '.$obatKeluar->stokObat->obat->kapasitas.' '.
+                            $obatKeluar->stokObat->obat->satuan_kapasitas }}</td>
+                        <td>{{ $obatKeluar->jumlah . ' '. $obatKeluar->stokObat->obat->satuan_kapasitas }}</td>
+                        <td>{{ Carbon\Carbon::parse($obatKeluar->pemeriksaan->tebusObat->updated_at)->isoFormat('LL') }}
                         </td>
-                        <td>{{ $pemakaian->stokObat->stok }}</td>
-                        <td>{{ Str::upper($pemakaian->stokObat->lokasi) }}</td>
-                        <td class="wrap">{{ $pemakaian->pemeriksaan->diagnosis ?? '-' }}</td>
+                        <td>{{ $obatKeluar->stokObat->jumlah_stok_isi . ' '. $obatKeluar->stokObat->obat->satuan_kapasitas}}</td>
+                        <td>{{ Str::upper($obatKeluar->stokObat->lokasi) }}</td>
+                        <td class="wrap">{{ $obatKeluar->pemeriksaan->diagnosis ?? '-' }}</td>
                     </tr>
                     @endforeach
                 </tbody>
