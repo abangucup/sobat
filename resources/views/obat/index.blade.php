@@ -8,7 +8,7 @@
 
 <div class="card">
 
-    @if (auth()->user()->role == 'distributor')
+    @if (auth()->user()->role == 'distributor' || auth()->user()->role == 'gudang')
     <div class="card-header">
         <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#tambahObat"><i
                 class="fa-regular fa-square-plus"></i> Tambah Obat</button>
@@ -98,7 +98,7 @@
                     </tr>
 
                     {{-- Modal Edit TAPI UNTUK LEVEL DISTRIBUTOR--}}
-                    @if ($user->role == 'distributor')
+                    @if ($user->role == 'distributor' || $user->role == '<gudang></gudang>')
                     <div class="modal fade tampil-modal" id="editObat-{{ $dataObat->obat->slug }}" tabindex="-1"
                         role="dialog" aria-hidden="true">
                         <div class="modal-dialog modal-lg">

@@ -11,7 +11,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6">
-                            {{-- @if (auth()->user()->role == 'gudang')
+                            @if (auth()->user()->role == 'gudang')
                             <div class="mb-3">
                                 <label class="form-label">Nama Distributor
                                     <span class="required">*</span>
@@ -23,7 +23,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            @endif --}}
+                            @endif
                             <div class="mb-3">
                                 <label class="form-label">Nama Obat / BMHP
                                     <span class="required">*</span>

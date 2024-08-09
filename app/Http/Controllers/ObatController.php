@@ -54,12 +54,12 @@ class ObatController extends Controller
         $validasi = Validator::make($request->all(), [
             'nama_obat' => 'required',
             'no_batch' => 'required',
-            'satuan' => 'required',
-            'tanggal_kedaluwarsa' => 'required',
-            'stok' => 'required',
-            'harga_beli' => 'required',
-            'tanggal_beli' => 'required',
-            'harga_jual' => 'required',
+            // 'satuan' => 'required',
+            // 'tanggal_kedaluwarsa' => 'required',
+            // 'stok' => 'required',
+            // 'harga_beli' => 'required',
+            // 'tanggal_beli' => 'required',
+            // 'harga_jual' => 'required',
         ]);
 
         if ($validasi->fails()) {
